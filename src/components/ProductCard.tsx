@@ -1,14 +1,52 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ArrowRight, ShoppingCart } from "lucide-react";
+import { addItemToCart, getCartItems, CART_COUNT_EVENT } from "@/lib/cart";
 
 interface ProductCardProps {
+  id: string;
   name: string;
   price: number;
   image: string;
   discount?: number;
 }
 
-const ProductCard = ({ name, price, image, discount }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, discount }: ProductCardProps) => {
+  const navigate = useNavigate();
+  const isProductInCart = () => getCartItems().some((item) => item.id === id);
+  const [isInCart, setIsInCart] = useState(isProductInCart);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const synchronizeState = () => setIsInCart(isProductInCart());
+    synchronizeState();
+
+    const cartListener: EventListener = () => synchronizeState();
+    window.addEventListener(CART_COUNT_EVENT, cartListener);
+
+    return () => {
+      window.removeEventListener(CART_COUNT_EVENT, cartListener);
+    };
+  }, [id]);
+
+  const handleButtonClick = () => {
+    if (isInCart) {
+      navigate("/cart");
+      return;
+    }
+
+    addItemToCart({ id, name, price, image });
+    setIsInCart(true);
+  };
+
+  const buttonStyles = isInCart
+    ? "border border-primary/70 text-primary bg-primary/5 hover:bg-primary/10"
+    : "bg-accent text-accent-foreground hover:bg-accent/90";
+
   return (
     <div className="group bg-card rounded-lg overflow-hidden border hover:shadow-lg transition-all duration-300">
       <div className="relative aspect-square overflow-hidden bg-muted">
@@ -36,9 +74,22 @@ const ProductCard = ({ name, price, image, discount }: ProductCardProps) => {
               </span>
             )}
           </div>
-          <Button size="sm" className="bg-accent hover:bg-accent/90">
-            <ShoppingCart className="h-4 w-4 mr-1" />
-            Add
+          <Button
+            size="sm"
+            className={`${buttonStyles} font-semibold shadow-sm transition-colors duration-200 min-w-[140px] justify-center gap-1 whitespace-nowrap`}
+            onClick={handleButtonClick}
+          >
+            {isInCart ? (
+              <>
+                Go to Cart
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="h-4 w-4 mr-1" />
+                Add to Cart
+              </>
+            )}
           </Button>
         </div>
       </div>
