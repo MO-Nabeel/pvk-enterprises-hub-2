@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import { Truck, ShieldCheck, Headphones, CreditCard, Star } from "lucide-react";
 import trophyImage from "@/assets/trophy-product.jpg";
 import heroShowcaseImage from "@/assets/slide 1.jpg";
+import sliderImage from "@/assets/slider.jpeg";
 import trophyBackgroundImage from "@/assets/ct-trophy.png";
 import officeImage from "@/assets/office-supplies.jpg";
 import stampImage from "@/assets/rubber-stamps.jpg";
@@ -54,6 +55,10 @@ type ServiceCard = {
 const Index = () => {
   // Hero slider images - showcasing all product categories
   const heroImages = [
+    {
+      src: sliderImage,
+      alt: "PVK Enterprises - Premium Products & Services"
+    },
     {
       src: heroShowcaseImage,
       alt: "PVK Enterprises premium showcase"
@@ -160,6 +165,51 @@ const Index = () => {
       accent: "Offset",
       slot: "grid3-c2",
       textTone: "dark"
+    },
+    {
+      title: "Wedding Cards",
+      description: "Luxurious invitation suites tailored for receptions and ceremonies.",
+      image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+      link: "/category?category=wedding-card",
+      accent: "Celebrations",
+      slot: "grid4-c1",
+      textTone: "light"
+    },
+    {
+      title: "Customized Notebook",
+      description: "Branded notebooks and journals with bespoke finishing.",
+      image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+      link: "/category?category=customized-notebook",
+      accent: "Corporate",
+      slot: "grid4-c2",
+      textTone: "dark"
+    },
+    {
+      title: "Student ID",
+      description: "Durable PVC & RFID ID cards for schools and colleges.",
+      image: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=900&q=80",
+      link: "/category?category=student-id",
+      accent: "Campus",
+      slot: "grid4-c3",
+      textTone: "light"
+    },
+    {
+      title: "Visiting Card",
+      description: "Premium business cards with spot UV, foil, and textured stocks.",
+      image: "https://images.unsplash.com/photo-1522543558187-768b6df7c25c?auto=format&fit=crop&w=900&q=80",
+      link: "/category?category=visiting-card",
+      accent: "Branding",
+      slot: "grid4-c4",
+      textTone: "dark"
+    },
+    {
+      title: "Notice Printing",
+      description: "Bold notice boards, posters, and announcements printed fast.",
+      image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
+      link: "/category?category=notice-printing",
+      accent: "Display",
+      slot: "grid4-c5",
+      textTone: "light"
     }
   ];
 
@@ -206,16 +256,6 @@ const Index = () => {
           <p className={`text-[11px] flex-1 leading-snug relative z-10 ${descriptionColorClass}`}>
             {category.description}
           </p>
-          <span
-            className={`mt-auto inline-flex w-fit rounded-full px-3 py-1 text-[10px] font-semibold tracking-wide shadow-md relative z-10 ${
-              isDarkText
-                ? "bg-white/90 text-slate-900 border border-white/60"
-                : "bg-black/35 text-white border border-white/30"
-            }`}
-            aria-hidden="true"
-          >
-            View Products
-          </span>
         </div>
       </Link>
     );
@@ -466,6 +506,19 @@ const Index = () => {
                 {renderCategoryCard("grid3-c1")}
                 {renderCategoryCard("grid3-c2")}
                 {renderCategoryCard("grid3-c3")}
+              </div>
+            </div>
+          </div>
+
+          {/* Second Row - 5 New Categories */}
+          <div className="mt-8 lg:mt-12">
+            <div className="category-mosaic__row category-mosaic__row--five">
+              <div className="column-five-grid">
+                {renderCategoryCard("grid4-c1")}
+                {renderCategoryCard("grid4-c2")}
+                {renderCategoryCard("grid4-c3")}
+                {renderCategoryCard("grid4-c4")}
+                {renderCategoryCard("grid4-c5")}
               </div>
             </div>
           </div>

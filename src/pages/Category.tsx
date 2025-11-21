@@ -149,20 +149,81 @@ const Category = () => {
       image: frameStudioImage,
       discount: 12,
       category: "Frame Studio"
+    },
+    {
+      id: "wedding-invite-classic",
+      name: "Handcrafted Wedding Invitation Suite",
+      price: 3200,
+      image: customPrintingImage,
+      category: "Wedding Cards"
+    },
+    {
+      id: "notebook-custom-luxe",
+      name: "Executive Customized Notebook Set",
+      price: 950,
+      image: officeImage,
+      category: "Customized Notebook"
+    },
+    {
+      id: "student-id-premium",
+      name: "Premium Student ID Card Package",
+      price: 260,
+      image: printerImage,
+      category: "Student ID"
+    },
+    {
+      id: "visiting-card-velvet",
+      name: "Velvet Touch Visiting Card (100 pcs)",
+      price: 780,
+      image: offsetPrintingImage,
+      category: "Visiting Card"
+    },
+    {
+      id: "notice-printing-rush",
+      name: "Rush Notice Printing (A3 Laminated)",
+      price: 540,
+      image: customPrintingImage,
+      category: "Notice Printing"
     }
   ];
 
-  const categories = [
-    "All Products",
-    "Trophies & Awards",
-    "Office Stationery",
-    "Custom Rubber Stamps",
-    "Printer Supplies",
-    "Mobile Accessories",
-    "Custom Printing",
-    "Offset Printing",
-    "Frame Studio"
-  ];
+  const categories = useMemo(
+    () => [
+      "All Products",
+      "Trophies & Awards",
+      "Office Stationery",
+      "Custom Rubber Stamps",
+      "Printer Supplies",
+      "Mobile Accessories",
+      "Custom Printing",
+      "Offset Printing",
+      "Frame Studio",
+      "Wedding Cards",
+      "Customized Notebook",
+      "Student ID",
+      "Visiting Card",
+      "Notice Printing"
+    ],
+    []
+  );
+
+  const categoryAliasMap: Record<string, string> = {
+    "wedding-card": "Wedding Cards",
+    "wedding-cards": "Wedding Cards",
+    "wedding cards": "Wedding Cards",
+    "customized-notebook": "Customized Notebook",
+    "customized-notebooks": "Customized Notebook",
+    "custom notebook": "Customized Notebook",
+    "student-id": "Student ID",
+    "student id": "Student ID",
+    "student-id-card": "Student ID",
+    "visiting-card": "Visiting Card",
+    "visiting cards": "Visiting Card",
+    "business-card": "Visiting Card",
+    "notice-printing": "Notice Printing",
+    "notice printing": "Notice Printing",
+    "notice": "Notice Printing"
+  };
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [submittedQuery, setSubmittedQuery] = useState("");
@@ -177,27 +238,17 @@ const Category = () => {
     // Set active category from URL if present
     const categoryParam = searchParams.get("category");
     if (categoryParam) {
-      const decodedCategory = decodeURIComponent(categoryParam);
-      // Check if category exists in the categories array
-      const validCategories = [
-        "All Products",
-        "Trophies & Awards",
-        "Office Stationery",
-        "Custom Rubber Stamps",
-        "Printer Supplies",
-        "Mobile Accessories",
-        "Custom Printing",
-        "Offset Printing",
-        "Frame Studio"
-      ];
-      if (validCategories.includes(decodedCategory)) {
-        setActiveCategory(decodedCategory);
+      const decodedCategory = decodeURIComponent(categoryParam).trim();
+      const normalizedCategory = decodedCategory.toLowerCase();
+      const resolvedCategory = categoryAliasMap[normalizedCategory] || decodedCategory;
+      if (categories.includes(resolvedCategory)) {
+        setActiveCategory(resolvedCategory);
         // Note: We don't scroll here on initial load - ScrollToTop component handles
         // scrolling to top on page navigation. Internal category filtering will
         // handle scrolling when user clicks filter buttons.
       }
     }
-  }, [urlQuery, searchParams]);
+  }, [urlQuery, searchParams, categories]);
 
   useEffect(() => {
     if (typeof window === "undefined") {

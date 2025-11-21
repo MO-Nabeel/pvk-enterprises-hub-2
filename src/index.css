@@ -200,6 +200,16 @@ All colors MUST be HSL.
   grid-template-columns: 1fr;
 }
 
+.column-five-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.category-mosaic__row--five {
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
   .category-mosaic {
     grid-template-columns: 1.2fr 1fr 1fr;
@@ -252,6 +262,11 @@ All colors MUST be HSL.
 
   .column-right-grid .category-card[data-slot="grid3-c3"] {
     grid-area: grid3-c3;
+  }
+
+  .column-five-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
   }
 }
 
