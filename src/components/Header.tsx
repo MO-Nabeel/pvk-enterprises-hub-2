@@ -135,19 +135,10 @@ const Header = () => {
 
           {/* Right Section: Contact Button, Search Icon & Utility Icons */}
           <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0">
-            {/* Contact Button - Desktop */}
-            <Button
-              asChild
-              className="hidden md:flex bg-gray-900 text-white hover:bg-gray-800 font-semibold px-5 sm:px-6 py-2.5 rounded-full transition-all duration-200"
-            >
-              <Link to="/contact">Contact</Link>
-            </Button>
-
             {/* Search Icon */}
             <Button
-              variant="ghost"
               size="icon"
-              className="text-gray-700 hover:bg-gray-100 rounded-full p-2.5"
+              className="text-white bg-[#111827] hover:bg-[#0c1220] rounded-full p-2.5 shadow-md"
               onClick={() => setSearchBarOpen(!searchBarOpen)}
               aria-label="Search"
             >
@@ -159,9 +150,8 @@ const Header = () => {
               <div className="relative">
                 <Button
                   asChild
-                  variant="ghost"
                   size="icon"
-                  className="text-gray-700 hover:bg-gray-100 rounded-full p-2.5"
+                  className="text-white bg-[#111827] hover:bg-[#0c1220] rounded-full p-2.5 shadow-md"
                   aria-label={`View cart (${cartCount} item${cartCount === 1 ? "" : "s"})`}
                 >
                   <Link to="/cart">
@@ -180,9 +170,8 @@ const Header = () => {
 
             {/* User Profile Icon */}
             <Button
-              variant="ghost"
               size="icon"
-              className="hidden sm:flex text-gray-700 hover:bg-gray-100 rounded-full p-2.5"
+              className="hidden sm:flex text-white bg-[#111827] hover:bg-[#0c1220] rounded-full p-2.5 shadow-md"
               aria-label="Profile"
             >
               <User className="h-5 w-5" />
@@ -224,20 +213,11 @@ const Header = () => {
                 ))}
               </div>
             </nav>
-            {/* Mobile Contact Button */}
-            <Button
-              asChild
-              className="w-full bg-gray-900 text-white hover:bg-gray-800 font-semibold px-6 py-2.5 rounded-full mt-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Link to="/contact">Contact</Link>
-            </Button>
             {/* Mobile User Profile */}
             <div className="flex items-center justify-center pt-2">
               <Button
-                variant="ghost"
                 size="icon"
-                className="text-gray-700 hover:bg-gray-100 rounded-full"
+                className="text-white bg-[#111827] hover:bg-[#0c1220] rounded-full shadow-md"
                 aria-label="Profile"
                 onClick={() => setMobileMenuOpen(false)}
               >

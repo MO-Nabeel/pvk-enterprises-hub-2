@@ -46,6 +46,8 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
   }, [api]);
 
   const isBackground = variant === "background";
+  const backgroundHeightClasses =
+    "h-full min-h-[420px] sm:min-h-[520px] md:min-h-[600px] lg:min-h-[680px]";
   const totalSlides = images.length;
   const progressPercentage = totalSlides > 1 ? ((current - 1) / (totalSlides - 1)) * 100 : 100;
 
@@ -53,14 +55,14 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
     <div
       className={cn(
         "relative w-full",
-        isBackground && "h-full",
+        isBackground && backgroundHeightClasses,
         className
       )}
     >
       <Carousel
         setApi={setApi}
         plugins={[autoplayPlugin.current]}
-        className={cn("w-full", isBackground && "h-full")}
+        className={cn("w-full", isBackground && backgroundHeightClasses)}
         opts={{
           align: "start",
           loop: true,
@@ -69,7 +71,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
         <CarouselContent
           className={cn(
             "items-stretch",
-            isBackground && "h-full !ml-0"
+            isBackground && `h-full !ml-0 ${backgroundHeightClasses}`
           )}
         >
           {images.map((image, index) => (
@@ -77,14 +79,14 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
               key={index}
               className={cn(
                 "flex",
-                isBackground && "h-full !pl-0"
+                isBackground && `h-full !pl-0 ${backgroundHeightClasses}`
               )}
             >
               <div
                 className={cn(
                   "relative w-full overflow-hidden group",
                   isBackground
-                    ? "h-full"
+                    ? backgroundHeightClasses
                     : "rounded-2xl aspect-[4/3] sm:aspect-[5/3] lg:aspect-[16/9] max-h-[340px] md:max-h-[380px] lg:max-h-[420px]"
                 )}
               >
@@ -92,7 +94,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
                   src={image.src}
                   alt={image.alt}
                   className={cn(
-                    "w-full h-full object-cover transition-all duration-500 ease-out",
+                    "w-full h-full object-cover object-center transition-all duration-500 ease-out",
                     isBackground
                       ? "scale-100"
                       : "rounded-2xl shadow-2xl group-hover:scale-[1.03] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
@@ -107,24 +109,32 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
         </CarouselContent>
       </Carousel>
 
+      {isBackground && (
+        <>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-full sm:w-2/3 lg:w-1/2 bg-black/40 z-[1]" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-black/40 via-black/10 to-transparent z-[1]" />
+        </>
+      )}
+
       {/* Capsule-Shaped Navigation Container */}
       <div
         className={cn(
-          "flex items-center justify-center z-20",
+          "flex items-center justify-center",
           isBackground
-            ? "absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2"
-            : "mt-6"
+            ? "absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 z-[100] pointer-events-auto"
+            : "mt-6 relative z-10"
         )}
+        style={isBackground ? { position: 'absolute' as const } : undefined}
       >
-        <div className="inline-flex items-center gap-0 bg-white/95 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-1.5 sm:py-2 shadow-lg border border-gray-200/50">
+        <div className="inline-flex items-center gap-0 bg-white backdrop-blur-md rounded-full px-1.5 sm:px-2 py-1.5 sm:py-2 shadow-2xl border-2 border-gray-300/80">
           {/* Previous Arrow */}
           <button
             onClick={scrollPrev}
-            className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-gray-100 transition-colors outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:shadow-none focus-visible:shadow-none active:scale-95"
+            className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-gray-100 transition-colors outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:shadow-none focus-visible:shadow-none active:scale-95 pointer-events-auto cursor-pointer"
             style={{ outline: 'none', boxShadow: 'none' }}
             aria-label="Previous slide"
           >
-            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700" />
+            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700 pointer-events-none" />
           </button>
 
           {/* Progress Bar Container */}
@@ -141,11 +151,11 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
           {/* Next Arrow */}
           <button
             onClick={scrollNext}
-            className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-gray-100 transition-colors outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:shadow-none focus-visible:shadow-none active:scale-95"
+            className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-gray-100 transition-colors outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 focus:shadow-none focus-visible:shadow-none active:scale-95 pointer-events-auto cursor-pointer"
             style={{ outline: 'none', boxShadow: 'none' }}
             aria-label="Next slide"
           >
-            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700" />
+            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700 pointer-events-none" />
           </button>
         </div>
       </div>

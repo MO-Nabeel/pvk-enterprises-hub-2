@@ -154,10 +154,19 @@ All colors MUST be HSL.
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center;
-  opacity: 0.35;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 1;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  filter: saturate(1.05) contrast(1.02);
+}
+
+.category-card span,
+.category-card h3,
+.category-card p {
+  color: #fff;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
 }
 
 .category-mosaic {
@@ -243,5 +252,40 @@ All colors MUST be HSL.
 
   .column-right-grid .category-card[data-slot="grid3-c3"] {
     grid-area: grid3-c3;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .category-mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .column-left-grid,
+  .column-right-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .column-center-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .category-card {
+    padding: 0.85rem;
+    height: auto;
+    min-height: 0;
+    gap: 0.5rem;
+  }
+
+  .category-card h3 {
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+
+  .category-card p {
+    font-size: 0.9rem;
+    line-height: 1.3;
   }
 }

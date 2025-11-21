@@ -9,8 +9,8 @@ import printerImage from "@/assets/printer-equipment.jpg";
 import mobileImage from "@/assets/mobile-accessories.jpg";
 import saleBg from "@/assets/sale-banner-bg.jpg";
 import customPrintingImage from "@/assets/ct-customprinting.png";
-import offsetPrintingImage from "@/assets/ct-offsetprinting.jpg";
-import frameStudioImage from "@/assets/ct-framestudio1.jpg";
+import offsetPrintingImage from "@/assets/ct-offsetprinting.png";
+import frameStudioImage from "@/assets/ct-framestudio.jpg";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 

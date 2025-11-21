@@ -25,22 +25,22 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/" className="hover:text-primary transition-colors">
+                <Link to="/" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   HOME
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-primary transition-colors">
+                <Link to="/about" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   ABOUT US
                 </Link>
               </li>
               <li>
-                <Link to="/category" className="hover:text-primary transition-colors">
+                <Link to="/category" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   PRODUCTS
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-primary transition-colors">
+                <Link to="/contact" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   CONTACT
                 </Link>
               </li>
@@ -51,22 +51,22 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Resources</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/terms" className="hover:text-primary transition-colors">
+                <Link to="/terms" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   Terms and Conditions
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-primary transition-colors">
+                <Link to="/privacy" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/refund" className="hover:text-primary transition-colors">
+                <Link to="/refund" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   Refund Policy
                 </Link>
               </li>
               <li>
-                <Link to="/shipping" className="hover:text-primary transition-colors">
+                <Link to="/shipping" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   Shipping &amp; Exchange
                 </Link>
               </li>
@@ -78,13 +78,18 @@ const Footer = () => {
             <ul className="space-y-4 text-sm text-primary-foreground/90">
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-1" />
-                <span>
+                <a
+                  href="https://maps.google.com/?q=PVK+TOWER,+Near+Village+Office,+Maranchery+Centre,+Marancheri,+Malappuram,+Kerala+679581"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1 underline-offset-4 hover:underline"
+                >
                   PVK TOWER, Near Village Office, Maranchery Centre, Marancheri, Malappuram, Kerala 679581
-                </span>
+                </a>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="h-4 w-4 mt-1" />
-                <a href="mailto:pvkmaranchery707@gmail.com" className="hover:text-primary transition-colors">
+                <a href="mailto:pvkmaranchery707@gmail.com" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                   pvkmaranchery707@gmail.com
                 </a>
               </li>
@@ -92,20 +97,20 @@ const Footer = () => {
                 <Phone className="h-4 w-4 mt-1" />
                 <div className="space-y-1">
                   <div className="flex flex-wrap gap-3">
-                    <a href="tel:+919142107707" className="hover:text-primary transition-colors">
+                    <a href="tel:+919142107707" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                       +91-9142107707
                     </a>
                     <span className="text-primary-foreground/50">/</span>
-                    <a href="tel:+919072331707" className="hover:text-primary transition-colors">
+                    <a href="tel:+919072331707" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                       +91-9072331707
                     </a>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    <a href="tel:+918891515015" className="hover:text-primary transition-colors">
+                    <a href="tel:+918891515015" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                       +91-8891515015
                     </a>
                     <span className="text-primary-foreground/50">/</span>
-                    <a href="tel:+919072333707" className="hover:text-primary transition-colors">
+                    <a href="tel:+919072333707" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
                       +91-9072333707
                     </a>
                   </div>
@@ -124,7 +129,7 @@ const Footer = () => {
               href="https://www.facebook.com/pvkenterprisesmry?mibextid=ZbWKwL"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
+              className="inline-block transition-all duration-300 hover:scale-125"
             >
               <Facebook className="h-5 w-5" />
             </a>
@@ -132,7 +137,7 @@ const Footer = () => {
               href="https://www.instagram.com/pvkenterprises7707?igshid=YmMyMTA2M2Y%3D"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
+              className="inline-block transition-all duration-300 hover:scale-125"
             >
               <Instagram className="h-5 w-5" />
             </a>
@@ -140,7 +145,7 @@ const Footer = () => {
               href="https://youtube.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
+              className="inline-block transition-all duration-300 hover:scale-125"
             >
               <Youtube className="h-5 w-5" />
             </a>

@@ -123,29 +123,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Location Section */}
-        <section className="py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-4">Visit Our Store</h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                PVK TOWER, Near Village Office, Maranchery Centre, 
-                Marancheri, Malappuram, Kerala 679581
-              </p>
-              <div className="bg-card rounded-xl p-8 border">
-                <h3 className="text-xl font-semibold mb-4">Working Hours</h3>
-                <div className="space-y-2">
-                  <p className="text-muted-foreground">
-                    Mon – Sat : 09:00 AM – 07:30 PM / 12:00 AM – 12:00 AM
-                  </p>
-                  <p className="text-muted-foreground">
-                    Sun : Closed / 12:00 AM – 12:00 AM
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />

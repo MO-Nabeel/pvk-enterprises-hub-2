@@ -19,6 +19,7 @@ import {
 import { Link } from "react-router-dom";
 import { Truck, ShieldCheck, Headphones, CreditCard, Star } from "lucide-react";
 import trophyImage from "@/assets/trophy-product.jpg";
+import heroShowcaseImage from "@/assets/slide 1.jpg";
 import trophyBackgroundImage from "@/assets/ct-trophy.png";
 import officeImage from "@/assets/office-supplies.jpg";
 import stampImage from "@/assets/rubber-stamps.jpg";
@@ -31,10 +32,10 @@ import phonePeImage from "@/assets/phonepe-box.png";
 import ctStampImage from "@/assets/ct-stamp.jpg";
 import customPrintingImage from "@/assets/ct-customprinting.png";
 import officeStationeryImage from "@/assets/ct-officestatinarry.jpg";
-import printerSupplyImage from "@/assets/ct-printersupply.png";
-import mobileAccessoriesImage from "@/assets/ct-mobileaccessories.jpg";
-import offsetPrintingImage from "@/assets/ct-offsetprinting.jpg";
-import frameStudioImage from "@/assets/ct-framestudio1.jpg";
+import printerSupplyImage from "@/assets/ct-printersupply.jpg";
+import mobileAccessoriesImage from "@/assets/ct-mobileaccesoris.webp";
+import offsetPrintingImage from "@/assets/ct-offsetprinting.png";
+import frameStudioImage from "@/assets/ct-framestudio.jpg";
 import {
   Accordion,
   AccordionContent,
@@ -54,8 +55,8 @@ const Index = () => {
   // Hero slider images - showcasing all product categories
   const heroImages = [
     {
-      src: trophyImage,
-      alt: "Premium Trophies & Awards Collection"
+      src: heroShowcaseImage,
+      alt: "PVK Enterprises premium showcase"
     },
     {
       src: mobileImage,
@@ -75,15 +76,26 @@ const Index = () => {
     }
   ];
 
-  const categories = [
+  type Category = {
+    title: string;
+    description: string;
+    image: string;
+    link: string;
+    accent: string;
+    slot: string;
+    textTone: "light" | "dark";
+    imagePosition?: string;
+  };
+
+  const categories: Category[] = [
     {
       title: "Trophies & Awards",
       description: "Hand-polished accolades and signature centerpieces.",
       image: trophyBackgroundImage,
       link: "/category?category=Trophies%20%26%20Awards",
       accent: "Awards",
-      background: "linear-gradient(135deg, #E0EAFC 0%, #CFDEF3 100%)",
-      slot: "grid1-c1"
+      slot: "grid1-c1",
+      textTone: "light"
     },
     {
       title: "Office Stationery",
@@ -91,17 +103,17 @@ const Index = () => {
       image: officeStationeryImage,
       link: "/category?category=Office%20Stationery",
       accent: "Workspace",
-      background: "linear-gradient(135deg, #FDFCFB 0%, #E2D1C3 100%)",
-      slot: "grid2-c1"
+      slot: "grid2-c1",
+      textTone: "dark"
     },
     {
       title: "Custom Rubber Stamps",
       description: "Precisely crafted business and official stamps.",
       link: "/category?category=Custom%20Rubber%20Stamps",
       accent: "Branding",
-      background: "linear-gradient(135deg, rgba(243,231,233,0.92) 0%, rgba(227,238,255,0.92) 100%)",
       image: ctStampImage,
-      slot: "grid1-c2"
+      slot: "grid1-c2",
+      textTone: "dark"
     },
     {
       title: "Printer Supplies",
@@ -109,8 +121,8 @@ const Index = () => {
       image: printerSupplyImage,
       link: "/category?category=Printer%20Supplies",
       accent: "Productivity",
-      background: "linear-gradient(135deg, #F5F7FA 0%, #C3CFE2 100%)",
-      slot: "grid2-c2"
+      slot: "grid2-c2",
+      textTone: "dark"
     },
     {
       title: "Mobile Accessories",
@@ -118,8 +130,8 @@ const Index = () => {
       image: mobileAccessoriesImage,
       link: "/category?category=Mobile%20Accessories",
       accent: "Tech",
-      background: "linear-gradient(135deg, #F4E2D8 0%, #BA5370 100%)",
-      slot: "grid3-c1"
+      slot: "grid3-c1",
+      textTone: "light"
     },
     {
       title: "Frame Studio",
@@ -127,8 +139,9 @@ const Index = () => {
       image: frameStudioImage,
       link: "/category?category=Frame%20Studio",
       accent: "Display",
-      background: "linear-gradient(135deg, #D5DEE7 0%, #F3E7E9 100%)",
-      slot: "grid3-c3"
+      slot: "grid3-c3",
+      textTone: "dark",
+      imagePosition: "top center"
     },
     {
       title: "Custom Printing",
@@ -136,8 +149,8 @@ const Index = () => {
       image: customPrintingImage,
       link: "/category?category=Custom%20Printing",
       accent: "Custom",
-      background: "linear-gradient(135deg, #FFE4F3 0%, #E4E1FF 100%)",
-      slot: "grid1-c3"
+      slot: "grid1-c3",
+      textTone: "light"
     },
     {
       title: "Offset Printing",
@@ -145,8 +158,8 @@ const Index = () => {
       image: offsetPrintingImage,
       link: "/category?category=Offset%20Printing",
       accent: "Offset",
-      background: "linear-gradient(135deg, #E0F7FA 0%, #D1E5FF 100%)",
-      slot: "grid3-c2"
+      slot: "grid3-c2",
+      textTone: "dark"
     }
   ];
 
@@ -159,97 +172,50 @@ const Index = () => {
     const category = categoriesBySlot[slot];
     if (!category) return null;
 
+    const isDarkText = category.textTone === "dark";
+    const accentColorClass = "text-white/85";
+    const titleColorClass = "text-white";
+    const descriptionColorClass = "text-white/90";
     return (
       <Link
         key={slot}
         to={category.link}
         data-slot={slot}
-        className="category-card block cursor-pointer transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl"
-        style={{ background: category.background }}
+        className={`category-card block cursor-pointer transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl ${
+          isDarkText ? "category-card--dark" : "category-card--light"
+        }`}
       >
-        <div className="absolute inset-0 bg-white/35 mix-blend-lighten pointer-events-none" />
-        {category.image === ctStampImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(120deg, rgba(255,255,255,0.6), rgba(15,23,42,0.25)), url(${ctStampImage})`,
-              filter: "contrast(1.05) saturate(1.1)",
-            }}
-          />
-        )}
-        {category.image === trophyBackgroundImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(120deg, rgba(255,255,255,0.7), rgba(15,23,42,0.2)), url(${trophyBackgroundImage})`,
-              filter: "contrast(1.1) saturate(1.05)",
-            }}
-          />
-        )}
-        {category.image === customPrintingImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(140deg, rgba(255,255,255,0.75), rgba(99,102,241,0.25)), url(${customPrintingImage})`,
-              filter: "contrast(1.08) saturate(1.05)",
-            }}
-          />
-        )}
-        {category.image === officeStationeryImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(226,209,195,0.3)), url(${officeStationeryImage})`,
-              filter: "contrast(1.06) saturate(1.08)",
-            }}
-          />
-        )}
-        {category.image === printerSupplyImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(195,207,226,0.3)), url(${printerSupplyImage})`,
-              filter: "contrast(1.07) saturate(1.06)",
-            }}
-          />
-        )}
-        {category.image === mobileAccessoriesImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(186,83,112,0.25)), url(${mobileAccessoriesImage})`,
-              filter: "contrast(1.08) saturate(1.07)",
-            }}
-          />
-        )}
-        {category.image === offsetPrintingImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(209,225,255,0.3)), url(${offsetPrintingImage})`,
-              filter: "contrast(1.07) saturate(1.06)",
-            }}
-          />
-        )}
-        {category.image === frameStudioImage && (
-          <div
-            className="category-card__image"
-            style={{
-              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.3), rgba(213,222,231,0.1)), url(${frameStudioImage})`,
-              backgroundPosition: "top center",
-              backgroundSize: "cover",
-              filter: "contrast(1.1) saturate(1.08)",
-            }}
-          />
-        )}
+        <div
+          className="category-card__image"
+          style={{
+            backgroundImage: `url(${category.image})`,
+            backgroundPosition: category.imagePosition || "center center",
+          }}
+        />
         <div className="relative z-10 flex flex-col gap-2.5 h-full">
           <div className="space-y-0.5">
-            <span className="inline-flex items-center text-[8px] uppercase tracking-[0.32em] text-slate-700/70 relative z-10">
+          <span
+            className={`inline-flex items-center text-[8px] uppercase tracking-[0.32em] relative z-10 ${accentColorClass}`}
+          >
               {category.accent}
             </span>
-            <h3 className="text-base font-semibold leading-tight text-slate-900 relative z-10">{category.title}</h3>
+            <h3 className={`text-base font-semibold leading-tight relative z-10 ${titleColorClass}`}>
+              {category.title}
+            </h3>
           </div>
-          <p className="text-[11px] text-slate-700 flex-1 leading-snug relative z-10">{category.description}</p>
+          <p className={`text-[11px] flex-1 leading-snug relative z-10 ${descriptionColorClass}`}>
+            {category.description}
+          </p>
+          <span
+            className={`mt-auto inline-flex w-fit rounded-full px-3 py-1 text-[10px] font-semibold tracking-wide shadow-md relative z-10 ${
+              isDarkText
+                ? "bg-white/90 text-slate-900 border border-white/60"
+                : "bg-black/35 text-white border border-white/30"
+            }`}
+            aria-hidden="true"
+          >
+            View Products
+          </span>
         </div>
       </Link>
     );
@@ -429,15 +395,13 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[600px] lg:min-h-[700px] mt-0">
-        <div className="absolute inset-0">
+      <section className="relative overflow-hidden min-h-screen mt-0 pb-24">
+        <div className="absolute inset-0 h-full">
           <HeroSlider images={heroImages} variant="background" className="h-full" />
-          <div className="absolute inset-y-0 left-0 w-full sm:w-2/3 lg:w-1/2 bg-black/40 pointer-events-none" />
-          <div className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-black/40 via-black/10 to-transparent pointer-events-none" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 py-16 lg:py-20">
-          <div className="flex items-center min-h-[500px]">
+        <div className="relative z-10 container mx-auto px-4 py-16 lg:py-20 min-h-screen flex items-center">
+          <div className="flex items-center w-full">
             <div className="w-full max-w-2xl lg:max-w-xl space-y-6 text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.45)]">
               <p className="text-sm font-semibold uppercase tracking-wide text-white/80">
                 Welcome to PVK Enterprises
@@ -450,19 +414,6 @@ const Index = () => {
                 We design elegant, traditional and modern trophies made from a selection of metals that clients can take their pick from.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
-                <Button 
-                  size="lg" 
-                  className="w-full sm:w-auto text-white hover:opacity-90"
-                  style={{ backgroundColor: '#111827' }}
-                  onClick={() => {
-                    const element = document.getElementById('shop-by-category');
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }}
-                >
-                  Shop by Category
-                </Button>
                 <Link to="/category" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
@@ -470,6 +421,15 @@ const Index = () => {
                     className="w-full sm:w-auto hover:bg-[#111827] hover:border-[#111827] hover:text-white transition-colors"
                   >
                     Get Products
+                  </Button>
+                </Link>
+                <Link to="/contact" className="w-full sm:w-auto">
+                  <Button 
+                    size="lg" 
+                    className="w-full sm:w-auto text-white hover:opacity-90"
+                    style={{ backgroundColor: '#111827' }}
+                  >
+                    Contact
                   </Button>
                 </Link>
               </div>
