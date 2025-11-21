@@ -464,7 +464,11 @@ const Index = () => {
                   Shop by Category
                 </Button>
                 <Link to="/category" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="w-full sm:w-auto hover:bg-[#111827] hover:border-[#111827] hover:text-white transition-colors"
+                  >
                     Get Products
                   </Button>
                 </Link>
