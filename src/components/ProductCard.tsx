@@ -45,10 +45,10 @@ const ProductCard = ({ id, name, price, image, discount }: ProductCardProps) => 
 
   const buttonStyles = isInCart
     ? "border border-primary/70 text-primary bg-primary/5 hover:bg-primary/10"
-    : "bg-accent text-accent-foreground hover:bg-accent/90";
+    : "text-white hover:opacity-90";
 
   return (
-    <div className="group bg-card rounded-lg overflow-hidden border hover:shadow-lg transition-all duration-300">
+    <div className="group bg-card rounded-lg overflow-hidden border shadow-sm transition-transform duration-300 ease-out will-change-transform hover:scale-[1.03] hover:shadow-xl">
       <div className="relative aspect-square overflow-hidden bg-muted">
         {discount && (
           <div className="absolute top-2 right-2 bg-accent text-accent-foreground text-xs font-bold px-2 py-1 rounded-full z-10">
@@ -77,6 +77,7 @@ const ProductCard = ({ id, name, price, image, discount }: ProductCardProps) => 
           <Button
             size="sm"
             className={`${buttonStyles} font-semibold shadow-sm transition-colors duration-200 min-w-[140px] justify-center gap-1 whitespace-nowrap`}
+            style={!isInCart ? { backgroundColor: '#111827' } : undefined}
             onClick={handleButtonClick}
           >
             {isInCart ? (

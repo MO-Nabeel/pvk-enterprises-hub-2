@@ -8,7 +8,10 @@ import stampImage from "@/assets/rubber-stamps.jpg";
 import printerImage from "@/assets/printer-equipment.jpg";
 import mobileImage from "@/assets/mobile-accessories.jpg";
 import saleBg from "@/assets/sale-banner-bg.jpg";
-import { useEffect, useMemo, useState } from "react";
+import customPrintingImage from "@/assets/ct-customprinting.png";
+import offsetPrintingImage from "@/assets/ct-offsetprinting.jpg";
+import frameStudioImage from "@/assets/ct-framestudio1.jpg";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const Category = () => {
@@ -19,14 +22,14 @@ const Category = () => {
       price: 2500,
       image: trophyImage,
       discount: 10,
-      category: "Trophy & Awards"
+      category: "Trophies & Awards"
     },
     {
       id: "thermal-paper-roll-80",
       name: "THERMAL PAPER ROLL 80mm x 50m",
       price: 450,
       image: printerImage,
-      category: "Printers & Accessories"
+      category: "Printer Supplies"
     },
     {
       id: "colop-printer-38-dater",
@@ -41,14 +44,14 @@ const Category = () => {
       name: "Premium Office Notebook A4 Size",
       price: 350,
       image: officeImage,
-      category: "Office & Stationery"
+      category: "Office Stationery"
     },
     {
       id: "sorakshi-photo-frame",
       name: "Sorakshi Quartz Photo Frame With Clock",
       price: 2800,
       image: trophyImage,
-      category: "Trophy & Awards"
+      category: "Trophies & Awards"
     },
     {
       id: "smartphone-case-bundle",
@@ -63,14 +66,14 @@ const Category = () => {
       name: "JMD Gold Lamination Pouch 125 Micron",
       price: 890,
       image: officeImage,
-      category: "Office & Stationery"
+      category: "Office Stationery"
     },
     {
       id: "tnpl-copier-a4",
       name: "TNPL COPIER PAPEL GSM A4 Size 500 Sheets",
       price: 420,
       image: printerImage,
-      category: "Printers & Accessories"
+      category: "Printer Supplies"
     },
     {
       id: "crystal-trophy-wood-base",
@@ -78,7 +81,7 @@ const Category = () => {
       price: 3500,
       image: trophyImage,
       discount: 5,
-      category: "Trophy & Awards"
+      category: "Trophies & Awards"
     },
     {
       id: "professional-rubber-stamp-set",
@@ -100,28 +103,101 @@ const Category = () => {
       name: "Executive Pen Set with Box",
       price: 950,
       image: officeImage,
-      category: "Office & Stationery"
+      category: "Office Stationery"
+    },
+    {
+      id: "custom-t-shirt-printing",
+      name: "Custom T-Shirt Printing Service",
+      price: 450,
+      image: customPrintingImage,
+      category: "Custom Printing"
+    },
+    {
+      id: "banner-printing-service",
+      name: "Banner & Flex Printing Service",
+      price: 1200,
+      image: customPrintingImage,
+      discount: 10,
+      category: "Custom Printing"
+    },
+    {
+      id: "business-card-offset",
+      name: "Business Card Offset Printing (1000 pcs)",
+      price: 1800,
+      image: offsetPrintingImage,
+      category: "Offset Printing"
+    },
+    {
+      id: "brochure-offset-printing",
+      name: "Brochure Offset Printing (500 pcs)",
+      price: 2500,
+      image: offsetPrintingImage,
+      discount: 15,
+      category: "Offset Printing"
+    },
+    {
+      id: "wooden-photo-frame",
+      name: "Premium Wooden Photo Frame Set",
+      price: 1200,
+      image: frameStudioImage,
+      category: "Frame Studio"
+    },
+    {
+      id: "display-pedestal",
+      name: "Display Pedestal for Trophies",
+      price: 2800,
+      image: frameStudioImage,
+      discount: 12,
+      category: "Frame Studio"
     }
   ];
 
   const categories = [
     "All Products",
-    "Trophy & Awards",
-    "Office & Stationery",
+    "Trophies & Awards",
+    "Office Stationery",
     "Custom Rubber Stamps",
-    "Printers & Accessories",
-    "Mobile Accessories"
+    "Printer Supplies",
+    "Mobile Accessories",
+    "Custom Printing",
+    "Offset Printing",
+    "Frame Studio"
   ];
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All Products");
+  const productsSectionRef = useRef<HTMLElement>(null);
+  const filterSectionRef = useRef<HTMLElement>(null);
 
   const urlQuery = (searchParams.get("search") || "").trim();
 
   useEffect(() => {
     setSubmittedQuery(urlQuery);
-  }, [urlQuery]);
+    // Set active category from URL if present
+    const categoryParam = searchParams.get("category");
+    if (categoryParam) {
+      const decodedCategory = decodeURIComponent(categoryParam);
+      // Check if category exists in the categories array
+      const validCategories = [
+        "All Products",
+        "Trophies & Awards",
+        "Office Stationery",
+        "Custom Rubber Stamps",
+        "Printer Supplies",
+        "Mobile Accessories",
+        "Custom Printing",
+        "Offset Printing",
+        "Frame Studio"
+      ];
+      if (validCategories.includes(decodedCategory)) {
+        setActiveCategory(decodedCategory);
+        // Note: We don't scroll here on initial load - ScrollToTop component handles
+        // scrolling to top on page navigation. Internal category filtering will
+        // handle scrolling when user clicks filter buttons.
+      }
+    }
+  }, [urlQuery, searchParams]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -166,23 +242,53 @@ const Category = () => {
         />
 
         {/* Product Filter */}
-        <section className="py-8 border-b bg-muted/30">
+        <section 
+          ref={filterSectionRef}
+          id="product-filters"
+          className="py-8 border-b bg-gradient-to-b from-muted/30 to-background scroll-mt-20"
+        >
           <div className="container mx-auto px-4">
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center max-w-6xl mx-auto">
               {categories.map((category) => {
                 const isActive = activeCategory === category;
+
+                const handleCategoryClick = () => {
+                  setActiveCategory(category);
+                  // Update URL with category parameter
+                  const newSearchParams = new URLSearchParams(searchParams);
+                  if (category === "All Products") {
+                    newSearchParams.delete("category");
+                  } else {
+                    newSearchParams.set("category", category);
+                  }
+                  setSearchParams(newSearchParams, { replace: true });
+                  
+                  // Scroll to products section
+                  setTimeout(() => {
+                    if (productsSectionRef.current) {
+                      productsSectionRef.current.scrollIntoView({ 
+                        behavior: "smooth", 
+                        block: "start" 
+                      });
+                    }
+                  }, 50);
+                };
 
                 return (
                   <button
                     key={category}
                     type="button"
-                    onClick={() => setActiveCategory(category)}
+                    onClick={handleCategoryClick}
                     aria-pressed={isActive}
-                    className={`px-6 py-2 rounded-full font-medium transition-colors border ${
-                      isActive
-                        ? "bg-primary text-primary-foreground border-primary shadow"
-                        : "bg-card text-card-foreground hover:bg-primary/10"
-                    }`}
+                    className={`
+                      px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-medium transition-all duration-300
+                      text-sm sm:text-base
+                      ${
+                        isActive
+                          ? "bg-[#111827] text-white border-2 border-[#111827] shadow-lg shadow-[#111827]/20 scale-105"
+                          : "bg-white text-slate-700 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md"
+                      }
+                    `}
                   >
                     {category}
                   </button>
@@ -193,42 +299,66 @@ const Category = () => {
         </section>
 
         {/* Products Grid */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
+        <section ref={productsSectionRef} id="products-grid" className="py-12 sm:py-16 bg-background scroll-mt-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {(hasActiveSearch || !isAllProducts) && (
-              <div className="max-w-4xl mx-auto text-center mb-10">
-                <p className="text-muted-foreground">
-                  Showing {isAllProducts ? "results" : `${activeCategory.toLowerCase()} products`}{" "}
-                  {hasActiveSearch && (
-                    <>
-                      for{" "}
-                      <span className="font-semibold text-foreground">
-                        "{submittedQuery || "All"}"
-                      </span>
-                    </>
-                  )}{" "}
-                  ({filteredProducts.length} item{filteredProducts.length === 1 ? "" : "s"})
-                </p>
+              <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full mb-4">
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    Showing {isAllProducts ? "results" : `${activeCategory.toLowerCase()} products`}{" "}
+                    {hasActiveSearch && (
+                      <>
+                        for{" "}
+                        <span className="font-semibold text-foreground">
+                          "{submittedQuery || "All"}"
+                        </span>
+                      </>
+                    )}{" "}
+                    <span className="font-medium text-foreground">
+                      ({filteredProducts.length} item{filteredProducts.length === 1 ? "" : "s"})
+                    </span>
+                  </p>
+                </div>
               </div>
             )}
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} {...product} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16">
-                <h3 className="text-2xl font-semibold mb-4">No products found</h3>
-                <p className="text-muted-foreground mb-6">
-                  Try adjusting your search or explore all of our product categories.
-                </p>
-                <button
-                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-                >
-                  Browse Categories
-                </button>
+              <div className="text-center py-16 sm:py-20">
+                <div className="max-w-md mx-auto">
+                  <div className="mb-6">
+                    <svg
+                      className="mx-auto h-16 w-16 sm:h-20 sm:w-20 text-muted-foreground/40"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">No products found</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
+                    Try adjusting your search or explore all of our product categories.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setActiveCategory("All Products");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-[#111827] text-white font-medium hover:bg-[#111827]/90 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    Browse All Categories
+                  </button>
+                </div>
               </div>
             )}
           </div>

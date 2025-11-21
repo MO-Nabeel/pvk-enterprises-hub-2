@@ -1,18 +1,18 @@
-import { Search, ShoppingCart, User, Menu } from "lucide-react";
+import { ShoppingCart, User, Menu, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { CART_COUNT_EVENT, CartEventDetail, getCartCount } from "@/lib/cart";
 import pvkLogo from "@/assets/pvk logo (1).png";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const applyStoredCount = () => {
@@ -54,132 +54,230 @@ const Header = () => {
     setSearchQuery(value);
   }, [location.search]);
 
-  const cartHasItems = cartCount > 0;
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && searchBarOpen) {
+        setSearchBarOpen(false);
+      }
+    };
+
+    if (searchBarOpen) {
+      window.addEventListener("keydown", handleEscape);
+      return () => window.removeEventListener("keydown", handleEscape);
+    }
+  }, [searchBarOpen]);
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const trimmed = searchQuery.trim();
     const target = trimmed ? `/category?search=${encodeURIComponent(trimmed)}` : "/category";
 
     if (location.pathname + location.search !== target) {
       navigate(target);
     } else if (location.pathname === "/category") {
-      // trigger event for same route to allow Category page to react
       window.dispatchEvent(new CustomEvent("pvk:search-submit", { detail: trimmed }));
     }
+    setSearchBarOpen(false);
   };
 
+  const cartHasItems = cartCount > 0;
+
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
+  };
+
+  const navLinks = [
+    { to: "/", label: "HOME" },
+    { to: "/about", label: "ABOUT" },
+    { to: "/category", label: "PRODUCTS" },
+    { to: "/contact", label: "CONTACT" },
+  ];
+
+  const navBaseClasses =
+    "px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200";
+  const navActiveClasses = "bg-[#111827] text-white shadow-sm";
+  const navInactiveClasses = "text-gray-600 hover:bg-[#111827] hover:text-white";
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-90 transition-opacity">
+    <header className="fixed top-0 left-0 w-full z-[999] bg-white/95 backdrop-blur">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 lg:gap-6 py-3 sm:py-4">
+          {/* Left Section: Logo */}
+          <Link 
+            to="/" 
+            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 pr-3 sm:pr-4 lg:pr-6"
+          >
             <img 
               src={pvkLogo} 
               alt="PVK Enterprises Logo" 
-              className="h-12 sm:h-14 md:h-16 lg:h-20 w-auto max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] object-contain"
+              className="h-10 sm:h-12 md:h-14 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[260px] object-contain"
             />
           </Link>
 
-          <div className="hidden md:flex flex-1 max-w-xl mx-8">
-            <form className="relative w-full" onSubmit={handleSearchSubmit}>
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search for products..."
-                className="w-full pl-10 pr-4"
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-              />
-            </form>
-          </div>
-
-          <nav className="hidden lg:flex items-center space-x-6">
-            <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
-              HOME
-            </Link>
-            <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
-              ABOUT US
-            </Link>
-            <Link to="/category" className="text-sm font-medium hover:text-primary transition-colors">
-              PRODUCTS
-            </Link>
-            <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors">
-              CONTACT
-            </Link>
+          {/* Center Section: Main Navigation Links (Desktop) */}
+          <nav className="hidden lg:flex items-center flex-1 justify-center">
+            <div className="flex items-center border-2 border-gray-300 rounded-full px-5 py-2.5 gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`${navBaseClasses} ${
+                    isActive(link.to) ? navActiveClasses : navInactiveClasses
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </nav>
 
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <Button
-                asChild
-                variant="ghost"
-                size="icon"
-                className="bg-[#FF0000] text-white hover:bg-[#E00000]"
-                aria-label={`View cart (${cartCount} item${cartCount === 1 ? "" : "s"})`}
-              >
-                <Link to="/cart">
-                  <ShoppingCart className="h-5 w-5 text-white" />
-                </Link>
-              </Button>
-              {cartHasItems && (
+          {/* Right Section: Contact Button, Search Icon & Utility Icons */}
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0">
+            {/* Contact Button - Desktop */}
+            <Button
+              asChild
+              className="hidden md:flex bg-gray-900 text-white hover:bg-gray-800 font-semibold px-5 sm:px-6 py-2.5 rounded-full transition-all duration-200"
+            >
+              <Link to="/contact">Contact</Link>
+            </Button>
+
+            {/* Search Icon */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-700 hover:bg-gray-100 rounded-full p-2.5"
+              onClick={() => setSearchBarOpen(!searchBarOpen)}
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+
+            {/* Shopping Cart Icon - Only visible when cart has items */}
+            {cartHasItems && (
+              <div className="relative">
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-700 hover:bg-gray-100 rounded-full p-2.5"
+                  aria-label={`View cart (${cartCount} item${cartCount === 1 ? "" : "s"})`}
+                >
+                  <Link to="/cart">
+                    <ShoppingCart className="h-5 w-5" />
+                  </Link>
+                </Button>
                 <span
-                  className="pointer-events-none absolute -top-1.5 -right-1.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#FF0000] px-1 text-xs font-semibold leading-none text-white shadow-sm"
+                  className="pointer-events-none absolute -top-1.5 -right-1.5 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full text-white px-1.5 text-xs font-bold leading-none shadow-lg"
+                  style={{ backgroundColor: '#111827' }}
                   aria-live="polite"
                 >
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* User Profile Icon */}
             <Button
               variant="ghost"
               size="icon"
-              className="hidden md:flex bg-[#FF0000] text-white hover:bg-[#E00000]"
+              className="hidden sm:flex text-gray-700 hover:bg-gray-100 rounded-full p-2.5"
               aria-label="Profile"
             >
-              <User className="h-5 w-5 text-white" />
+              <User className="h-5 w-5" />
             </Button>
+
+            {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden text-gray-700 hover:bg-gray-100 rounded-full p-2.5"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
             >
-              <Menu className="h-5 w-5" />
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
           </div>
         </div>
 
+        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden py-4 space-y-4 border-t">
-            <form className="relative md:hidden" onSubmit={handleSearchSubmit}>
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search for products..."
-                className="w-full pl-10 pr-4"
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-              />
-            </form>
-            <nav className="flex flex-col space-y-3">
-              <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
-                HOME
-              </Link>
-              <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
-                ABOUT US
-              </Link>
-              <Link to="/category" className="text-sm font-medium hover:text-primary transition-colors">
-                PRODUCTS
-              </Link>
-              <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors">
-                CONTACT
-              </Link>
+          <div className="lg:hidden py-4 space-y-3 border-t border-gray-200">
+            <nav className="flex flex-col items-center">
+              <div className="flex flex-col w-full max-w-sm border-2 border-gray-300 rounded-full px-1 py-1">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`${navBaseClasses} text-center ${
+                      isActive(link.to) ? navActiveClasses : navInactiveClasses
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </nav>
+            {/* Mobile Contact Button */}
+            <Button
+              asChild
+              className="w-full bg-gray-900 text-white hover:bg-gray-800 font-semibold px-6 py-2.5 rounded-full mt-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Link to="/contact">Contact</Link>
+            </Button>
+            {/* Mobile User Profile */}
+            <div className="flex items-center justify-center pt-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-700 hover:bg-gray-100 rounded-full"
+                aria-label="Profile"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <User className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Search Bar */}
+      {searchBarOpen && (
+        <div className="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-[1000]">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <form onSubmit={handleSearchSubmit} className="flex items-center gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <Input
+                  type="search"
+                  placeholder="Search for Trophies, Awards, or Services..."
+                  className="w-full pl-10 pr-12 h-12 text-base"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                />
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="flex-shrink-0"
+                onClick={() => setSearchBarOpen(false)}
+                aria-label="Close search"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </form>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

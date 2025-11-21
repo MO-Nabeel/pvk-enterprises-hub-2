@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 210 100% 40%;
+    --primary: 222 47% 11%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96%;
@@ -34,7 +34,7 @@ All colors MUST be HSL.
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 210 100% 40%;
+    --ring: 222 47% 11%;
 
     --radius: 0.75rem;
     
@@ -42,11 +42,11 @@ All colors MUST be HSL.
     --brand-red: 0 84% 55%;
     --brand-yellow: 45 100% 51%;
     --brand-green: 142 71% 45%;
-    --brand-blue: 210 100% 50%;
+    --brand-blue: 222 47% 11%;
     --brand-dark: 222 47% 11%;
     
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210 100% 40%) 0%, hsl(210 100% 50%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(222 47% 20%) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(0 0% 95%) 0%, hsl(0 0% 98%) 100%);
     
     /* Shadows */
@@ -86,7 +86,7 @@ All colors MUST be HSL.
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 50%;
+    --primary: 222 47% 11%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217 33% 18%;
@@ -103,7 +103,7 @@ All colors MUST be HSL.
 
     --border: 217 33% 18%;
     --input: 217 33% 18%;
-    --ring: 213 27% 84%;
+    --ring: 222 47% 11%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -120,7 +120,128 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: auto;
+  }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.category-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 0.75rem;
+  height: 165px;
+  min-height: 165px;
+  display: flex;
+  flex-direction: column;
+  color: #0f172a;
+  box-shadow: 0 15px 25px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px rgba(15, 23, 42, 0.12);
+}
+
+.category-card__image,
+.category-card__image--accent {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.category-mosaic {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.category-mosaic__column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.column-left-grid,
+.column-center-grid,
+.column-right-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.column-left-grid {
+  grid-template-columns: 1fr;
+}
+
+.column-center-grid {
+  grid-template-columns: 1fr;
+}
+
+.column-right-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .category-mosaic {
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .column-left-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "grid1-c1 grid1-c1"
+      "grid1-c2 grid1-c3";
+  }
+
+  .column-left-grid .category-card[data-slot="grid1-c1"] {
+    grid-area: grid1-c1;
+  }
+
+  .column-left-grid .category-card[data-slot="grid1-c2"] {
+    grid-area: grid1-c2;
+  }
+
+  .column-left-grid .category-card[data-slot="grid1-c3"] {
+    grid-area: grid1-c3;
+  }
+
+  .column-center-grid {
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .column-center-grid .category-card[data-slot="grid2-c1"],
+  .column-center-grid .category-card[data-slot="grid2-c2"] {
+    height: 165px;
+  }
+
+  .column-right-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "grid3-c1 grid3-c2"
+      "grid3-c3 grid3-c3";
+  }
+
+  .column-right-grid .category-card[data-slot="grid3-c1"] {
+    grid-area: grid3-c1;
+  }
+
+  .column-right-grid .category-card[data-slot="grid3-c2"] {
+    grid-area: grid3-c2;
+  }
+
+  .column-right-grid .category-card[data-slot="grid3-c3"] {
+    grid-area: grid3-c3;
   }
 }

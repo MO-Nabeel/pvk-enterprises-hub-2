@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-left">
           <div className="space-y-4">
-            <Link to="/" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 md:py-4 shadow-lg ring-1 ring-white/20 hover:bg-white/15 transition-colors">
+            <Link to="/" className="inline-flex items-center justify-center gap-2">
               <img 
                 src={pvkLogo} 
                 alt="PVK Enterprises Logo" 

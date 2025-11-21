@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import CategoryCard from "@/components/CategoryCard";
 import FeatureCard from "@/components/FeatureCard";
 import ProductCard from "@/components/ProductCard";
 import HeroSlider from "@/components/HeroSlider";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +19,7 @@ import {
 import { Link } from "react-router-dom";
 import { Truck, ShieldCheck, Headphones, CreditCard, Star } from "lucide-react";
 import trophyImage from "@/assets/trophy-product.jpg";
+import trophyBackgroundImage from "@/assets/ct-trophy.png";
 import officeImage from "@/assets/office-supplies.jpg";
 import stampImage from "@/assets/rubber-stamps.jpg";
 import printerImage from "@/assets/printer-equipment.jpg";
@@ -27,6 +28,13 @@ import saleBg from "@/assets/sale-banner-bg.jpg";
 import panCardImage from "@/assets/pan-card.png";
 import jioFiberImage from "@/assets/jio-fiber.png";
 import phonePeImage from "@/assets/phonepe-box.png";
+import ctStampImage from "@/assets/ct-stamp.jpg";
+import customPrintingImage from "@/assets/ct-customprinting.png";
+import officeStationeryImage from "@/assets/ct-officestatinarry.jpg";
+import printerSupplyImage from "@/assets/ct-printersupply.png";
+import mobileAccessoriesImage from "@/assets/ct-mobileaccessories.jpg";
+import offsetPrintingImage from "@/assets/ct-offsetprinting.jpg";
+import frameStudioImage from "@/assets/ct-framestudio1.jpg";
 import {
   Accordion,
   AccordionContent,
@@ -69,60 +77,183 @@ const Index = () => {
 
   const categories = [
     {
-      title: "Trophy AWARDS",
-      subtitle: "Best",
-      image: trophyImage,
-      buttonText: "Browse",
-      buttonLink: "/category",
-      bgColor: "bg-brand-dark",
-      textColor: "text-primary-foreground"
+      title: "Trophies & Awards",
+      description: "Hand-polished accolades and signature centerpieces.",
+      image: trophyBackgroundImage,
+      link: "/category?category=Trophies%20%26%20Awards",
+      accent: "Awards",
+      background: "linear-gradient(135deg, #E0EAFC 0%, #CFDEF3 100%)",
+      slot: "grid1-c1"
     },
     {
-      title: "Office STATIONERY",
-      subtitle: "Premium",
-      image: officeImage,
-      buttonText: "Shop",
-      buttonLink: "/category",
-      bgColor: "bg-brand-yellow",
-      textColor: "text-brand-dark"
+      title: "Office Stationery",
+      description: "Premium notebooks, planners, and office essentials.",
+      image: officeStationeryImage,
+      link: "/category?category=Office%20Stationery",
+      accent: "Workspace",
+      background: "linear-gradient(135deg, #FDFCFB 0%, #E2D1C3 100%)",
+      slot: "grid2-c1"
     },
     {
-      title: "Custom STAMPS",
-      subtitle: "Quality",
-      image: stampImage,
-      buttonText: "Browse",
-      buttonLink: "/category",
-      bgColor: "bg-accent",
-      textColor: "text-accent-foreground"
+      title: "Custom Rubber Stamps",
+      description: "Precisely crafted business and official stamps.",
+      link: "/category?category=Custom%20Rubber%20Stamps",
+      accent: "Branding",
+      background: "linear-gradient(135deg, rgba(243,231,233,0.92) 0%, rgba(227,238,255,0.92) 100%)",
+      image: ctStampImage,
+      slot: "grid1-c2"
     },
     {
-      title: "Printer SUPPLIES",
-      subtitle: "Latest",
-      image: printerImage,
-      buttonText: "Browse",
-      buttonLink: "/category",
-      bgColor: "bg-muted",
-      textColor: "text-brand-dark"
+      title: "Printer Supplies",
+      description: "Everything you need for seamless printing operations.",
+      image: printerSupplyImage,
+      link: "/category?category=Printer%20Supplies",
+      accent: "Productivity",
+      background: "linear-gradient(135deg, #F5F7FA 0%, #C3CFE2 100%)",
+      slot: "grid2-c2"
     },
     {
-      title: "Mobile ACCESSORIES",
-      subtitle: "Trending",
-      image: mobileImage,
-      buttonText: "Browse",
-      buttonLink: "/category",
-      bgColor: "bg-brand-green",
-      textColor: "text-primary-foreground"
+      title: "Mobile Accessories",
+      description: "Modern add-ons that elevate every mobile experience.",
+      image: mobileAccessoriesImage,
+      link: "/category?category=Mobile%20Accessories",
+      accent: "Tech",
+      background: "linear-gradient(135deg, #F4E2D8 0%, #BA5370 100%)",
+      slot: "grid3-c1"
     },
     {
-      title: "Studio MATERIALS",
-      subtitle: "Professional",
-      image: trophyImage,
-      buttonText: "Browse",
-      buttonLink: "/category",
-      bgColor: "bg-brand-blue",
-      textColor: "text-primary-foreground"
+      title: "Frame Studio",
+      description: "Props, pedestals, and showcases for product displays.",
+      image: frameStudioImage,
+      link: "/category?category=Frame%20Studio",
+      accent: "Display",
+      background: "linear-gradient(135deg, #D5DEE7 0%, #F3E7E9 100%)",
+      slot: "grid3-c3"
+    },
+    {
+      title: "Custom Printing",
+      description: "On-demand creative prints for events and promotions.",
+      image: customPrintingImage,
+      link: "/category?category=Custom%20Printing",
+      accent: "Custom",
+      background: "linear-gradient(135deg, #FFE4F3 0%, #E4E1FF 100%)",
+      slot: "grid1-c3"
+    },
+    {
+      title: "Offset Printing",
+      description: "High-volume offset runs with precise color fidelity.",
+      image: offsetPrintingImage,
+      link: "/category?category=Offset%20Printing",
+      accent: "Offset",
+      background: "linear-gradient(135deg, #E0F7FA 0%, #D1E5FF 100%)",
+      slot: "grid3-c2"
     }
   ];
+
+  const categoriesBySlot = categories.reduce<Record<string, typeof categories[number]>>((acc, category) => {
+    acc[category.slot] = category;
+    return acc;
+  }, {});
+
+  const renderCategoryCard = (slot: string) => {
+    const category = categoriesBySlot[slot];
+    if (!category) return null;
+
+    return (
+      <Link
+        key={slot}
+        to={category.link}
+        data-slot={slot}
+        className="category-card block cursor-pointer transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl"
+        style={{ background: category.background }}
+      >
+        <div className="absolute inset-0 bg-white/35 mix-blend-lighten pointer-events-none" />
+        {category.image === ctStampImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(120deg, rgba(255,255,255,0.6), rgba(15,23,42,0.25)), url(${ctStampImage})`,
+              filter: "contrast(1.05) saturate(1.1)",
+            }}
+          />
+        )}
+        {category.image === trophyBackgroundImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(120deg, rgba(255,255,255,0.7), rgba(15,23,42,0.2)), url(${trophyBackgroundImage})`,
+              filter: "contrast(1.1) saturate(1.05)",
+            }}
+          />
+        )}
+        {category.image === customPrintingImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(140deg, rgba(255,255,255,0.75), rgba(99,102,241,0.25)), url(${customPrintingImage})`,
+              filter: "contrast(1.08) saturate(1.05)",
+            }}
+          />
+        )}
+        {category.image === officeStationeryImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(226,209,195,0.3)), url(${officeStationeryImage})`,
+              filter: "contrast(1.06) saturate(1.08)",
+            }}
+          />
+        )}
+        {category.image === printerSupplyImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(195,207,226,0.3)), url(${printerSupplyImage})`,
+              filter: "contrast(1.07) saturate(1.06)",
+            }}
+          />
+        )}
+        {category.image === mobileAccessoriesImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(186,83,112,0.25)), url(${mobileAccessoriesImage})`,
+              filter: "contrast(1.08) saturate(1.07)",
+            }}
+          />
+        )}
+        {category.image === offsetPrintingImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.7), rgba(209,225,255,0.3)), url(${offsetPrintingImage})`,
+              filter: "contrast(1.07) saturate(1.06)",
+            }}
+          />
+        )}
+        {category.image === frameStudioImage && (
+          <div
+            className="category-card__image"
+            style={{
+              backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.3), rgba(213,222,231,0.1)), url(${frameStudioImage})`,
+              backgroundPosition: "top center",
+              backgroundSize: "cover",
+              filter: "contrast(1.1) saturate(1.08)",
+            }}
+          />
+        )}
+        <div className="relative z-10 flex flex-col gap-2.5 h-full">
+          <div className="space-y-0.5">
+            <span className="inline-flex items-center text-[8px] uppercase tracking-[0.32em] text-slate-700/70 relative z-10">
+              {category.accent}
+            </span>
+            <h3 className="text-base font-semibold leading-tight text-slate-900 relative z-10">{category.title}</h3>
+          </div>
+          <p className="text-[11px] text-slate-700 flex-1 leading-snug relative z-10">{category.description}</p>
+        </div>
+      </Link>
+    );
+  };
 
   const products = [
     {
@@ -182,37 +313,49 @@ const Index = () => {
       name: "Deepak Rao",
       rating: 5,
       text: "Have been doing business with them for a while now. Never been disappointed.",
-      date: "2 months ago"
+      date: "2 months ago",
+      title: "Business Owner",
+      company: "Rao Enterprises"
     },
     {
       name: "Venkat Shetty",
       rating: 5,
       text: "We bought trophies from here for my office events. Exceptional quality.",
-      date: "3 months ago"
+      date: "3 months ago",
+      title: "HR Manager",
+      company: "TechCorp Solutions"
     },
     {
       name: "Priya Kumar",
       rating: 5,
       text: "Excellent service and beautiful trophies. The team was very helpful in customizing our awards.",
-      date: "1 month ago"
+      date: "1 month ago",
+      title: "Event Coordinator",
+      company: "Kumar Events"
     },
     {
       name: "Rajesh Nair",
       rating: 5,
       text: "Best trophy shop in Malappuram. Quality products at reasonable prices. Highly recommended!",
-      date: "4 months ago"
+      date: "4 months ago",
+      title: "Founder",
+      company: "Nair Sports Academy"
     },
     {
       name: "Anjali Menon",
       rating: 5,
       text: "Professional service and stunning designs. They delivered exactly what we needed for our college event.",
-      date: "2 months ago"
+      date: "2 months ago",
+      title: "Principal",
+      company: "St. Mary's College"
     },
     {
       name: "Mohammed Ali",
       rating: 5,
       text: "Great experience! The staff is knowledgeable and helped us choose the perfect awards for our sports meet.",
-      date: "1 month ago"
+      date: "1 month ago",
+      title: "Sports Director",
+      company: "City Sports Club"
     }
   ];
 
@@ -286,7 +429,7 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[600px] lg:min-h-[700px]">
+      <section className="relative overflow-hidden min-h-[600px] lg:min-h-[700px] mt-0">
         <div className="absolute inset-0">
           <HeroSlider images={heroImages} variant="background" className="h-full" />
           <div className="absolute inset-y-0 left-0 w-full sm:w-2/3 lg:w-1/2 bg-black/40 pointer-events-none" />
@@ -309,7 +452,8 @@ const Index = () => {
               <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
                 <Button 
                   size="lg" 
-                  className="bg-accent hover:bg-accent/90 w-full sm:w-auto"
+                  className="w-full sm:w-auto text-white hover:opacity-90"
+                  style={{ backgroundColor: '#111827' }}
                   onClick={() => {
                     const element = document.getElementById('shop-by-category');
                     if (element) {
@@ -332,14 +476,34 @@ const Index = () => {
 
       {/* Categories Grid */}
       <section id="shop-by-category" className="py-16 bg-background scroll-mt-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Shop by Category
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category, index) => (
-              <CategoryCard key={index} {...category} />
-            ))}
+        <div className="container mx-auto px-4" style={{ paddingLeft: "70px", paddingRight: "70px" }}>
+          <div className="max-w-3xl mx-auto text-center mb-12 space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold">Shop by Category</h2>
+            <p className="text-lg text-muted-foreground">
+              Curated collections to help you shop faster—crafted for events, offices, studios, and on-the-go creators.
+            </p>
+          </div>
+          <div className="category-mosaic">
+            <div className="category-mosaic__column column-left">
+              <div className="column-left-grid">
+                {renderCategoryCard("grid1-c1")}
+                {renderCategoryCard("grid1-c2")}
+                {renderCategoryCard("grid1-c3")}
+              </div>
+            </div>
+            <div className="category-mosaic__column column-center">
+              <div className="column-center-grid">
+                {renderCategoryCard("grid2-c1")}
+                {renderCategoryCard("grid2-c2")}
+              </div>
+            </div>
+            <div className="category-mosaic__column column-right">
+              <div className="column-right-grid">
+                {renderCategoryCard("grid3-c1")}
+                {renderCategoryCard("grid3-c2")}
+                {renderCategoryCard("grid3-c3")}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -408,7 +572,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-2">Best Seller Products</h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-[1.125rem]">
               There are many variations of products available
             </p>
           </div>
@@ -444,7 +608,7 @@ const Index = () => {
                 <p className="text-muted-foreground mb-6">{service.description}</p>
                 <Button
                   size="lg"
-                  className="w-full bg-primary hover:bg-primary/90"
+                  className="w-full bg-primary text-primary-foreground border border-primary hover:bg-transparent hover:text-primary transition-colors"
                   onClick={() => handleOpenInquiry(service)}
                 >
                   {service.buttonText}
@@ -538,41 +702,11 @@ const Index = () => {
       </Dialog>
 
       {/* Testimonials Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">What Our Customers Say</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Trusted by our clients - hear what they say about PVK Enterprises and our services.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-card rounded-xl p-6 border shadow-sm hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-brand-yellow fill-brand-yellow" />
-                  ))}
-                </div>
-                <p className="text-card-foreground mb-4 leading-relaxed">
-                  "{testimonial.text}"
-                </p>
-                <div className="border-t pt-4">
-                  <p className="font-semibold text-card-foreground">
-                    {testimonial.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {testimonial.date}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialCarousel
+        testimonials={testimonials}
+        title="Stories of Success"
+        subtitle="Trusted by our clients - hear what they say about PVK Enterprises and our services."
+      />
 
       {/* Our Work Portfolio Section */}
       <section className="py-16 bg-background">
