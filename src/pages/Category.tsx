@@ -7,7 +7,7 @@ import officeImage from "@/assets/office-supplies.jpg";
 import stampImage from "@/assets/rubber-stamps.jpg";
 import printerImage from "@/assets/printer-equipment.jpg";
 import mobileImage from "@/assets/mobile-accessories.jpg";
-import saleBg from "@/assets/sale-banner-bg.jpg";
+import bannerImage from "@/assets/banner.png";
 import customPrintingImage from "@/assets/ct-customprinting.png";
 import offsetPrintingImage from "@/assets/ct-offsetprinting.png";
 import frameStudioImage from "@/assets/ct-framestudio.jpg";
@@ -289,7 +289,7 @@ const Category = () => {
         <PageBanner
           title="Products"
           subtitle="Browse our extensive collection of high-quality trophies, supplies, and accessories."
-          backgroundImage={saleBg}
+          backgroundImage={bannerImage}
         />
 
         {/* Product Filter */}

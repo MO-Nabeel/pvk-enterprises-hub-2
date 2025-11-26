@@ -1,7 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PageBanner from "@/components/PageBanner";
-import trophyBanner from "@/assets/trophy-product.jpg";
+import MissionVisionGoal from "@/components/MissionVisionGoal";
+import trophyBanner from "@/assets/slider.jpg";
 import pvkShopImage from "@/assets/pvk shop.webp";
 import { Award, Users, Target, Heart, ArrowRight } from "lucide-react";
 
@@ -52,6 +53,9 @@ const About = () => {
           backgroundImage={trophyBanner}
         />
 
+        {/* Mission, Vision, Goal Section */}
+        <MissionVisionGoal />
+
         {/* Main Content */}
         <section className="py-16">
           <div className="container mx-auto px-4">
@@ -96,7 +100,7 @@ const About = () => {
                 honor every achievement with excellence.
               </p>
             </div>
-            <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2">
+            <div className="mx-auto mt-12 grid max-w-6xl gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
               {valueHighlights.map(({ title, description, tag, gradient, icon: Icon }) => (
                 <article
                   key={title}

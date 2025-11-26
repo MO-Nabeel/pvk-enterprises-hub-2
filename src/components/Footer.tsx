@@ -2,153 +2,142 @@ import { Facebook, Instagram, Youtube, MapPin, Phone, Mail } from "lucide-react"
 import { Link } from "react-router-dom";
 import pvkLogo from "@/assets/pvk logo (1).png";
 
+const quickLinks = [
+  { label: "Home", to: "/" },
+  { label: "About Us", to: "/about" },
+  { label: "Products", to: "/category" },
+  { label: "Contact", to: "/contact" },
+];
+
+const policyLinks = [
+  { label: "Terms & Conditions", to: "/terms" },
+  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Refund Policy", to: "/refund" },
+  { label: "Shipping & Exchange", to: "/shipping" },
+];
+
+const phoneNumbers = ["+91 91421 07707", "+91 90723 31707", "+91 88915 15015", "+91 90723 33707"];
+
+const socialLinks = [
+  {
+    href: "https://www.facebook.com/pvkenterprisesmry?mibextid=ZbWKwL",
+    label: "Facebook",
+    Icon: Facebook,
+  },
+  {
+    href: "https://www.instagram.com/pvkenterprises7707?igshid=YmMyMTA2M2Y%3D",
+    label: "Instagram",
+    Icon: Instagram,
+  },
+  {
+    href: "https://youtube.com",
+    label: "Youtube",
+    Icon: Youtube,
+  },
+];
+
 const Footer = () => {
   return (
-    <footer className="bg-brand-dark text-primary-foreground">
+    <footer className="mt-16 border-t border-white/10 bg-[#040d1f] text-white">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-left">
+        <div className="grid grid-cols-1 gap-10 text-sm md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <Link to="/" className="inline-flex items-center justify-center gap-2">
-              <img 
-                src={pvkLogo} 
-                alt="PVK Enterprises Logo" 
-                className="h-14 sm:h-16 md:h-20 lg:h-24 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[260px] lg:max-w-[300px] object-contain"
-              />
+            <Link to="/" className="inline-flex items-center gap-3">
+              <img src={pvkLogo} alt="PVK Enterprises Logo" className="h-16 w-auto object-contain" />
             </Link>
-            <p className="text-sm text-primary-foreground/80 leading-relaxed">
-              Leading manufacturer of trophies, awards, and custom metal artifacts, dedicated to quality craftsmanship
-              and exceptional service.
+            <p className="text-white/70 leading-relaxed">
+              PVK Enterprises crafts trophies, awards, office stationery, and bespoke gifting experiences with meticulous
+              attention to detail and dependable timelines.
             </p>
+            <div className="h-px w-full bg-white/10" />
+            <p className="text-xs uppercase tracking-[0.35em] text-white/50">Maranchery • Kerala</p>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link to="/" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  HOME
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  ABOUT US
-                </Link>
-              </li>
-              <li>
-                <Link to="/category" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  PRODUCTS
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  CONTACT
-                </Link>
-              </li>
+            <h3 className="text-lg font-semibold text-white">Quick Links</h3>
+            <ul className="mt-4 space-y-3 text-white/70">
+              {quickLinks.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="inline-flex items-center gap-2 text-sm transition hover:text-white"
+                  >
+                    <span className="h-[2px] w-4 bg-white/30" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Resources</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link to="/terms" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  Terms and Conditions
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/refund" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  Refund Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/shipping" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  Shipping &amp; Exchange
-                </Link>
-              </li>
+            <h3 className="text-lg font-semibold text-white">Resources</h3>
+            <ul className="mt-4 space-y-3 text-white/70">
+              {policyLinks.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="inline-flex items-center gap-2 text-sm transition hover:text-white"
+                  >
+                    <span className="h-[2px] w-4 bg-white/30" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact &amp; Support</h3>
-            <ul className="space-y-4 text-sm text-primary-foreground/90">
-              <li className="flex items-start gap-3">
-                <MapPin className="h-4 w-4 mt-1" />
-                <a
-                  href="https://maps.google.com/?q=PVK+TOWER,+Near+Village+Office,+Maranchery+Centre,+Marancheri,+Malappuram,+Kerala+679581"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1 underline-offset-4 hover:underline"
-                >
-                  PVK TOWER, Near Village Office, Maranchery Centre, Marancheri, Malappuram, Kerala 679581
-                </a>
-              </li>
-              <li className="flex items-start gap-3">
-                <Mail className="h-4 w-4 mt-1" />
-                <a href="mailto:pvkmaranchery707@gmail.com" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                  pvkmaranchery707@gmail.com
-                </a>
-              </li>
-              <li className="flex items-start gap-3">
-                <Phone className="h-4 w-4 mt-1" />
-                <div className="space-y-1">
-                  <div className="flex flex-wrap gap-3">
-                    <a href="tel:+919142107707" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                      +91-9142107707
-                    </a>
-                    <span className="text-primary-foreground/50">/</span>
-                    <a href="tel:+919072331707" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                      +91-9072331707
-                    </a>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <a href="tel:+918891515015" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                      +91-8891515015
-                    </a>
-                    <span className="text-primary-foreground/50">/</span>
-                    <a href="tel:+919072333707" className="inline-block transition-all duration-300 hover:scale-110 hover:translate-x-1">
-                      +91-9072333707
-                    </a>
-                  </div>
-                </div>
-              </li>
-            </ul>
+          <div className="space-y-4 text-white/80">
+            <h3 className="text-lg font-semibold text-white">Contact &amp; Support</h3>
+            <div className="flex items-start gap-3">
+              <MapPin className="mt-1 h-5 w-5 text-white/60" />
+              <a
+                href="https://maps.google.com/?q=PVK+TOWER,+Near+Village+Office,+Maranchery+Centre,+Marancheri,+Malappuram,+Kerala+679581"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm leading-relaxed hover:text-white"
+              >
+                PVK TOWER, Near Village Office, Maranchery Centre, Malappuram, Kerala 679581
+              </a>
+            </div>
+            <div className="flex items-start gap-3">
+              <Mail className="mt-1 h-5 w-5 text-white/60" />
+              <a href="mailto:pvkmaranchery707@gmail.com" className="text-sm hover:text-white">
+                pvkmaranchery707@gmail.com
+              </a>
+            </div>
+            <div className="flex items-start gap-3">
+              <Phone className="mt-1 h-5 w-5 text-white/60" />
+              <div className="grid gap-1 text-sm">
+                {phoneNumbers.map((phone) => (
+                  <a
+                    key={phone}
+                    href={`tel:${phone.replace(/[^+\d]/g, "")}`}
+                    className="hover:text-white"
+                  >
+                    {phone}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-primary-foreground/20 pt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <p className="text-sm text-primary-foreground/80">
-            © Copyrights 2025 - 2026. PVK ENTERPRISES. All Rights Reserved.
-          </p>
-          <div className="flex items-center justify-start gap-4 md:justify-end">
-            <a
-              href="https://www.facebook.com/pvkenterprisesmry?mibextid=ZbWKwL"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block transition-all duration-300 hover:scale-125"
-            >
-              <Facebook className="h-5 w-5" />
-            </a>
-            <a
-              href="https://www.instagram.com/pvkenterprises7707?igshid=YmMyMTA2M2Y%3D"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block transition-all duration-300 hover:scale-125"
-            >
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a
-              href="https://youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block transition-all duration-300 hover:scale-125"
-            >
-              <Youtube className="h-5 w-5" />
-            </a>
+        <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
+          <p>© {new Date().getFullYear()} PVK Enterprises. All Rights Reserved.</p>
+          <div className="flex items-center gap-4">
+            {socialLinks.map(({ href, label, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-white hover:text-white"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
           </div>
         </div>
       </div>

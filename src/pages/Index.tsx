@@ -17,16 +17,21 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
-import { Truck, ShieldCheck, Headphones, CreditCard, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Truck, ShieldCheck, Headphones, CreditCard, Star, ArrowRight } from "lucide-react";
+import type { CSSProperties } from "react";
 import trophyImage from "@/assets/trophy-product.jpg";
-import heroShowcaseImage from "@/assets/slide 1.jpg";
-import sliderImage from "@/assets/slider.jpeg";
+import heroSliderImage from "@/assets/slider.jpg";
+import headsetImage from "@/assets/headset.png";
+import visitingCardImage from "@/assets/visisting card.png";
+import tshirtImage from "@/assets/tshirt.png";
 import trophyBackgroundImage from "@/assets/ct-trophy.png";
 import officeImage from "@/assets/office-supplies.jpg";
 import stampImage from "@/assets/rubber-stamps.jpg";
 import printerImage from "@/assets/printer-equipment.jpg";
 import mobileImage from "@/assets/mobile-accessories.jpg";
-import saleBg from "@/assets/sale-banner-bg.jpg";
+import customMugImage from "@/assets/custom mug.png";
+import websiteSlide3Image from "@/assets/website slide 3 copy.jpg";
 import panCardImage from "@/assets/pan-card.png";
 import jioFiberImage from "@/assets/jio-fiber.png";
 import phonePeImage from "@/assets/phonepe-box.png";
@@ -56,30 +61,52 @@ const Index = () => {
   // Hero slider images - showcasing all product categories
   const heroImages = [
     {
-      src: sliderImage,
-      alt: "PVK Enterprises - Premium Products & Services"
+      src: headsetImage,
+      alt: "Premium accessories and headsets showcase",
+      objectPosition: "center"
     },
     {
-      src: heroShowcaseImage,
-      alt: "PVK Enterprises premium showcase"
+      src: customMugImage,
+      alt: "Personalized mugs and gifting options",
+      objectPosition: "center"
     },
     {
-      src: mobileImage,
-      alt: "Mobile Accessories Collection"
+      src: heroSliderImage,
+      alt: "Signature PVK hero showcase",
+      objectPosition: "center"
     },
     {
-      src: stampImage,
-      alt: "Custom Stamps & Printing Services"
+      src: visitingCardImage,
+      alt: "Premium visiting card printing showcase",
+      objectPosition: "center"
     },
     {
-      src: printerImage,
-      alt: "Printer Supplies & Equipment"
+      src: tshirtImage,
+      alt: "Custom apparel and T-shirt printing selection",
+      objectPosition: "center"
     },
     {
       src: officeImage,
-      alt: "Office Stationery & Supplies"
+      alt: "Office Stationery & Supplies",
+      objectPosition: "center"
     }
   ];
+
+  const heroMessaging = {
+    eyebrow: "Welcome to PVK Enterprises",
+    heading: "Trophies & Awards",
+    highlight: "Excellence",
+    description:
+      "We design elegant, traditional and modern trophies made from a selection of metals that clients can take their pick from.",
+    primaryCta: {
+      label: "Get Products",
+      href: "/category"
+    },
+    secondaryCta: {
+      label: "Contact",
+      href: "/contact"
+    }
+  };
 
   type Category = {
     title: string;
@@ -172,7 +199,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
       link: "/category?category=wedding-card",
       accent: "Celebrations",
-      slot: "grid4-c1",
+      slot: "grid3-c4",
       textTone: "light"
     },
     {
@@ -181,7 +208,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
       link: "/category?category=customized-notebook",
       accent: "Corporate",
-      slot: "grid4-c2",
+      slot: "grid4-c1",
       textTone: "dark"
     },
     {
@@ -190,7 +217,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=900&q=80",
       link: "/category?category=student-id",
       accent: "Campus",
-      slot: "grid4-c3",
+      slot: "grid4-c2",
       textTone: "light"
     },
     {
@@ -199,7 +226,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1522543558187-768b6df7c25c?auto=format&fit=crop&w=900&q=80",
       link: "/category?category=visiting-card",
       accent: "Branding",
-      slot: "grid4-c4",
+      slot: "grid4-c3",
       textTone: "dark"
     },
     {
@@ -208,7 +235,7 @@ const Index = () => {
       image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
       link: "/category?category=notice-printing",
       accent: "Display",
-      slot: "grid4-c5",
+      slot: "grid4-c4",
       textTone: "light"
     }
   ];
@@ -218,46 +245,220 @@ const Index = () => {
     return acc;
   }, {});
 
+  const accentPalette: Record<
+    string,
+    { primary: string; secondary: string; ambient: string; ring: string }
+  > = {
+    awards: {
+      primary: "#a78bfa",
+      secondary: "#f472b6",
+      ambient: "rgba(167, 139, 250, 0.22)",
+      ring: "rgba(167, 139, 250, 0.45)"
+    },
+    workspace: {
+      primary: "#34d399",
+      secondary: "#2dd4bf",
+      ambient: "rgba(45, 212, 191, 0.18)",
+      ring: "rgba(45, 212, 191, 0.45)"
+    },
+    branding: {
+      primary: "#fb7185",
+      secondary: "#fbbf24",
+      ambient: "rgba(251, 113, 133, 0.2)",
+      ring: "rgba(251, 113, 133, 0.45)"
+    },
+    productivity: {
+      primary: "#60a5fa",
+      secondary: "#a5b4fc",
+      ambient: "rgba(96, 165, 250, 0.2)",
+      ring: "rgba(96, 165, 250, 0.45)"
+    },
+    tech: {
+      primary: "#38bdf8",
+      secondary: "#22d3ee",
+      ambient: "rgba(56, 189, 248, 0.2)",
+      ring: "rgba(56, 189, 248, 0.45)"
+    },
+    custom: {
+      primary: "#f472b6",
+      secondary: "#f87171",
+      ambient: "rgba(244, 114, 182, 0.22)",
+      ring: "rgba(244, 114, 182, 0.45)"
+    },
+    offset: {
+      primary: "#facc15",
+      secondary: "#fb923c",
+      ambient: "rgba(250, 204, 21, 0.2)",
+      ring: "rgba(250, 204, 21, 0.45)"
+    },
+    display: {
+      primary: "#c084fc",
+      secondary: "#fda4af",
+      ambient: "rgba(192, 132, 252, 0.2)",
+      ring: "rgba(192, 132, 252, 0.45)"
+    },
+    celebrations: {
+      primary: "#fb7185",
+      secondary: "#f472b6",
+      ambient: "rgba(244, 114, 182, 0.2)",
+      ring: "rgba(244, 114, 182, 0.45)"
+    },
+    corporate: {
+      primary: "#818cf8",
+      secondary: "#38bdf8",
+      ambient: "rgba(129, 140, 248, 0.2)",
+      ring: "rgba(129, 140, 248, 0.45)"
+    },
+    campus: {
+      primary: "#4ade80",
+      secondary: "#34d399",
+      ambient: "rgba(74, 222, 128, 0.2)",
+      ring: "rgba(74, 222, 128, 0.45)"
+    },
+    default: {
+      primary: "#93c5fd",
+      secondary: "#c4b5fd",
+      ambient: "rgba(147, 197, 253, 0.18)",
+      ring: "rgba(147, 197, 253, 0.4)"
+    }
+  };
+
+  const getAccentPalette = (accent: string) => {
+    const key = accent.toLowerCase();
+    return accentPalette[key] ?? accentPalette.default;
+  };
+
   const renderCategoryCard = (slot: string) => {
     const category = categoriesBySlot[slot];
     if (!category) return null;
 
-    const isDarkText = category.textTone === "dark";
-    const accentColorClass = "text-white/85";
-    const titleColorClass = "text-white";
-    const descriptionColorClass = "text-white/90";
+    const palette = getAccentPalette(category.accent);
+    const cardStyle: CSSProperties = {
+      "--card-primary": palette.primary,
+      "--card-secondary": palette.secondary,
+      "--card-ambient": palette.ambient,
+      "--card-ring": palette.ring,
+      "--card-text": category.textTone === "light" ? "#f8fafc" : "#0f172a"
+    } as CSSProperties;
+
     return (
       <Link
         key={slot}
         to={category.link}
         data-slot={slot}
-        className={`category-card block cursor-pointer transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl ${
-          isDarkText ? "category-card--dark" : "category-card--light"
-        }`}
+        aria-label={`${category.title} category`}
+        className="category-card group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70"
+        style={cardStyle}
       >
-        <div
-          className="category-card__image"
-          style={{
-            backgroundImage: `url(${category.image})`,
-            backgroundPosition: category.imagePosition || "center center",
-          }}
-        />
-        <div className="relative z-10 flex flex-col gap-2.5 h-full">
-          <div className="space-y-0.5">
-          <span
-            className={`inline-flex items-center text-[8px] uppercase tracking-[0.32em] relative z-10 ${accentColorClass}`}
-          >
-              {category.accent}
-            </span>
-            <h3 className={`text-base font-semibold leading-tight relative z-10 ${titleColorClass}`}>
-              {category.title}
-            </h3>
+        <span className="category-card__glow" aria-hidden="true" />
+        <span className="category-card__mesh" aria-hidden="true" />
+        <div className="category-card__inner">
+          <div className="category-card__accent-row">
+            <span className="category-card__accent-dot" aria-hidden="true" />
+            <span className="category-card__accent-text">{category.accent}</span>
           </div>
-          <p className={`text-[11px] flex-1 leading-snug relative z-10 ${descriptionColorClass}`}>
-            {category.description}
-          </p>
+          <h3 className="category-card__title">{category.title}</h3>
+          <p className="category-card__description">{category.description}</p>
+          <div className="category-card__footer">
+            <span>Explore</span>
+            <span className="category-card__icon" aria-hidden="true">
+              →
+            </span>
+          </div>
         </div>
       </Link>
+    );
+  };
+
+  const HeroMessagingBlock = ({ variant }: { variant: "overlay" | "card" }) => {
+    const isOverlay = variant === "overlay";
+
+    return (
+      <div
+        className={cn(
+          "space-y-6",
+          isOverlay
+            ? "hero-section__text hidden md:block w-full max-w-2xl lg:max-w-xl text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.45)]"
+            : "hero-mobile-card__inner w-full text-center text-[#040D1F]"
+        )}
+      >
+        <p
+          className={cn(
+            "hero-section__eyebrow font-semibold uppercase tracking-wide",
+            isOverlay ? "text-sm text-white/80" : "text-xs tracking-[0.38em] text-[#5c6474]"
+          )}
+        >
+          {heroMessaging.eyebrow}
+        </p>
+        <h1
+          className={cn(
+            "hero-section__heading font-bold leading-tight",
+            isOverlay
+              ? "text-4xl sm:text-5xl lg:text-6xl text-white"
+              : "text-[2.1rem] sm:text-[2.4rem] leading-snug text-[#040D1F]"
+          )}
+        >
+          {heroMessaging.heading}
+          <span className={cn("block mt-2 font-semibold", isOverlay ? "text-white/80" : "text-[#5a6476]")}>
+            {heroMessaging.highlight}
+          </span>
+        </h1>
+        <p
+          className={cn(
+            "hero-section__subtext max-w-2xl",
+            isOverlay
+              ? "text-base sm:text-lg text-white/80"
+              : "text-[0.98rem] text-[#4c5568] leading-relaxed"
+          )}
+        >
+          {heroMessaging.description}
+        </p>
+        <div
+          className={cn(
+            "hero-section__buttons flex",
+            isOverlay
+              ? "flex-col sm:flex-row gap-4 items-stretch sm:items-center"
+              : "flex-col gap-3"
+          )}
+        >
+          <Link
+            to={heroMessaging.primaryCta.href}
+            className={cn("w-full", isOverlay ? "sm:w-auto" : undefined)}
+          >
+            <Button
+              size="lg"
+              variant={isOverlay ? "outline" : "default"}
+              className={cn(
+                "w-full transition-colors rounded-[16px] text-base font-semibold h-12",
+                isOverlay
+                  ? "sm:w-auto hover:bg-[#111827] hover:border-[#111827] hover:text-white"
+                  : "bg-[#040D1F] text-white shadow-[0_15px_45px_rgba(4,13,31,0.25)] hover:bg-[#040D1F]/90"
+              )}
+              style={isOverlay ? undefined : { borderColor: "#040D1F" }}
+            >
+              {heroMessaging.primaryCta.label}
+            </Button>
+          </Link>
+          <Link
+            to={heroMessaging.secondaryCta.href}
+            className={cn("w-full", isOverlay ? "sm:w-auto" : undefined)}
+          >
+            <Button
+              size="lg"
+              variant={isOverlay ? "default" : "outline"}
+              className={cn(
+                "w-full rounded-[16px] text-base font-semibold h-12",
+                isOverlay
+                  ? "sm:w-auto text-white hover:opacity-90"
+                  : "border-[#1f2937]/20 text-[#040D1F] hover:bg-[#040D1F] hover:text-white"
+              )}
+              style={isOverlay ? { backgroundColor: "#111827" } : undefined}
+            >
+              {heroMessaging.secondaryCta.label}
+            </Button>
+          </Link>
+        </div>
+      </div>
     );
   };
 
@@ -366,15 +567,15 @@ const Index = () => {
   ];
 
   const galleryItems = [
-    { image: trophyImage, title: "Gold Trophy", category: "Trophies & Awards" },
-    { image: officeImage, title: "Office Supplies", category: "Stationery" },
-    { image: stampImage, title: "Custom Stamps", category: "Printing Services" },
-    { image: printerImage, title: "Printer Equipment", category: "Technology" },
-    { image: mobileImage, title: "Mobile Accessories", category: "Accessories" },
-    { image: trophyImage, title: "Silver Trophy", category: "Trophies & Awards" },
-    { image: officeImage, title: "Premium Notebooks", category: "Stationery" },
-    { image: stampImage, title: "Business Stamps", category: "Printing Services" },
-    { image: printerImage, title: "Ink Cartridges", category: "Technology" }
+    { image: trophyImage, title: "Gold Trophy", category: "Trophies & Awards", href: "/category?t=trophies" },
+    { image: officeImage, title: "Office Supplies", category: "Stationery", href: "/category?t=stationery" },
+    { image: stampImage, title: "Custom Stamps", category: "Printing Services", href: "/category?t=stamps" },
+    { image: printerImage, title: "Printer Equipment", category: "Technology", href: "/category?t=printing" },
+    { image: mobileImage, title: "Mobile Accessories", category: "Accessories", href: "/category?t=mobiles" },
+    { image: trophyImage, title: "Silver Trophy", category: "Trophies & Awards", href: "/category?t=awards" },
+    { image: officeImage, title: "Premium Notebooks", category: "Stationery", href: "/category?t=stationery" },
+    { image: stampImage, title: "Business Stamps", category: "Printing Services", href: "/category?t=stamps" },
+    { image: printerImage, title: "Ink Cartridges", category: "Technology", href: "/category?t=printing" }
   ];
 
   const faqs = [
@@ -435,55 +636,28 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-screen mt-0 pb-24">
-        <div className="absolute inset-0 h-full">
+      <section className="hero-section relative overflow-hidden min-h-screen pb-0">
+        <div className="hero-section__slider">
           <HeroSlider images={heroImages} variant="background" className="h-full" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 py-16 lg:py-20 min-h-screen flex items-center">
-          <div className="flex items-center w-full">
-            <div className="w-full max-w-2xl lg:max-w-xl space-y-6 text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.45)]">
-              <p className="text-sm font-semibold uppercase tracking-wide text-white/80">
-                Welcome to PVK Enterprises
-              </p>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white">
-                Trophies & Awards
-                <span className="block text-white/80 mt-2">Excellence</span>
-              </h1>
-              <p className="text-base sm:text-lg text-white/80 max-w-2xl">
-                We design elegant, traditional and modern trophies made from a selection of metals that clients can take their pick from.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
-                <Link to="/category" className="w-full sm:w-auto">
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="w-full sm:w-auto hover:bg-[#111827] hover:border-[#111827] hover:text-white transition-colors"
-                  >
-                    Get Products
-                  </Button>
-                </Link>
-                <Link to="/contact" className="w-full sm:w-auto">
-                  <Button 
-                    size="lg" 
-                    className="w-full sm:w-auto text-white hover:opacity-90"
-                    style={{ backgroundColor: '#111827' }}
-                  >
-                    Contact
-                  </Button>
-                </Link>
-              </div>
-            </div>
+        <div className="hero-section__content relative z-10 container mx-auto px-4 py-16 lg:py-20 min-h-screen hidden md:flex items-center">
+          <div className="hero-section__content-inner flex items-center w-full">
+            <HeroMessagingBlock variant="overlay" />
           </div>
+        </div>
+
+        <div className="hero-section__mobile-card md:hidden w-full px-4 pb-12 relative z-20 flex justify-center">
+          <HeroMessagingBlock variant="card" />
         </div>
       </section>
 
       {/* Categories Grid */}
-      <section id="shop-by-category" className="py-16 bg-background scroll-mt-20">
-        <div className="container mx-auto px-4" style={{ paddingLeft: "70px", paddingRight: "70px" }}>
-          <div className="max-w-3xl mx-auto text-center mb-12 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold">Shop by Category</h2>
-            <p className="text-lg text-muted-foreground">
+      <section id="shop-by-category" className="pt-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20 bg-background scroll-mt-20">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+          <div className="max-w-3xl mx-auto text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12 space-y-3 md:space-y-4">
+            <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl font-bold px-2">Shop by Category</h2>
+            <p className="text-sm sm:text-base md:text-base lg:text-lg text-muted-foreground px-2">
               Curated collections to help you shop faster—crafted for events, offices, studios, and on-the-go creators.
             </p>
           </div>
@@ -506,19 +680,19 @@ const Index = () => {
                 {renderCategoryCard("grid3-c1")}
                 {renderCategoryCard("grid3-c2")}
                 {renderCategoryCard("grid3-c3")}
+                {renderCategoryCard("grid3-c4")}
               </div>
             </div>
           </div>
 
-          {/* Second Row - 5 New Categories */}
-          <div className="mt-8 lg:mt-12">
+          {/* Second Row - 4 New Categories */}
+          <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12">
             <div className="category-mosaic__row category-mosaic__row--five">
               <div className="column-five-grid">
                 {renderCategoryCard("grid4-c1")}
                 {renderCategoryCard("grid4-c2")}
                 {renderCategoryCard("grid4-c3")}
                 {renderCategoryCard("grid4-c4")}
-                {renderCategoryCard("grid4-c5")}
               </div>
             </div>
           </div>
@@ -526,9 +700,9 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="py-8 sm:py-10 md:py-12 lg:py-16 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
             <FeatureCard
               icon={Truck}
               title="Free Shipping"
@@ -553,47 +727,30 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Sale Banner */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div
-            className="relative rounded-3xl overflow-hidden bg-accent p-12 lg:p-20"
-            style={{
-              backgroundImage: `url(${saleBg})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          >
-            <div className="relative z-10 max-w-xl">
-              <p className="text-sm font-semibold text-accent-foreground/90 mb-2">
-                SPECIAL OFFER
-              </p>
-              <h2 className="text-5xl lg:text-6xl font-bold text-accent-foreground mb-4">
-                FINAL
-                <span className="block">SALE</span>
-              </h2>
-              <p className="text-accent-foreground/90 mb-2">15 Nov To 7 Dec</p>
-              <p className="text-lg text-accent-foreground/90 mb-6">
-                Save up to 40% on selected items
-              </p>
-              <Button size="lg" variant="secondary">
-                Shop Now
-              </Button>
-            </div>
+      {/* Promotional Banner */}
+      <section className="py-6 sm:py-8 md:py-12 lg:py-16">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8">
+          <div className="relative rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden w-full">
+            <img
+              src={websiteSlide3Image}
+              alt="Special Offer - Final Sale"
+              className="w-full h-auto object-cover"
+              loading="lazy"
+            />
           </div>
         </div>
       </section>
 
       {/* Best Seller Products */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-2">Best Seller Products</h2>
-            <p className="text-muted-foreground text-[1.125rem]">
+      <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">Best Seller Products</h2>
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg px-2">
               There are many variations of products available
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
             {products.map((product) => (
               <ProductCard key={product.id} {...product} />
             ))}
@@ -602,30 +759,30 @@ const Index = () => {
       </section>
 
       {/* Service Highlights */}
-      <section className="py-16 bg-muted/40">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-2">Special Services</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+      <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-muted/40">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 px-2">Special Services</h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Streamlining Your Digital & Business Needs with Exclusive Offerings.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 special-services-grid">
             {serviceCards.map((service, index) => (
-              <div key={index} className="bg-card rounded-2xl p-8 shadow-lg text-center flex flex-col items-center">
+              <div key={index} className={`bg-card rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 shadow-lg text-center flex flex-col items-center ${index === 2 ? 'special-services-third-card' : ''}`}>
                 {service.image && (
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="w-full h-40 object-cover rounded-xl mb-6 drop-shadow-md"
+                    className="w-full h-32 sm:h-36 md:h-40 object-cover rounded-lg sm:rounded-xl mb-4 sm:mb-5 md:mb-6 drop-shadow-md"
                     loading="lazy"
                   />
                 )}
-                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                <p className="text-muted-foreground mb-6">{service.description}</p>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">{service.title}</h3>
+                <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-5 md:mb-6">{service.description}</p>
                 <Button
                   size="lg"
-                  className="w-full bg-primary text-primary-foreground border border-primary hover:bg-transparent hover:text-primary transition-colors"
+                  className="enquire-button w-full text-sm sm:text-base"
                   onClick={() => handleOpenInquiry(service)}
                 >
                   {service.buttonText}
@@ -726,57 +883,63 @@ const Index = () => {
       />
 
       {/* Our Work Portfolio Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Work Portfolio</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+      <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-2">Our Work Portfolio</h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Showcasing the Quality of Our Trophies and Services
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-7xl mx-auto">
             {galleryItems.map((item, index) => (
-              <div
+              <Link
                 key={index}
-                className="group relative aspect-square overflow-hidden rounded-xl bg-card border shadow-sm hover:shadow-xl transition-all duration-300"
+                to={item.href}
+                className="group relative block aspect-square overflow-hidden rounded-lg sm:rounded-xl bg-card border shadow-sm hover:shadow-xl focus-visible:ring-2 focus-visible:ring-brand-dark/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-all duration-300"
+                aria-label={`View ${item.title} in products`}
               >
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-primary-foreground">
-                    <p className="text-sm font-medium opacity-90 mb-1">
-                      {item.category}
-                    </p>
-                    <h3 className="text-xl font-bold">
-                      {item.title}
-                    </h3>
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 text-primary-foreground">
+                  <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">
+                    {item.category}
+                  </p>
+                  <h3 className="text-lg sm:text-xl font-bold">
+                    {item.title}
+                  </h3>
+                  <span className="mt-2 sm:mt-3 inline-flex items-center text-xs sm:text-sm font-semibold text-white/90 group-hover:text-white transition-colors">
+                    Explore Product
+                    <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center mb-12">
-            <p className="text-sm font-semibold tracking-[0.25em] text-brand-dark/60 uppercase">
+      <section className="py-12 sm:py-16 md:py-20 bg-muted/20">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8">
+          <div className="mx-auto max-w-3xl text-center mb-8 sm:mb-10 md:mb-12">
+            <p className="text-xs sm:text-sm font-semibold tracking-[0.25em] text-brand-dark/60 uppercase mb-2 sm:mb-3">
               Support
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-2">
               Frequently Asked Questions
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground px-2">
               Get quick answers about our custom trophy manufacturing, delivery, and finishing services.
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto bg-background rounded-3xl shadow-xl shadow-black/5 border border-black/5 overflow-hidden">
+          <div className="max-w-4xl mx-auto bg-background rounded-2xl sm:rounded-3xl shadow-xl shadow-black/5 border border-black/5 overflow-hidden">
             <Accordion type="single" collapsible className="divide-y divide-border">
               {faqs.map((faq, index) => (
                 <AccordionItem
@@ -784,10 +947,10 @@ const Index = () => {
                   value={`faq-${index}`}
                   className="border-0"
                 >
-                  <AccordionTrigger className="px-6 text-left text-base sm:text-lg font-semibold text-card-foreground">
+                  <AccordionTrigger className="px-4 sm:px-5 md:px-6 text-left text-sm sm:text-base md:text-lg font-semibold text-card-foreground">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="px-6 text-muted-foreground text-base leading-relaxed">
+                  <AccordionContent className="px-4 sm:px-5 md:px-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -65,87 +65,94 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
   const progressPercentage = totalSlides > 1 ? ((current - 1) / (totalSlides - 1)) * 100 : 100;
 
   return (
-    <section className="py-16 bg-background">
-      <div className="container mx-auto px-4">
-        {/* Section Title */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
+    <section className="relative isolate py-24 overflow-hidden bg-transparent text-foreground dark:bg-transparent">
+      <div className="container relative mx-auto px-4">
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border/60 px-4 py-1 text-xs font-semibold tracking-[0.35em] uppercase text-muted-foreground/80 shadow-sm bg-background/70 backdrop-blur">
+            <span className="block h-2 w-2 rounded-full bg-gradient-to-r from-amber-400 to-pink-500" />
+            Testimonials
+          </span>
+          <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
+            {title}
+          </h2>
           {subtitle && (
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
               {subtitle}
+            </p>
+          )}
+          {!subtitle && (
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+              Trusted by our clients — here is what they say about PVK Enterprises and our services.
             </p>
           )}
         </div>
 
-        {/* Carousel Container */}
-        <div className="max-w-4xl mx-auto relative">
+        <div className="relative">
           <Carousel
             setApi={setApi}
             className="w-full"
             opts={{
               align: "start",
               loop: true,
-              duration: 25,
+              duration: 30,
             }}
           >
-            <CarouselContent className="-ml-2 md:-ml-4">
+            <CarouselContent className="-ml-4 xl:-ml-6 testimonial-carousel">
               {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-full">
-                  {/* Testimonial Card */}
-                  <div
+                <CarouselItem
+                  key={index}
+                  className="pl-4 xl:pl-6 basis-full md:basis-1/2 xl:basis-1/3"
+                >
+                  <article
                     className={cn(
-                      "relative rounded-3xl p-8 md:p-12",
-                      "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
-                      "backdrop-blur-sm",
-                      "border border-slate-700/50",
-                      "shadow-2xl",
-                      "transition-all duration-500 ease-in-out"
+                      "testimonial-box group relative h-full",
+                      "overflow-hidden"
                     )}
-                    style={{
-                      background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.98) 50%, rgba(15, 23, 42, 0.95) 100%)",
-                    }}
                   >
-                    {/* Rating Stars */}
-                    <div className="flex items-center gap-1 mb-6">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-6 w-6 md:h-7 md:w-7 text-yellow-400 fill-yellow-400"
-                        />
-                      ))}
+                    <div className="relative flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={cn(
+                              "h-4 w-4 md:h-5 md:w-5",
+                              i < testimonial.rating
+                                ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.45)]"
+                                : "text-slate-300 dark:text-slate-600"
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                        <span className="block h-[1px] w-8 bg-gradient-to-r from-transparent via-muted-foreground/50 to-transparent" />
+                        <span>Rated</span>
+                      </div>
+                      <Quote className="h-10 w-10 text-slate-400 dark:text-white/30" />
                     </div>
 
-                    {/* Quote Text */}
-                    <blockquote className="text-white text-lg md:text-xl lg:text-2xl leading-relaxed mb-8 font-light">
-                      &ldquo;{testimonial.text}&rdquo;
+                    <blockquote className="relative text-lg md:text-xl text-slate-700 leading-relaxed font-medium mb-8 dark:text-white/95">
+                      {testimonial.text}
                     </blockquote>
 
-                    {/* Author Section */}
-                    <div className="flex items-center gap-4 pt-6 border-t border-slate-700/50">
+                    <footer className="relative flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-white/10">
                       {testimonial.avatar ? (
-                        <div className="flex-shrink-0">
-                          <img
-                            src={testimonial.avatar}
-                            alt={testimonial.name}
-                            className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-slate-600"
-                          />
-                        </div>
+                        <img
+                          src={testimonial.avatar}
+                          alt={testimonial.name}
+                          className="w-12 h-12 md:w-14 md:h-14 rounded-2xl object-cover border border-slate-100 shadow-lg dark:border-white/30"
+                        />
                       ) : (
-                        <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center border-2 border-slate-500">
-                          <span className="text-white text-lg md:text-xl font-semibold">
-                            {testimonial.name.charAt(0).toUpperCase()}
-                          </span>
+                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-slate-200 to-slate-400 text-slate-700 flex items-center justify-center text-lg font-semibold border border-slate-100 dark:from-slate-500 dark:to-slate-700 dark:text-white dark:border-white/20">
+                          {testimonial.name.charAt(0).toUpperCase()}
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-white font-semibold text-base md:text-lg">
+                        <p className="text-slate-900 text-base md:text-lg font-semibold dark:text-white">
                           {testimonial.name}
                         </p>
                         {(testimonial.title || testimonial.company) && (
-                          <p className="text-slate-300 text-sm md:text-base">
-                            {testimonial.title && `${testimonial.title}`}
-                            {testimonial.title && testimonial.company && " | "}
-                            {testimonial.company && `${testimonial.company}`}
+                          <p className="text-slate-500 text-sm md:text-base truncate dark:text-slate-300">
+                            {[testimonial.title, testimonial.company].filter(Boolean).join(" • ")}
                           </p>
                         )}
                         {testimonial.date && (
@@ -154,62 +161,55 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
                           </p>
                         )}
                       </div>
-                    </div>
+                    </footer>
 
-                    {/* Optional CTA Button */}
                     {showCTA && (
-                      <div className="mt-8 pt-6 border-t border-slate-700/30">
+                      <div className="relative mt-8 pt-6 border-t border-white/5">
                         <Button
                           asChild
-                          variant="outline"
-                          className="w-full sm:w-auto border-slate-600 text-white hover:bg-slate-700 hover:text-white hover:border-slate-500"
+                          variant="secondary"
+                          className="bg-white text-slate-900 hover:bg-slate-200"
                         >
                           <a href={ctaLink}>{ctaText}</a>
                         </Button>
                       </div>
                     )}
-                  </div>
+                  </article>
                 </CarouselItem>
               ))}
             </CarouselContent>
           </Carousel>
 
-          {/* Pill-shaped Navigation Control */}
           {testimonials.length > 1 && (
-            <div className="flex justify-center mt-8">
-              <div 
-                className="relative bg-white rounded-full shadow-lg flex items-center gap-3 px-3"
-                style={{ width: '194px', height: '50px' }}
-              >
-                {/* Left Arrow */}
+            <div className="mt-10 flex flex-col items-center gap-4">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={scrollPrev}
-                  className="flex-shrink-0 p-1 text-slate-700 hover:text-slate-900 transition-colors"
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 text-foreground/70 hover:text-foreground hover:border-foreground/60 transition-colors bg-white/80 shadow-sm backdrop-blur dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:text-white dark:hover:border-white/40"
                   aria-label="Previous slide"
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <ChevronLeft className="h-5 w-5" />
                 </button>
-
-                {/* Progress Bar */}
-                <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                <div className="w-48 h-2 rounded-full bg-slate-200 overflow-hidden dark:bg-white/10">
                   <div
-                    className="h-full rounded-full transition-all duration-300 ease-out"
-                    style={{ 
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{
                       width: `${progressPercentage}%`,
-                      background: 'linear-gradient(to right, rgb(255, 255, 255), rgb(17, 24, 39))'
+                      background: "linear-gradient(to right, #FFFFFF, #040D1F)",
                     }}
                   />
                 </div>
-
-                {/* Right Arrow */}
                 <button
                   onClick={scrollNext}
-                  className="flex-shrink-0 p-1 text-slate-700 hover:text-slate-900 transition-colors"
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 text-foreground/70 hover:text-foreground hover:border-foreground/60 transition-colors bg-white/80 shadow-sm backdrop-blur dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:text-white dark:hover:border-white/40"
                   aria-label="Next slide"
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-5 w-5" />
                 </button>
               </div>
+              <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                {current} / {totalSlides}
+              </p>
             </div>
           )}
         </div>

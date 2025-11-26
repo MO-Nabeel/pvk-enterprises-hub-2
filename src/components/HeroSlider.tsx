@@ -9,11 +9,14 @@ import {
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+interface HeroSliderImage {
+  src: string;
+  alt: string;
+  objectPosition?: string;
+}
+
 interface HeroSliderProps {
-  images: Array<{
-    src: string;
-    alt: string;
-  }>;
+  images: HeroSliderImage[];
   className?: string;
   variant?: "default" | "background";
 }
@@ -47,7 +50,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
 
   const isBackground = variant === "background";
   const backgroundHeightClasses =
-    "h-full min-h-[420px] sm:min-h-[520px] md:min-h-[600px] lg:min-h-[680px]";
+    "h-full min-h-[85vh] lg:min-h-screen";
   const totalSlides = images.length;
   const progressPercentage = totalSlides > 1 ? ((current - 1) / (totalSlides - 1)) * 100 : 100;
 
@@ -86,23 +89,33 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
                 className={cn(
                   "relative w-full overflow-hidden group",
                   isBackground
-                    ? backgroundHeightClasses
+                    ? `hero-slider__frame ${backgroundHeightClasses}`
                     : "rounded-2xl aspect-[4/3] sm:aspect-[5/3] lg:aspect-[16/9] max-h-[340px] md:max-h-[380px] lg:max-h-[420px]"
                 )}
               >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className={cn(
-                    "w-full h-full object-cover object-center transition-all duration-500 ease-out",
-                    isBackground
-                      ? "scale-100"
-                      : "rounded-2xl shadow-2xl group-hover:scale-[1.03] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
-                  )}
-                  style={{
-                    transformOrigin: "center center",
-                  }}
-                />
+                {isBackground ? (
+                  <div
+                    className="hero-slider__background absolute inset-0"
+                    style={{
+                      backgroundImage: `url(${image.src})`,
+                      backgroundPosition: image.objectPosition ?? "center center",
+                    }}
+                    role="img"
+                    aria-label={image.alt}
+                  />
+                ) : (
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    sizes="(min-width: 1024px) 960px, 100vw"
+                    className="hero-slider__image rounded-2xl shadow-2xl group-hover:scale-[1.03] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
+                    style={{
+                      transformOrigin: "center center",
+                      objectPosition: image.objectPosition ?? "center center",
+                    }}
+                  />
+                )}
               </div>
             </CarouselItem>
           ))}
@@ -111,8 +124,9 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
 
       {isBackground && (
         <>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-full sm:w-2/3 lg:w-1/2 bg-black/40 z-[1]" />
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-full bg-gradient-to-r from-black/40 via-black/10 to-transparent z-[1]" />
+          {/* Dynamic gradient overlay - transitions from solid dark on left to transparent on right */}
+          {/* Gradient is defined in CSS for responsive control */}
+          <div className="pointer-events-none absolute inset-0 z-[1] hero-gradient-overlay" />
         </>
       )}
 
@@ -143,7 +157,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
               className="h-full rounded-full transition-all duration-500 ease-out"
               style={{
                 width: `${progressPercentage}%`,
-                background: 'linear-gradient(to right, #FFFFFF, #111827)',
+                background: "linear-gradient(to right, #FFFFFF, #040D1F)",
               }}
             />
           </div>
