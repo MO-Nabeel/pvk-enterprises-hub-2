@@ -134,7 +134,7 @@ const Header = () => {
 
           {/* Right Section: Search Icon & Utility Icons */}
           <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 flex-shrink-0">
-            <ThemeToggle className="hidden sm:inline-flex" />
+            <ThemeToggle className="inline-flex sm:inline-flex" />
             {/* Search Icon */}
             <Button
               size="icon"

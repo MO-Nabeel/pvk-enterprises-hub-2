@@ -347,7 +347,10 @@ const Index = () => {
         to={category.link}
         data-slot={slot}
         aria-label={`${category.title} category`}
-        className="category-card group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70"
+        className={cn(
+          "category-card group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70",
+          category.slot === "grid3-c4" && "category-card--wedding"
+        )}
         style={cardStyle}
       >
         <span className="category-card__glow" aria-hidden="true" />
@@ -379,13 +382,13 @@ const Index = () => {
           "space-y-6",
           isOverlay
             ? "hero-section__text hidden md:block w-full max-w-2xl lg:max-w-xl text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.45)]"
-            : "hero-mobile-card__inner w-full text-center text-[#040D1F]"
+            : "hero-mobile-card__inner w-full text-center text-[#040D1F] dark:text-white"
         )}
       >
         <p
           className={cn(
             "hero-section__eyebrow font-semibold uppercase tracking-wide",
-            isOverlay ? "text-sm text-white/80" : "text-xs tracking-[0.38em] text-[#5c6474]"
+            isOverlay ? "text-sm text-white/80" : "text-xs tracking-[0.38em] text-[#5c6474] dark:text-slate-200"
           )}
         >
           {heroMessaging.eyebrow}
@@ -395,11 +398,16 @@ const Index = () => {
             "hero-section__heading font-bold leading-tight",
             isOverlay
               ? "text-4xl sm:text-5xl lg:text-6xl text-white"
-              : "text-[2.1rem] sm:text-[2.4rem] leading-snug text-[#040D1F]"
+              : "text-[2.1rem] sm:text-[2.4rem] leading-snug text-[#040D1F] dark:text-white"
           )}
         >
           {heroMessaging.heading}
-          <span className={cn("block mt-2 font-semibold", isOverlay ? "text-white/80" : "text-[#5a6476]")}>
+          <span
+            className={cn(
+              "block mt-2 font-semibold",
+              isOverlay ? "text-white/80" : "text-[#5a6476] dark:text-slate-200/80"
+            )}
+          >
             {heroMessaging.highlight}
           </span>
         </h1>
@@ -408,7 +416,7 @@ const Index = () => {
             "hero-section__subtext max-w-2xl",
             isOverlay
               ? "text-base sm:text-lg text-white/80"
-              : "text-[0.98rem] text-[#4c5568] leading-relaxed"
+              : "text-[0.98rem] text-[#4c5568] dark:text-slate-300 leading-relaxed"
           )}
         >
           {heroMessaging.description}
@@ -432,7 +440,7 @@ const Index = () => {
                 "w-full transition-colors rounded-[16px] text-base font-semibold h-12",
                 isOverlay
                   ? "sm:w-auto hover:bg-[#111827] hover:border-[#111827] hover:text-white"
-                  : "bg-[#040D1F] text-white shadow-[0_15px_45px_rgba(4,13,31,0.25)] hover:bg-[#040D1F]/90"
+                  : "bg-[#040D1F] text-white shadow-[0_15px_45px_rgba(4,13,31,0.25)] hover:bg-[#040D1F]/90 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90"
               )}
               style={isOverlay ? undefined : { borderColor: "#040D1F" }}
             >
@@ -450,7 +458,7 @@ const Index = () => {
                 "w-full rounded-[16px] text-base font-semibold h-12",
                 isOverlay
                   ? "sm:w-auto text-white hover:opacity-90"
-                  : "border-[#1f2937]/20 text-[#040D1F] hover:bg-[#040D1F] hover:text-white"
+                  : "border-[#1f2937]/20 text-[#040D1F] hover:bg-[#040D1F] hover:text-white dark:border-white/40 dark:text-white dark:hover:bg-white/10"
               )}
               style={isOverlay ? { backgroundColor: "#111827" } : undefined}
             >

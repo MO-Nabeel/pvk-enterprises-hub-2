@@ -29,12 +29,11 @@ const ThemeToggle = ({ className }: ThemeToggleProps) => {
     <Button
       type="button"
       size="icon"
-      variant="outline"
       onClick={handleToggle}
       aria-label={label}
       disabled={!mounted}
       className={cn(
-        "relative h-9 w-9 rounded-full border-border/70 bg-background/80 text-foreground shadow-sm transition-colors hover:bg-muted sm:h-10 sm:w-10",
+        "nav-icon-button relative h-9 w-9 sm:h-10 sm:w-10 rounded-full",
         !mounted && "opacity-50",
         className
       )}

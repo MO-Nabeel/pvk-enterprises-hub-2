@@ -346,6 +346,17 @@ All colors MUST be HSL.
     justify-self: center;
     max-width: calc(50% - clamp(0.75rem, 1.5vw, 1rem));
   }
+
+  /* Force Wedding Cards to appear last and centered */
+  .category-card--wedding {
+    order: 99;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 /* Desktop - 3 Column Grid */
