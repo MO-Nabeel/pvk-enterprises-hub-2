@@ -777,20 +777,26 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 special-services-grid">
             {serviceCards.map((service, index) => (
-              <div key={index} className={`bg-card rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 shadow-lg text-center flex flex-col items-center ${index === 2 ? 'special-services-third-card' : ''}`}>
+              <div
+                key={index}
+                className={cn(
+                  "bg-card rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 shadow-lg flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 h-full",
+                  index === 2 && "special-services-third-card"
+                )}
+              >
                 {service.image && (
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="w-full h-32 sm:h-36 md:h-40 object-cover rounded-lg sm:rounded-xl mb-4 sm:mb-5 md:mb-6 drop-shadow-md"
+                    className="w-full h-32 sm:h-36 md:h-40 object-cover rounded-lg sm:rounded-xl drop-shadow-md"
                     loading="lazy"
                   />
                 )}
-                <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">{service.title}</h3>
-                <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-5 md:mb-6">{service.description}</p>
+                <h3 className="text-xl sm:text-2xl font-bold">{service.title}</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">{service.description}</p>
                 <Button
                   size="lg"
-                  className="enquire-button w-full text-sm sm:text-base"
+                  className="enquire-button mt-auto w-full text-sm sm:text-base"
                   onClick={() => handleOpenInquiry(service)}
                 >
                   {service.buttonText}
