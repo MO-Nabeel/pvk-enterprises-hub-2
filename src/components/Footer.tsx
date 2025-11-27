@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Youtube, MapPin, Phone, Mail } from "lucide-react";
+import { Facebook, Instagram, MapPin, Phone, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import pvkLogo from "@/assets/pvk logo (1).png";
 
@@ -23,16 +23,22 @@ const socialLinks = [
     href: "https://www.facebook.com/pvkenterprisesmry?mibextid=ZbWKwL",
     label: "Facebook",
     Icon: Facebook,
+    isImage: false,
   },
   {
     href: "https://www.instagram.com/pvkenterprises7707?igshid=YmMyMTA2M2Y%3D",
     label: "Instagram",
     Icon: Instagram,
+    isImage: false,
   },
   {
-    href: "https://youtube.com",
-    label: "Youtube",
-    Icon: Youtube,
+    href: "https://www.justdial.com/Malappuram/PVK-ENTERPRISES-Marancheri/9999PX483-X483-230222165740-C4C9_BZDET?via=scode",
+    label: "JustDial",
+    Icon: null,
+    image: null,
+    isImage: false,
+    isText: true,
+    text: "JD",
   },
 ];
 
@@ -126,7 +132,7 @@ const Footer = () => {
         <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
           <p>© {new Date().getFullYear()} PVK Enterprises. All Rights Reserved.</p>
           <div className="flex items-center gap-4">
-            {socialLinks.map(({ href, label, Icon }) => (
+            {socialLinks.map(({ href, label, Icon, image, isImage, isText, text }) => (
               <a
                 key={label}
                 href={href}
@@ -135,7 +141,17 @@ const Footer = () => {
                 aria-label={label}
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-white hover:text-white"
               >
-                <Icon className="h-4 w-4" />
+                {isImage && image ? (
+                  <img
+                    src={image}
+                    alt={label}
+                    className="h-4 w-4 object-contain filter brightness-0 invert opacity-80 hover:opacity-100 transition-opacity"
+                  />
+                ) : isText && text ? (
+                  <span className="text-xs font-bold opacity-80 hover:opacity-100 transition-opacity">{text}</span>
+                ) : (
+                  Icon && <Icon className="h-4 w-4" />
+                )}
               </a>
             ))}
           </div>

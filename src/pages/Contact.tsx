@@ -46,14 +46,15 @@ const Contact = () => {
       icon: Phone,
       title: "Phone",
       content: (
-        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 w-full">
           {phoneNumbers.map((number) => (
             <a
               key={number}
               href={`tel:${number.replace(/-/g, "")}`}
-              className="w-full sm:w-auto text-sm text-slate-600 hover:text-primary transition-colors rounded-full border border-slate-200 px-4 py-2 text-center sm:text-left"
+              className="group flex items-center justify-center sm:justify-start text-sm font-medium text-slate-700 hover:text-primary hover:bg-white transition-all duration-200 rounded-xl border border-slate-200 hover:border-primary/30 hover:shadow-sm px-4 py-2.5 sm:py-3 text-center sm:text-left"
             >
-              {number}
+              <Phone className="h-4 w-4 mr-2 text-slate-400 group-hover:text-primary transition-colors hidden sm:inline-flex" />
+              <span>{number}</span>
             </a>
           ))}
         </div>
