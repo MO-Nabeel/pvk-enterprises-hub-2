@@ -46,6 +46,8 @@ const CategoryCard = ({
       <img
         src={image}
         alt={title}
+        loading="lazy"
+        decoding="async"
         className="absolute right-0 bottom-0 h-48 w-auto object-contain group-hover:scale-110 transition-transform duration-300"
       />
     </div>

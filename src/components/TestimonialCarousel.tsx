@@ -139,6 +139,8 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
                         <img
                           src={testimonial.avatar}
                           alt={testimonial.name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-12 h-12 md:w-14 md:h-14 rounded-2xl object-cover border border-slate-100 shadow-lg dark:border-white/30"
                         />
                       ) : (

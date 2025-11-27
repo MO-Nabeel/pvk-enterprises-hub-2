@@ -49,7 +49,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-10 text-sm md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
             <Link to="/" className="inline-flex items-center gap-3">
-              <img src={pvkLogo} alt="PVK Enterprises Logo" className="h-16 w-auto object-contain" />
+              <img
+                src={pvkLogo}
+                alt="PVK Enterprises Logo"
+                loading="lazy"
+                decoding="async"
+                className="h-16 w-auto object-contain"
+              />
             </Link>
             <p className="text-white/70 leading-relaxed">
               PVK Enterprises crafts trophies, awards, office stationery, and bespoke gifting experiences with meticulous
@@ -145,6 +151,8 @@ const Footer = () => {
                   <img
                     src={image}
                     alt={label}
+                    loading="lazy"
+                    decoding="async"
                     className="h-4 w-4 object-contain filter brightness-0 invert opacity-80 hover:opacity-100 transition-opacity"
                   />
                 ) : isText && text ? (
