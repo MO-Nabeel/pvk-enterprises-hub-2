@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FeatureCard from "@/components/FeatureCard";
+import SectionBadge from "@/components/SectionBadge";
 import ProductCard from "@/components/ProductCard";
 import HeroSlider from "@/components/HeroSlider";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
@@ -664,6 +665,7 @@ const Index = () => {
       <section id="shop-by-category" className="pt-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20 bg-background scroll-mt-20">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
           <div className="max-w-3xl mx-auto text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12 space-y-3 md:space-y-4">
+            <SectionBadge label="Collections" className="mx-auto" />
             <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl font-bold px-2">Shop by Category</h2>
             <p className="text-sm sm:text-base md:text-base lg:text-lg text-muted-foreground px-2">
               Curated collections to help you shop faster—crafted for events, offices, studios, and on-the-go creators.
@@ -710,6 +712,13 @@ const Index = () => {
       {/* Features */}
       <section className="py-8 sm:py-10 md:py-12 lg:py-16 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="text-center mb-8 sm:mb-10 space-y-3">
+            <SectionBadge label="Service Pillars" className="mx-auto" />
+            <h2 className="text-2xl sm:text-3xl font-bold text-card-foreground">Experience the PVK Advantage</h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+              Seamless logistics, trusted quality, and dedicated guidance with every order.
+            </p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
             <FeatureCard
               icon={Truck}
@@ -752,7 +761,8 @@ const Index = () => {
       {/* Best Seller Products */}
       <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-background">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12 space-y-3">
+            <SectionBadge label="Top Rated" className="mx-auto" />
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">Best Seller Products</h2>
             <p className="text-muted-foreground text-sm sm:text-base md:text-lg px-2">
               There are many variations of products available
@@ -769,7 +779,8 @@ const Index = () => {
       {/* Service Highlights */}
       <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-muted/40">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12 space-y-3">
+            <SectionBadge label="Special Services" className="mx-auto" />
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 px-2">Special Services</h2>
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Streamlining Your Digital & Business Needs with Exclusive Offerings.
@@ -899,40 +910,57 @@ const Index = () => {
       />
 
       {/* Our Work Portfolio Section */}
-      <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-          <div className="text-center mb-8 sm:mb-10 md:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-2">Our Work Portfolio</h2>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-              Showcasing the Quality of Our Trophies and Services
+      <section className="relative overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-[#F5F7FB] via-white to-[#EDF1F7]">
+        <div className="absolute -top-10 -left-10 h-48 w-48 rounded-full bg-brand-dark/10 blur-3xl" aria-hidden="true" />
+        <div className="absolute -bottom-16 right-0 h-56 w-56 rounded-full bg-brand-dark/5 blur-3xl" aria-hidden="true" />
+        <div className="container relative mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="text-center mb-10 sm:mb-12 md:mb-14 space-y-4">
+            <SectionBadge label="Featured Showcase" className="mx-auto" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#040D1F] mb-4">
+              Our Work Portfolio
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
+              A curated look at the craftsmanship, detailing, and finishing quality across our trophies, printing solutions, and premium accessories.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-7xl mx-auto">
+          <div className="grid max-w-6xl mx-auto gap-6 sm:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {galleryItems.map((item, index) => (
               <Link
-                key={index}
+                key={item.title}
                 to={item.href}
-                className="group relative block aspect-square overflow-hidden rounded-lg sm:rounded-xl bg-card border shadow-sm hover:shadow-xl focus-visible:ring-2 focus-visible:ring-brand-dark/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-all duration-300"
+                className="group relative isolate overflow-hidden rounded-[28px] bg-white shadow-[0_25px_65px_rgba(15,23,42,0.12)] ring-1 ring-black/5 transition-all duration-500 hover:-translate-y-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-dark/40"
                 aria-label={`View ${item.title} in products`}
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6 text-primary-foreground">
-                  <p className="text-xs sm:text-sm font-medium opacity-90 mb-1">
-                    {item.category}
-                  </p>
-                  <h3 className="text-lg sm:text-xl font-bold">
-                    {item.title}
-                  </h3>
-                  <span className="mt-2 sm:mt-3 inline-flex items-center text-xs sm:text-sm font-semibold text-white/90 group-hover:text-white transition-colors">
-                    Explore Product
-                    <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-                  </span>
+                <div className="absolute inset-0">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70 opacity-70 group-hover:opacity-85 transition-opacity duration-500" />
+                <div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-7 md:p-8 text-white">
+                  <div className="space-y-3">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80">
+                      {item.category}
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-semibold leading-tight">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-white/80 max-w-xs">
+                      Expertly curated products aligned with your events, offices, and premium gifting needs.
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between pt-4">
+                    <span className="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.15em]">
+                      Explore Product
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                    <div className="h-10 w-10 rounded-2xl bg-white/15 text-white/90 flex items-center justify-center text-sm font-semibold shadow-inner">
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -943,10 +971,8 @@ const Index = () => {
       {/* FAQ Section */}
       <section className="py-12 sm:py-16 md:py-20 bg-muted/20">
         <div className="container mx-auto px-4 sm:px-6 md:px-8">
-          <div className="mx-auto max-w-3xl text-center mb-8 sm:mb-10 md:mb-12">
-            <p className="text-xs sm:text-sm font-semibold tracking-[0.25em] text-brand-dark/60 uppercase mb-2 sm:mb-3">
-              Support
-            </p>
+          <div className="mx-auto max-w-3xl text-center mb-8 sm:mb-10 md:mb-12 space-y-4">
+            <SectionBadge label="Support" className="mx-auto" />
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-2">
               Frequently Asked Questions
             </h2>

@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import PageBanner from "@/components/PageBanner";
+import SectionBadge from "@/components/SectionBadge";
 import trophyImage from "@/assets/trophy-product.jpg";
 import officeImage from "@/assets/office-supplies.jpg";
 import stampImage from "@/assets/rubber-stamps.jpg";
@@ -534,6 +535,57 @@ const Category = () => {
           subtitle="Browse our extensive collection of high-quality trophies, supplies, and accessories."
           backgroundImage={bannerImage}
         />
+        <section className="py-6 sm:py-8 bg-background">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
+            <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr] bg-white rounded-3xl p-5 sm:p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] border border-slate-100">
+              <div className="space-y-4 sm:space-y-5">
+                <SectionBadge label="Discover" />
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#040D1F] leading-tight">
+                  Curated Products for Every Business Journey
+                </h1>
+                <p className="text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                  From award-winning trophies to high-performance printing supplies and custom branding essentials,
+                  explore a selection tailored for event planners, offices, institutions, and creative studios.
+                </p>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                  {["Trophies", "Printing", "Stationery", "Accessories"].map((item) => (
+                    <span
+                      key={item}
+                      className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-slate-600"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#111827]" />
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="relative rounded-2xl bg-gradient-to-br from-[#111827] via-[#0f172a] to-[#1f2937] p-5 sm:p-7 text-white overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.15),_transparent_55%)]" />
+                <div className="relative z-10 space-y-3">
+                  <p className="text-xs uppercase tracking-[0.4em] text-white/70">Featured Drop</p>
+                  <h3 className="text-2xl font-semibold">Award Ceremony Kit</h3>
+                  <p className="text-sm text-white/80">
+                    Premium trophies, name plates, certificates, and stage branding delivered in 48 hours.
+                  </p>
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] text-white/60">Starting</p>
+                      <p className="text-xl font-bold">₹2,500</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] text-white/60">Includes</p>
+                      <p className="text-sm text-white/85">Trophies, Certificates, Stage Props</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute bottom-4 right-4 flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-white/70">
+                  Limited Slots
+                  <div className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Product Filter - Category Pills */}
         <section 
@@ -543,6 +595,7 @@ const Category = () => {
         >
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap gap-2 sm:gap-3 justify-center max-w-6xl mx-auto">
+              <SectionBadge label="Categories" className="mt-2" />
               {categories.map((category) => {
                 const isActive = activeCategory === category;
 
@@ -599,26 +652,29 @@ const Category = () => {
             <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
-                    Products
-                    {filteredProducts.length > 0 && (
-                      <span className="text-sm sm:text-base font-normal text-muted-foreground ml-2">
-                        ({filteredProducts.length})
-                      </span>
+                  <SectionBadge label="Products" />
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+                      Products
+                      {filteredProducts.length > 0 && (
+                        <span className="text-sm sm:text-base font-normal text-muted-foreground ml-2">
+                          ({filteredProducts.length})
+                        </span>
+                      )}
+                    </h2>
+                    {hasActiveFilters && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearFilters}
+                        className="h-8 text-xs sm:text-sm shrink-0"
+                      >
+                        <X className="h-3 w-3 sm:mr-1" />
+                        <span className="hidden sm:inline">Clear Filters</span>
+                        <span className="sm:hidden">Clear</span>
+                      </Button>
                     )}
-                  </h2>
-                  {hasActiveFilters && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={clearFilters}
-                      className="h-8 text-xs sm:text-sm shrink-0"
-                    >
-                      <X className="h-3 w-3 sm:mr-1" />
-                      <span className="hidden sm:inline">Clear Filters</span>
-                      <span className="sm:hidden">Clear</span>
-                    </Button>
-                  )}
+                  </div>
                 </div>
                 
                 <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">

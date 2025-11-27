@@ -9,6 +9,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
+import SectionBadge from "@/components/SectionBadge";
 import { cn } from "@/lib/utils";
 
 export type Testimonial = {
@@ -68,10 +69,7 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
     <section className="relative isolate py-24 overflow-hidden bg-transparent text-foreground dark:bg-transparent">
       <div className="container relative mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border/60 px-4 py-1 text-xs font-semibold tracking-[0.35em] uppercase text-muted-foreground/80 shadow-sm bg-background/70 backdrop-blur">
-            <span className="block h-2 w-2 rounded-full bg-gradient-to-r from-amber-400 to-pink-500" />
-            Testimonials
-          </span>
+          <SectionBadge label="Testimonials" className="mx-auto" />
           <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
             {title}
           </h2>
