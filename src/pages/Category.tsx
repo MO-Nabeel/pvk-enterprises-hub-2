@@ -32,7 +32,7 @@ const Category = () => {
       image: trophyImage,
       discount: 10,
       category: "Trophies & Awards",
-      brand: "PVK Premium"
+      brand: "Pvk Enterprises"
     },
     {
       id: "thermal-paper-roll-80",
@@ -65,7 +65,7 @@ const Category = () => {
       price: 2800,
       image: trophyImage,
       category: "Trophies & Awards",
-      brand: "Sorakshi"
+      brand: "Pvk"
     },
     {
       id: "smartphone-case-bundle",
@@ -74,7 +74,7 @@ const Category = () => {
       image: mobileImage,
       discount: 20,
       category: "Mobile Accessories",
-      brand: "TechGuard"
+      brand: "Erd"
     },
     {
       id: "jmd-gold-lamination",
@@ -99,7 +99,7 @@ const Category = () => {
       image: trophyImage,
       discount: 5,
       category: "Trophies & Awards",
-      brand: "PVK Premium"
+      brand: "Pvk Enterprises"
     },
     {
       id: "professional-rubber-stamp-set",
@@ -116,7 +116,7 @@ const Category = () => {
       image: mobileImage,
       discount: 25,
       category: "Mobile Accessories",
-      brand: "TechGuard"
+      brand: "Erd"
     },
     {
       id: "executive-pen-set",
@@ -132,7 +132,7 @@ const Category = () => {
       price: 450,
       image: customPrintingImage,
       category: "Custom Printing",
-      brand: "PVK Custom"
+      brand: "Pvk Enterprises"
     },
     {
       id: "banner-printing-service",
@@ -141,7 +141,7 @@ const Category = () => {
       image: customPrintingImage,
       discount: 10,
       category: "Custom Printing",
-      brand: "PVK Custom"
+      brand: "Pvk Enterprises"
     },
     {
       id: "business-card-offset",
@@ -149,7 +149,7 @@ const Category = () => {
       price: 1800,
       image: offsetPrintingImage,
       category: "Offset Printing",
-      brand: "PVK Print"
+      brand: "Pvk Enterprises"
     },
     {
       id: "brochure-offset-printing",
@@ -158,7 +158,7 @@ const Category = () => {
       image: offsetPrintingImage,
       discount: 15,
       category: "Offset Printing",
-      brand: "PVK Print"
+      brand: "Pvk Enterprises"
     },
     {
       id: "wooden-photo-frame",
@@ -166,7 +166,7 @@ const Category = () => {
       price: 1200,
       image: frameStudioImage,
       category: "Frame Studio",
-      brand: "Frame Studio"
+      brand: "Pvk Enterprises"
     },
     {
       id: "display-pedestal",
@@ -175,7 +175,7 @@ const Category = () => {
       image: frameStudioImage,
       discount: 12,
       category: "Frame Studio",
-      brand: "Frame Studio"
+      brand: "Pvk Enterprises"
     },
     {
       id: "wedding-invite-classic",
@@ -239,6 +239,88 @@ const Category = () => {
     []
   );
 
+  // Optional master brand catalog per category to power the Brand filter,
+  // even if some brands don't yet have explicit products created.
+  const categoryBrandCatalog: Record<string, string[]> = {
+    "Office Stationery": [
+      "Akari",
+      "Anpu",
+      "Apsara",
+      "Balaji",
+      "Bbi",
+      "Camel",
+      "Camlin",
+      "Casio",
+      "Cello",
+      "Doms",
+      "Envelopes",
+      "Esha",
+      "Fasson",
+      "God's Grace",
+      "Index",
+      "Jk",
+      "Kaveri's",
+      "Ladder",
+      "Lexi",
+      "Nataraj",
+      "Novajet Mpl",
+      "Pvk Enterprises",
+      "Sharp",
+      "Sprint Plus",
+      "Sun",
+      "Tnpl",
+      "Totem",
+      "Win",
+      "Winner",
+      "X Card Sj"
+    ],
+    "Custom Rubber Stamps": [
+      "Pvk Enterprises",
+      "Colop",
+      "Exmark",
+      "Camlin",
+      "Artline",
+      "Numex",
+      "Pvk"
+    ],
+    "Printer Supplies": [
+      "Alphabet",
+      "Canon",
+      "Clair Tek",
+      "Dell",
+      "Epson",
+      "Hp",
+      "Image Master",
+      "Leveraa",
+      "Lipi",
+      "Logitech",
+      "Mente",
+      "Pvk Enterprises",
+      "Tvs Electronics"
+    ],
+    "Mobile Accessories": [
+      "Erd"
+    ],
+    "Custom Printing": [
+      "Pvk Enterprises"
+    ],
+    "Offset Printing": [
+      "Pvk Enterprises"
+    ],
+    "Frame Studio": [
+      "Jmd International",
+      "Nova",
+      "Nova Digital Media",
+      "Nova Digital Plus",
+      "Nova Prismajet",
+      "Prismajet",
+      "Pvk Enterprises",
+      "Sandisk",
+      "Sonakshi",
+      "Ubiq"
+    ]
+  };
+
   const categoryAliasMap: Record<string, string> = {
     "wedding-card": "Wedding Cards",
     "wedding-cards": "Wedding Cards",
@@ -286,11 +368,15 @@ const Category = () => {
         ? products
         : products.filter((product) => product.category === activeCategory);
 
-    const brands = scopedProducts
+    const productBrands = scopedProducts
       .map((product) => product.brand)
       .filter((brand): brand is string => Boolean(brand));
 
-    return Array.from(new Set(brands)).sort();
+    const configuredBrands = categoryBrandCatalog[activeCategory] || [];
+
+    const brands = Array.from(new Set([...productBrands, ...configuredBrands]));
+
+    return brands.sort();
   }, [activeCategory, products]);
 
   // Ensure previously selected brands remain valid when category changes
@@ -422,7 +508,7 @@ const Category = () => {
       {/* Price Range Filter */}
       <div className="space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between">
-          <label className="text-sm sm:text-base font-semibold">Price Range</label>
+          <label className="text-sm sm:text-base font-semibold text-foreground">Price Range</label>
           <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap ml-2">
             ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
           </span>
@@ -445,7 +531,7 @@ const Category = () => {
 
       {/* Discount Filter */}
       <div className="space-y-2 sm:space-y-3">
-        <label className="text-sm sm:text-base font-semibold">Special Offers</label>
+        <label className="text-sm sm:text-base font-semibold text-foreground">Special Offers</label>
         <div className="flex items-center space-x-2 sm:space-x-3">
           <Checkbox
             id="discount-only"
@@ -455,7 +541,7 @@ const Category = () => {
           />
           <label
             htmlFor="discount-only"
-            className="text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
+            className="text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 text-foreground"
           >
             Show only discounted items
           </label>
@@ -466,7 +552,7 @@ const Category = () => {
 
       {/* Brand Filter */}
       <div className="space-y-2 sm:space-y-3">
-        <label className="text-sm sm:text-base font-semibold">Brand</label>
+        <label className="text-sm sm:text-base font-semibold text-foreground">Brand</label>
         <div className="space-y-2">
           {availableBrands.map((brand) => (
             <div key={brand} className="flex items-center space-x-2 sm:space-x-3 py-1">
@@ -478,7 +564,7 @@ const Category = () => {
               />
               <label
                 htmlFor={`brand-${brand}`}
-                className="text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 break-words"
+                className="text-sm sm:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 break-words text-foreground"
               >
                 {brand}
               </label>
@@ -491,7 +577,7 @@ const Category = () => {
 
       {/* Category Filter (for mobile) */}
       <div className="lg:hidden space-y-3">
-        <label className="text-sm font-semibold">Category</label>
+        <label className="text-sm font-semibold text-foreground">Category</label>
         <div className="space-y-2">
           {categories.map((category) => {
             const isActive = activeCategory === category;
@@ -512,8 +598,8 @@ const Category = () => {
                 className={cn(
                   "w-full text-left px-3 py-2 rounded-md text-sm transition-colors",
                   isActive
-                    ? "bg-[#111827] text-white"
-                    : "bg-muted hover:bg-muted/80"
+                    ? "bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground"
+                    : "bg-muted hover:bg-muted/80 text-foreground"
                 )}
               >
                 {category}
@@ -536,14 +622,14 @@ const Category = () => {
           backgroundImage={bannerImage}
         />
         <section className="py-6 sm:py-8 bg-background">
-          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
-            <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr] bg-white rounded-3xl p-5 sm:p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] border border-slate-100">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-10">
+            <div className="grid gap-5 sm:gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr] bg-card rounded-3xl p-4 sm:p-6 md:p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.3)] border border-border">
               <div className="space-y-4 sm:space-y-5">
                 <SectionBadge label="Discover" />
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#040D1F] leading-tight">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground leading-tight">
                   Curated Products for Every Business Journey
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
                   From award-winning trophies to high-performance printing supplies and custom branding essentials,
                   explore a selection tailored for event planners, offices, institutions, and creative studios.
                 </p>
@@ -551,34 +637,34 @@ const Category = () => {
                   {["Trophies", "Printing", "Stationery", "Accessories"].map((item) => (
                     <span
                       key={item}
-                      className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-slate-600"
+                      className="inline-flex items-center gap-2 rounded-full border border-border px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-muted-foreground"
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#111827]" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                       {item}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="relative rounded-2xl bg-gradient-to-br from-[#111827] via-[#0f172a] to-[#1f2937] p-5 sm:p-7 text-white overflow-hidden">
+              <div className="relative rounded-2xl bg-gradient-to-br from-[#111827] via-[#0f172a] to-[#1f2937] p-4 sm:p-6 md:p-7 text-white overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.15),_transparent_55%)]" />
-                <div className="relative z-10 space-y-3">
-                  <p className="text-xs uppercase tracking-[0.4em] text-white/70">Featured Drop</p>
-                  <h3 className="text-2xl font-semibold">Award Ceremony Kit</h3>
-                  <p className="text-sm text-white/80">
+                <div className="relative z-10 space-y-3 sm:space-y-4">
+                  <p className="text-[11px] sm:text-xs uppercase tracking-[0.4em] text-white/70">Featured Drop</p>
+                  <h3 className="text-xl sm:text-2xl font-semibold leading-snug">Award Ceremony Kit</h3>
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
                     Premium trophies, name plates, certificates, and stage branding delivered in 48 hours.
                   </p>
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.3em] text-white/60">Starting</p>
-                      <p className="text-xl font-bold">₹2,500</p>
+                  <div className="flex flex-wrap gap-3 sm:gap-4 pt-3 sm:pt-4">
+                    <div className="min-w-[110px]">
+                      <p className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-white/60">Starting</p>
+                      <p className="text-lg sm:text-xl font-bold">₹2,500</p>
                     </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.3em] text-white/60">Includes</p>
-                      <p className="text-sm text-white/85">Trophies, Certificates, Stage Props</p>
+                    <div className="flex-1 min-w-[150px]">
+                      <p className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-white/60">Includes</p>
+                      <p className="text-xs sm:text-sm text-white/85">Trophies, Certificates, Stage Props</p>
                     </div>
                   </div>
                 </div>
-                <div className="absolute bottom-4 right-4 flex items-center gap-2 text-xs uppercase tracking-[0.35em] text-white/70">
+                <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs uppercase tracking-[0.35em] text-white/70">
                   Limited Slots
                   <div className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
                 </div>
@@ -627,15 +713,12 @@ const Category = () => {
                     type="button"
                     onClick={handleCategoryClick}
                     aria-pressed={isActive}
-                    className={`
-                      px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-medium transition-all duration-300
-                      text-sm sm:text-base
-                      ${
-                        isActive
-                          ? "bg-[#111827] text-white border-2 border-[#111827] shadow-lg shadow-[#111827]/20 scale-105"
-                          : "bg-white text-slate-700 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md"
-                      }
-                    `}
+                    className={cn(
+                      "px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-medium transition-all duration-300 text-sm sm:text-base",
+                      isActive
+                        ? "bg-primary text-primary-foreground border-2 border-primary shadow-lg shadow-primary/20 scale-105"
+                        : "bg-card text-foreground border-2 border-border hover:border-primary/50 hover:bg-muted hover:shadow-md"
+                    )}
                   >
                     {category}
                   </button>
@@ -689,10 +772,10 @@ const Category = () => {
                     </SheetTrigger>
                     <SheetContent 
                       side="left" 
-                      className="w-[90vw] sm:w-[85vw] md:w-[400px] max-w-[400px] p-4 sm:p-6 flex flex-col"
+                      className="w-[90vw] sm:w-[85vw] md:w-[400px] max-w-[400px] p-4 sm:p-6 flex flex-col bg-background border-border"
                     >
                       <SheetHeader className="mb-4 sm:mb-6 flex-shrink-0">
-                        <SheetTitle className="text-lg sm:text-xl">Filter Products</SheetTitle>
+                        <SheetTitle className="text-lg sm:text-xl text-foreground">Filter Products</SheetTitle>
                       </SheetHeader>
                       <div className="mt-4 sm:mt-6 space-y-4 sm:space-y-6 flex-1 overflow-y-auto">
                         {renderFilterContent()}
@@ -722,16 +805,16 @@ const Category = () => {
               {/* Desktop Filter Sidebar */}
               <aside className="hidden lg:block w-full lg:w-72 xl:w-80 flex-shrink-0 self-start">
                 <div 
-                  className="sticky top-[100px] space-y-4 sm:space-y-6 bg-card border rounded-lg p-4 sm:p-5 md:p-6 shadow-sm"
+                  className="sticky top-[100px] space-y-4 sm:space-y-6 bg-card border border-border rounded-lg p-4 sm:p-5 md:p-6 shadow-sm"
                 >
                   <div className="flex items-center justify-between">
-                    <h3 className="text-base sm:text-lg font-semibold">Filters</h3>
+                    <h3 className="text-base sm:text-lg font-semibold text-foreground">Filters</h3>
                     {hasActiveFilters && (
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={clearFilters}
-                        className="h-7 sm:h-8 text-xs"
+                        className="h-7 sm:h-8 text-xs text-foreground hover:text-foreground"
                       >
                         <X className="h-3 w-3 mr-1" />
                         Clear

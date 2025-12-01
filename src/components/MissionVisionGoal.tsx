@@ -68,10 +68,10 @@ const colorClasses = {
 
 const MissionVisionGoal = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
-      <div className="container mx-auto px-4">
+    <section className="mission-vision-goal-section py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         {/* Timeline Items */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-6 lg:gap-8 xl:gap-10 max-w-7xl mx-auto items-stretch">
           {timelineItems.map((item, index) => {
             const colors = colorClasses[item.color as keyof typeof colorClasses];
             const Icon = item.icon;
@@ -79,13 +79,13 @@ const MissionVisionGoal = () => {
             return (
               <div
                 key={index}
-                className="group relative flex flex-col items-center transition-all duration-500 hover:scale-105"
+                className="group relative flex flex-col items-center justify-start transition-all duration-500 hover:scale-[1.02] h-full w-full"
               >
                 {/* Top Semi-circle with enhanced 3D effect */}
                 <div
-                  className={`bg-gradient-to-b ${colors.topGradient} w-28 h-14 md:w-32 md:h-16 lg:w-36 lg:h-[4.5rem] flex items-center justify-center relative z-10 transition-all duration-500 group-hover:shadow-2xl group-hover:w-32 md:group-hover:w-36 lg:group-hover:w-40 group-hover:h-16 md:group-hover:h-[4.5rem] lg:group-hover:h-20 dark:shadow-[0_10px_35px_rgba(15,23,42,0.8)]`}
+                  className={`bg-gradient-to-b ${colors.topGradient} w-24 h-12 sm:w-28 sm:h-14 md:w-28 md:h-14 lg:w-32 lg:h-16 xl:w-36 xl:h-[4.5rem] flex items-center justify-center relative z-10 transition-all duration-500 group-hover:shadow-2xl dark:shadow-[0_10px_35px_rgba(15,23,42,0.8)] mx-auto`}
                   style={{
-                    borderRadius: 'clamp(1.5rem, 2vw + 1rem, 3rem) clamp(1.5rem, 2vw + 1rem, 3rem) 0 0',
+                    borderRadius: 'clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem) clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem) 0 0',
                     boxShadow: `
                       0 8px 32px ${colors.shadowColor},
                       0 4px 16px ${colors.shadowColor},
@@ -98,19 +98,20 @@ const MissionVisionGoal = () => {
                   <div 
                     className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent pointer-events-none"
                     style={{
-                      borderRadius: 'clamp(1.5rem, 2vw + 1rem, 3rem) clamp(1.5rem, 2vw + 1rem, 3rem) 0 0',
+                      borderRadius: 'clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem) clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem) 0 0',
                     }}
                   />
-                  <span className="text-white font-bold text-xl md:text-2xl lg:text-3xl drop-shadow-lg relative z-10 transition-transform duration-500 group-hover:scale-110">
+                  <span className="text-white font-bold text-lg sm:text-xl md:text-xl lg:text-2xl xl:text-3xl drop-shadow-lg relative z-10 transition-transform duration-500 group-hover:scale-110">
                     {item.number}
                   </span>
                 </div>
 
                 {/* White Body with elegant styling */}
                 <div 
-                  className={`bg-white border-x-2 ${colors.borderColor} px-6 py-8 md:px-8 md:py-10 lg:px-10 lg:py-12 -mt-7 md:-mt-8 lg:-mt-9 relative z-0 w-full min-h-[300px] md:min-h-[320px] lg:min-h-[340px] flex flex-col shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:border-opacity-60 dark:bg-slate-900/75 dark:border-slate-800 dark:shadow-[0_15px_35px_rgba(2,6,23,0.55)]`}
+                  className={`bg-white border-x-2 ${colors.borderColor} px-5 py-6 sm:px-6 sm:py-8 md:px-6 md:py-8 lg:px-8 lg:py-10 xl:px-10 xl:py-12 -mt-6 sm:-mt-7 md:-mt-7 lg:-mt-8 xl:-mt-9 relative z-0 w-full flex flex-col flex-grow shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:border-opacity-60 dark:bg-slate-900/75 dark:border-slate-800 dark:shadow-[0_15px_35px_rgba(2,6,23,0.55)]`}
                   style={{
-                    borderRadius: 'clamp(0.75rem, 1.5vw + 0.5rem, 1.5rem)',
+                    borderRadius: 'clamp(0.75rem, 1vw + 0.5rem, 1.25rem)',
+                    minHeight: 'clamp(280px, 35vw, 360px)',
                     boxShadow: `
                       0 4px 20px rgba(0, 0, 0, 0.08),
                       0 2px 8px rgba(0, 0, 0, 0.04),
@@ -122,28 +123,28 @@ const MissionVisionGoal = () => {
                   <div 
                     className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"
                     style={{
-                      borderRadius: 'clamp(0.75rem, 1.5vw + 0.5rem, 1.5rem) clamp(0.75rem, 1.5vw + 0.5rem, 1.5rem) 0 0',
+                      borderRadius: 'clamp(0.75rem, 1vw + 0.5rem, 1.25rem) clamp(0.75rem, 1vw + 0.5rem, 1.25rem) 0 0',
                     }}
                   />
                   
                   <h3
-                    className={`${colors.text} font-bold text-lg md:text-xl lg:text-2xl mb-4 md:mb-5 lg:mb-6 uppercase tracking-wider transition-colors duration-300 group-hover:opacity-90`}
+                    className={`${colors.text} font-bold text-base sm:text-lg md:text-lg lg:text-xl xl:text-2xl mb-3 sm:mb-4 md:mb-4 lg:mb-5 xl:mb-6 uppercase tracking-wider transition-colors duration-300 group-hover:opacity-90 mt-2`}
                     style={{
                       transition: 'color 0.3s ease, opacity 0.3s ease',
                     }}
                   >
                     {item.title}
                   </h3>
-                  <p className="text-sm md:text-base lg:text-lg text-gray-700 leading-relaxed flex-grow font-light dark:text-slate-200">
+                  <p className="text-sm sm:text-base md:text-base lg:text-base xl:text-lg text-gray-700 leading-relaxed flex-grow font-light dark:text-slate-200">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Bottom Semi-circle with enhanced 3D effect */}
                 <div
-                  className={`bg-gradient-to-t ${colors.bottomGradient} w-28 h-14 md:w-32 md:h-16 lg:w-36 lg:h-[4.5rem] flex items-center justify-center relative z-10 -mt-7 md:-mt-8 lg:-mt-9 transition-all duration-500 group-hover:shadow-2xl group-hover:w-32 md:group-hover:w-36 lg:group-hover:w-40 group-hover:h-16 md:group-hover:h-[4.5rem] lg:group-hover:h-20 dark:shadow-[0_-10px_35px_rgba(15,23,42,0.8)]`}
+                  className={`bg-gradient-to-t ${colors.bottomGradient} w-24 h-12 sm:w-28 sm:h-14 md:w-28 md:h-14 lg:w-32 lg:h-16 xl:w-36 xl:h-[4.5rem] flex items-center justify-center relative z-10 -mt-6 sm:-mt-7 md:-mt-7 lg:-mt-8 xl:-mt-9 transition-all duration-500 group-hover:shadow-2xl dark:shadow-[0_-10px_35px_rgba(15,23,42,0.8)] mx-auto`}
                   style={{
-                    borderRadius: '0 0 clamp(1.5rem, 2vw + 1rem, 3rem) clamp(1.5rem, 2vw + 1rem, 3rem)',
+                    borderRadius: '0 0 clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem) clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem)',
                     boxShadow: `
                       0 -8px 32px ${colors.shadowColor},
                       0 -4px 16px ${colors.shadowColor},
@@ -156,11 +157,11 @@ const MissionVisionGoal = () => {
                   <div 
                     className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent pointer-events-none"
                     style={{
-                      borderRadius: '0 0 clamp(1.5rem, 2vw + 1rem, 3rem) clamp(1.5rem, 2vw + 1rem, 3rem)',
+                      borderRadius: '0 0 clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem) clamp(1.25rem, 1.5vw + 0.75rem, 2.5rem)',
                     }}
                   />
                   <Icon 
-                    className="text-white w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 drop-shadow-lg relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6" 
+                    className="text-white w-5 h-5 sm:w-6 sm:h-6 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 drop-shadow-lg relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6" 
                     strokeWidth={2.5} 
                   />
                 </div>
@@ -170,7 +171,7 @@ const MissionVisionGoal = () => {
                   className="absolute inset-0 rounded-xl md:rounded-2xl lg:rounded-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none blur-xl"
                   style={{
                     background: `radial-gradient(circle, ${colors.shadowColor} 0%, transparent 70%)`,
-                    borderRadius: 'clamp(0.75rem, 1.5vw + 0.5rem, 1.5rem)',
+                    borderRadius: 'clamp(0.75rem, 1vw + 0.5rem, 1.25rem)',
                   }}
                 />
               </div>

@@ -4,6 +4,7 @@ import PageBanner from "@/components/PageBanner";
 import MissionVisionGoal from "@/components/MissionVisionGoal";
 import trophyBanner from "@/assets/slider.jpg";
 import pvkShopImage from "@/assets/pvk shop.webp";
+import founderImage from "@/assets/founder.jpg";
 import { Award, Users, Target, Heart, ArrowRight } from "lucide-react";
 
 const valueHighlights = [
@@ -56,7 +57,7 @@ const About = () => {
         {/* Mission, Vision, Goal Section */}
         <MissionVisionGoal />
 
-        {/* Main Content */}
+        {/* Main Content - Our Story & Values */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
@@ -106,7 +107,7 @@ const About = () => {
                   key={title}
                   className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br ${gradient} p-[1px] shadow-xl transition duration-500 hover:-translate-y-1.5 hover:shadow-2xl`}
                 >
-                  <div className="relative flex h-full flex-col gap-6 rounded-[calc(1.5rem-1px)] bg-white/10 p-6 sm:p-8 text-white backdrop-blur">
+                  <div className="relative flex h-full flex-col items-center gap-6 rounded-[calc(1.5rem-1px)] bg-white/10 p-6 sm:p-8 text-center text-white backdrop-blur">
                     <div className="inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em]">
                       {tag}
                     </div>
@@ -123,6 +124,79 @@ const About = () => {
                   </div>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Founder’s Message Section (after Our Story) */}
+        <section className="founder-message-section py-16">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-2 items-center founder-message-shell">
+              {/* Left Column - Founder Image */}
+              <div className="founder-message-image-wrapper">
+                <div className="founder-message-image-frame">
+                  <div className="founder-message-image-inner">
+                    <img
+                      src={founderImage}
+                      alt="Founder of PVK Enterprises"
+                      loading="lazy"
+                      decoding="async"
+                      className="founder-message-image"
+                    />
+                    <div className="founder-message-image-overlay" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column - Text Content */}
+              <div className="founder-message-content space-y-6">
+                <div className="space-y-3">
+                  <div className="founder-message-eyebrow-row">
+                    <span className="founder-message-accent-line" aria-hidden="true" />
+                    <p className="founder-message-eyebrow text-xs font-semibold tracking-[0.3em] uppercase">
+                      Founder&apos;s Message
+                    </p>
+                  </div>
+                  <h2 className="founder-message-title text-3xl sm:text-4xl font-bold">
+                    Our Vision: Crafting Excellence
+                  </h2>
+                </div>
+
+                <div className="space-y-4 text-sm sm:text-base leading-relaxed text-slate-600">
+                  <p>
+                    At <strong>PVK ENTERPRISES</strong>, our journey began with a simple belief — every achievement
+                    deserves to be remembered with pride. What started as a small initiative driven by passion has grown
+                    into a brand dedicated to crafting trophies and awards that inspire, honor, and create lifelong
+                    memories.
+                  </p>
+                  <p>
+                    From day one, our focus has been on quality, creativity, and customer trust. We understand that each
+                    award we create carries an emotion, a moment, and a story behind it. That is why we approach every
+                    project with the utmost care, ensuring precision in design, excellence in craftsmanship, and a
+                    commitment to delivering only the best.
+                  </p>
+                  <p>
+                    As we continue to grow, our mission remains unchanged: to celebrate success in the most meaningful
+                    and beautiful way possible.
+                  </p>
+                  <p>
+                    Thank you for believing in us and allowing us to be a part of your special moments. Together,
+                    let&apos;s continue celebrating achievements that matter.
+                  </p>
+                </div>
+
+                <div className="founder-message-signature flex items-center gap-4 pt-2">
+                  <div className="founder-message-signature-mark" aria-hidden="true" />
+                  <div className="space-y-0.5">
+                    <p className="founder-message-signature-name text-base sm:text-lg font-semibold text-slate-900">
+                      Pramod-vk
+                    </p>
+                    <p className="founder-message-signature-role text-xs sm:text-sm text-slate-500">
+                      Founder &amp; Chief Executive Officer
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>

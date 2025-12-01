@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Truck, ShieldCheck, Headphones, CreditCard, Star, ArrowRight } from "lucide-react";
+import { Truck, ShieldCheck, Headphones, CreditCard, Star, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import type { CSSProperties } from "react";
 import trophyImage from "@/assets/trophy-product.jpg";
 import heroSliderImage from "@/assets/slider.jpg";
@@ -612,11 +612,47 @@ const Index = () => {
       question: "Do you ship trophies across India?",
       answer:
         "We safely pack and dispatch nationwide via insured courier partners. Local pickup is also available from our Malappuram studio."
+    },
+    {
+      question: "What payment methods do you accept?",
+      answer:
+        "We accept cash, credit/debit cards, UPI, bank transfers, and other digital payment methods. Payment terms may vary based on order size and delivery timeline."
+    },
+    {
+      question: "Do you provide bulk order discounts?",
+      answer:
+        "Yes. We offer competitive pricing for bulk orders. Contact our sales team with your quantity requirements for a customized quote and special pricing."
+    },
+    {
+      question: "Can you customize visiting cards and wedding invitations?",
+      answer:
+        "Absolutely. We specialize in premium visiting cards with spot UV, foil stamping, and textured finishes. We also design and print luxurious wedding invitation suites tailored to your celebration theme."
+    },
+    {
+      question: "What printing services do you offer?",
+      answer:
+        "We provide offset printing for high-volume runs, custom printing for events and promotions, notice printing for announcements, and specialized services like rubber stamps and branded stationery."
+    },
+    {
+      question: "Do you offer PAN card and Jio Fiber services?",
+      answer:
+        "Yes. We are authorized service providers for UTI PAN card applications and Jio Fiber connections. Visit our studio or contact us to avail these services with expert guidance."
+    },
+    {
+      question: "What is your return or refund policy?",
+      answer:
+        "We stand behind the quality of our products. If you receive a damaged or defective item, contact us within 3 days of delivery. Custom-made items may have different policies, which we'll discuss at the time of order."
+    },
+    {
+      question: "Can you help with corporate gifting solutions?",
+      answer:
+        "Yes. We design complete corporate gifting packages including customized trophies, branded notebooks, office stationery sets, and premium accessories. We work with businesses to create meaningful gifts that reflect their brand values."
     }
   ];
 
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceCard | null>(null);
+  const [showAllFaqs, setShowAllFaqs] = useState(false);
 
   const handleOpenInquiry = (service: ServiceCard) => {
     setSelectedService(service);
@@ -819,9 +855,9 @@ const Index = () => {
       </section>
 
       <Dialog open={isInquiryOpen} onOpenChange={handleDialogChange}>
-        <DialogContent className="w-full max-w-[620px] sm:max-w-[660px] p-0 border-0 bg-transparent text-card-foreground shadow-2xl rounded-[16px] sm:rounded-[22px] max-h-[88vh] overflow-hidden">
-          <div className="flex flex-col md:flex-row bg-white rounded-[16px] sm:rounded-[22px] overflow-hidden h-full">
-            <div className="flex-1 md:basis-[55%] order-2 md:order-1 px-5 sm:px-7 py-5 flex flex-col gap-3 overflow-y-auto">
+        <DialogContent className="inquiry-dialog-content text-card-foreground">
+          <div className="inquiry-dialog-shell">
+            <div className="inquiry-dialog-form flex-1 md:basis-[55%] order-2 md:order-1 flex flex-col gap-3">
               <DialogHeader className="text-left space-y-1.5">
                 <DialogTitle className="text-2xl md:text-[28px] font-bold tracking-tight text-slate-900 leading-tight">
                   {selectedService ? `Inquire About ${selectedService.title}` : "Call Me Back"}
@@ -939,7 +975,12 @@ const Index = () => {
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/70 opacity-70 group-hover:opacity-85 transition-opacity duration-500" />
+                <div 
+                  className="absolute inset-0 transition-opacity duration-500" 
+                  style={{
+                    background: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.65) 45%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.2) 75%, rgba(0, 0, 0, 0.05) 90%, transparent 100%)'
+                  }}
+                />
                 <div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-7 md:p-8 text-white">
                   <div className="space-y-3">
                     <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80">
@@ -948,11 +989,8 @@ const Index = () => {
                     <h3 className="text-2xl sm:text-3xl font-semibold leading-tight">
                       {item.title}
                     </h3>
-                    <p className="text-sm text-white/80 max-w-xs">
-                      Expertly curated products aligned with your events, offices, and premium gifting needs.
-                    </p>
                   </div>
-                  <div className="flex items-center justify-between pt-4">
+                  <div className="flex items-center justify-between">
                     <span className="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.15em]">
                       Explore Product
                       <ArrowRight className="h-4 w-4" />
@@ -987,7 +1025,10 @@ const Index = () => {
                 <AccordionItem
                   key={faq.question}
                   value={`faq-${index}`}
-                  className="border-0"
+                  className={cn(
+                    "border-0",
+                    !showAllFaqs && index >= 6 && "hidden-faq-item"
+                  )}
                 >
                   <AccordionTrigger className="px-4 sm:px-5 md:px-6 text-left text-sm sm:text-base md:text-lg font-semibold text-card-foreground">
                     {faq.question}
@@ -998,6 +1039,27 @@ const Index = () => {
                 </AccordionItem>
               ))}
             </Accordion>
+            {faqs.length > 6 && (
+              <div className="flex justify-center py-4 sm:py-5 md:py-6 border-t border-border">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowAllFaqs(!showAllFaqs)}
+                  className="show-more-btn flex items-center gap-2 text-sm sm:text-base font-semibold text-card-foreground hover:text-primary transition-colors"
+                >
+                  {showAllFaqs ? (
+                    <>
+                      Show Less
+                      <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </>
+                  ) : (
+                    <>
+                      Explore More
+                      <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>

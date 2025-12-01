@@ -182,15 +182,15 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
 
           {testimonials.length > 1 && (
             <div className="mt-10 flex flex-col items-center gap-4">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center gap-3 w-full max-w-md">
                 <button
                   onClick={scrollPrev}
-                  className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 text-foreground/70 hover:text-foreground hover:border-foreground/60 transition-colors bg-white/80 shadow-sm backdrop-blur dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:text-white dark:hover:border-white/40"
+                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-slate-300 text-foreground/70 hover:text-foreground hover:border-foreground/60 transition-colors bg-white/80 shadow-sm backdrop-blur dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:text-white dark:hover:border-white/40"
                   aria-label="Previous slide"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
-                <div className="w-48 h-2 rounded-full bg-slate-200 overflow-hidden dark:bg-white/10">
+                <div className="flex-1 min-w-[120px] h-2 rounded-full bg-slate-200 overflow-hidden dark:bg-white/10">
                   <div
                     className="h-full rounded-full transition-all duration-300"
                     style={{
@@ -201,7 +201,7 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
                 </div>
                 <button
                   onClick={scrollNext}
-                  className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 text-foreground/70 hover:text-foreground hover:border-foreground/60 transition-colors bg-white/80 shadow-sm backdrop-blur dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:text-white dark:hover:border-white/40"
+                  className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-slate-300 text-foreground/70 hover:text-foreground hover:border-foreground/60 transition-colors bg-white/80 shadow-sm backdrop-blur dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:text-white dark:hover:border-white/40"
                   aria-label="Next slide"
                 >
                   <ChevronRight className="h-5 w-5" />
