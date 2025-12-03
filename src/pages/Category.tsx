@@ -3,17 +3,9 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import PageBanner from "@/components/PageBanner";
 import SectionBadge from "@/components/SectionBadge";
-import trophyImage from "@/assets/trophy-product.jpg";
-import officeImage from "@/assets/office-supplies.jpg";
-import stampImage from "@/assets/rubber-stamps.jpg";
-import printerImage from "@/assets/printer-equipment.jpg";
-import mobileImage from "@/assets/mobile-accessories.jpg";
 import bannerImage from "@/assets/banner.png";
-import customPrintingImage from "@/assets/ct-customprinting.png";
-import offsetPrintingImage from "@/assets/ct-offsetprinting.png";
-import frameStudioImage from "@/assets/ct-framestudio.jpg";
 import { useEffect, useMemo, useState, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -22,206 +14,36 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Separator } from "@/components/ui/separator";
 import { Filter, X, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  getAllProductsWithExtras,
+  getCategoryBrandMap,
+  getCustomCategories,
+  getCategoryOverrideMap,
+  type CategoryBrandMap,
+} from "@/data/productStore";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from "@/components/ui/pagination";
 
 const Category = () => {
-  const products = [
-    {
-      id: "golden-trophy-laurel",
-      name: "Golden Trophy with Laurel Wreath",
-      price: 2500,
-      image: trophyImage,
-      discount: 10,
-      category: "Trophies & Awards",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "thermal-paper-roll-80",
-      name: "THERMAL PAPER ROLL 80mm x 50m",
-      price: 450,
-      image: printerImage,
-      category: "Printer Supplies",
-      brand: "Generic"
-    },
-    {
-      id: "colop-printer-38-dater",
-      name: "COLOP Printer 38 Dater Self-inking Stamp",
-      price: 1250,
-      image: stampImage,
-      discount: 15,
-      category: "Custom Rubber Stamps",
-      brand: "COLOP"
-    },
-    {
-      id: "premium-office-notebook",
-      name: "Premium Office Notebook A4 Size",
-      price: 350,
-      image: officeImage,
-      category: "Office Stationery",
-      brand: "Premium Office"
-    },
-    {
-      id: "sorakshi-photo-frame",
-      name: "Sorakshi Quartz Photo Frame With Clock",
-      price: 2800,
-      image: trophyImage,
-      category: "Trophies & Awards",
-      brand: "Pvk"
-    },
-    {
-      id: "smartphone-case-bundle",
-      name: "Smartphone Case & Screen Protector Bundle",
-      price: 650,
-      image: mobileImage,
-      discount: 20,
-      category: "Mobile Accessories",
-      brand: "Erd"
-    },
-    {
-      id: "jmd-gold-lamination",
-      name: "JMD Gold Lamination Pouch 125 Micron",
-      price: 890,
-      image: officeImage,
-      category: "Office Stationery",
-      brand: "JMD"
-    },
-    {
-      id: "tnpl-copier-a4",
-      name: "TNPL COPIER PAPEL GSM A4 Size 500 Sheets",
-      price: 420,
-      image: printerImage,
-      category: "Printer Supplies",
-      brand: "TNPL"
-    },
-    {
-      id: "crystal-trophy-wood-base",
-      name: "Crystal Trophy with Wooden Base",
-      price: 3500,
-      image: trophyImage,
-      discount: 5,
-      category: "Trophies & Awards",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "professional-rubber-stamp-set",
-      name: "Professional Rubber Stamp Set",
-      price: 1800,
-      image: stampImage,
-      category: "Custom Rubber Stamps",
-      brand: "Professional"
-    },
-    {
-      id: "premium-wireless-earbuds",
-      name: "Premium Wireless Earbuds",
-      price: 2200,
-      image: mobileImage,
-      discount: 25,
-      category: "Mobile Accessories",
-      brand: "Erd"
-    },
-    {
-      id: "executive-pen-set",
-      name: "Executive Pen Set with Box",
-      price: 950,
-      image: officeImage,
-      category: "Office Stationery",
-      brand: "Premium Office"
-    },
-    {
-      id: "custom-t-shirt-printing",
-      name: "Custom T-Shirt Printing Service",
-      price: 450,
-      image: customPrintingImage,
-      category: "Custom Printing",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "banner-printing-service",
-      name: "Banner & Flex Printing Service",
-      price: 1200,
-      image: customPrintingImage,
-      discount: 10,
-      category: "Custom Printing",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "business-card-offset",
-      name: "Business Card Offset Printing (1000 pcs)",
-      price: 1800,
-      image: offsetPrintingImage,
-      category: "Offset Printing",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "brochure-offset-printing",
-      name: "Brochure Offset Printing (500 pcs)",
-      price: 2500,
-      image: offsetPrintingImage,
-      discount: 15,
-      category: "Offset Printing",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "wooden-photo-frame",
-      name: "Premium Wooden Photo Frame Set",
-      price: 1200,
-      image: frameStudioImage,
-      category: "Frame Studio",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "display-pedestal",
-      name: "Display Pedestal for Trophies",
-      price: 2800,
-      image: frameStudioImage,
-      discount: 12,
-      category: "Frame Studio",
-      brand: "Pvk Enterprises"
-    },
-    {
-      id: "wedding-invite-classic",
-      name: "Handcrafted Wedding Invitation Suite",
-      price: 3200,
-      image: customPrintingImage,
-      category: "Wedding Cards",
-      brand: "PVK Custom"
-    },
-    {
-      id: "notebook-custom-luxe",
-      name: "Executive Customized Notebook Set",
-      price: 950,
-      image: officeImage,
-      category: "Customized Notebook",
-      brand: "Premium Office"
-    },
-    {
-      id: "student-id-premium",
-      name: "Premium Student ID Card Package",
-      price: 260,
-      image: printerImage,
-      category: "Student ID",
-      brand: "PVK Print"
-    },
-    {
-      id: "visiting-card-velvet",
-      name: "Velvet Touch Visiting Card (100 pcs)",
-      price: 780,
-      image: offsetPrintingImage,
-      category: "Visiting Card",
-      brand: "PVK Print"
-    },
-    {
-      id: "notice-printing-rush",
-      name: "Rush Notice Printing (A3 Laminated)",
-      price: 540,
-      image: customPrintingImage,
-      category: "Notice Printing",
-      brand: "PVK Custom"
-    }
-  ];
+  const navigate = useNavigate();
+  // Adapt shared data (base + admin extras) to the shape expected by ProductCard
+  const products = getAllProductsWithExtras().map((product) => ({
+    ...product,
+    image: product.imageURL
+  }));
 
-  const categories = useMemo(
-    () => [
-      "All Products",
+  const customCategories = useMemo(() => getCustomCategories(), []);
+  const categoryOverrides = useMemo(() => getCategoryOverrideMap(), []);
+
+  const categories = useMemo(() => {
+    const defaultBase = [
       "Trophies & Awards",
       "Office Stationery",
       "Custom Rubber Stamps",
@@ -234,10 +56,26 @@ const Category = () => {
       "Customized Notebook",
       "Student ID",
       "Visiting Card",
-      "Notice Printing"
-    ],
-    []
-  );
+      "Notice Printing",
+    ];
+
+    const effectiveDefaults = defaultBase
+      .map((base) => {
+        const override = categoryOverrides[base];
+        if (override?.hidden) return null;
+        return override?.name ?? base;
+      })
+      .filter((name): name is string => Boolean(name));
+
+    const merged = ["All Products", ...effectiveDefaults, ...customCategories];
+    const seen = new Set<string>();
+
+    return merged.filter((name) => {
+      if (!name || seen.has(name)) return false;
+      seen.add(name);
+      return true;
+    });
+  }, [customCategories, categoryOverrides]);
 
   // Optional master brand catalog per category to power the Brand filter,
   // even if some brands don't yet have explicit products created.
@@ -351,6 +189,8 @@ const Category = () => {
   const [sortBy, setSortBy] = useState<string>("default");
   const [showDiscountedOnly, setShowDiscountedOnly] = useState(false);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [showAllBrands, setShowAllBrands] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Calculate min and max prices from products
   const priceRangeData = useMemo(() => {
@@ -360,6 +200,9 @@ const Category = () => {
       max: Math.max(...prices)
     };
   }, []);
+
+  // Dynamic admin-created brand catalog from localStorage
+  const dynamicBrandMap: CategoryBrandMap = useMemo(() => getCategoryBrandMap(), []);
 
   // Derive brand list from currently scoped category selection
   const availableBrands = useMemo(() => {
@@ -373,11 +216,12 @@ const Category = () => {
       .filter((brand): brand is string => Boolean(brand));
 
     const configuredBrands = categoryBrandCatalog[activeCategory] || [];
+    const dynamicBrands = dynamicBrandMap[activeCategory] || [];
 
-    const brands = Array.from(new Set([...productBrands, ...configuredBrands]));
+    const brands = Array.from(new Set([...productBrands, ...configuredBrands, ...dynamicBrands]));
 
     return brands.sort();
-  }, [activeCategory, products]);
+  }, [activeCategory, products, dynamicBrandMap]);
 
   // Ensure previously selected brands remain valid when category changes
   useEffect(() => {
@@ -408,6 +252,16 @@ const Category = () => {
         // scrolling to top on page navigation. Internal category filtering will
         // handle scrolling when user clicks filter buttons.
       }
+    }
+
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      const pageNumber = parseInt(pageParam, 10);
+      if (!Number.isNaN(pageNumber) && pageNumber > 0) {
+        setCurrentPage(pageNumber);
+      }
+    } else {
+      setCurrentPage(1);
     }
   }, [urlQuery, searchParams, categories]);
 
@@ -469,6 +323,27 @@ const Category = () => {
     return filtered;
   }, [normalizedQuery, isAllProducts, activeCategory, priceRange, sortBy, showDiscountedOnly, selectedBrands]);
 
+  // Reset to first page whenever core filters/search change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [normalizedQuery, isAllProducts, activeCategory, priceRange, sortBy, showDiscountedOnly, selectedBrands]);
+
+  const pageSize = 12;
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  const currentPageSafe = Math.min(currentPage, totalPages);
+
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPageSafe - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredProducts.slice(startIndex, endIndex);
+  }, [filteredProducts, currentPageSafe, pageSize]);
+
+  const startItem = filteredProducts.length === 0 ? 0 : (currentPageSafe - 1) * pageSize + 1;
+  const endItem =
+    filteredProducts.length === 0
+      ? 0
+      : Math.min(filteredProducts.length, startItem + paginatedProducts.length - 1);
+
   // Clear all filters
   const clearFilters = () => {
     setPriceRange([priceRangeData.min, priceRangeData.max]);
@@ -501,6 +376,60 @@ const Category = () => {
   };
 
   const hasActiveSearch = Boolean(normalizedQuery);
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPageSafe) return;
+    setCurrentPage(page);
+
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (page === 1) {
+      newSearchParams.delete("page");
+    } else {
+      newSearchParams.set("page", String(page));
+    }
+    setSearchParams(newSearchParams, { replace: true });
+
+    if (productsSectionRef.current) {
+      productsSectionRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  };
+
+  const createPageRange = () => {
+    const pages: (number | "ellipsis")[] = [];
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i += 1) {
+        pages.push(i);
+      }
+      return pages;
+    }
+
+    const leftSibling = Math.max(2, currentPageSafe - 1);
+    const rightSibling = Math.min(totalPages - 1, currentPageSafe + 1);
+
+    pages.push(1);
+
+    if (leftSibling > 2) {
+      pages.push("ellipsis");
+    }
+
+    for (let i = leftSibling; i <= rightSibling; i += 1) {
+      pages.push(i);
+    }
+
+    if (rightSibling < totalPages - 1) {
+      pages.push("ellipsis");
+    }
+
+    pages.push(totalPages);
+
+    return pages;
+  };
+
+  const paginationRange = createPageRange();
 
   // Render filter content (used in both desktop sidebar and mobile sheet)
   const renderFilterContent = () => (
@@ -553,9 +482,18 @@ const Category = () => {
       {/* Brand Filter */}
       <div className="space-y-2 sm:space-y-3">
         <label className="text-sm sm:text-base font-semibold text-foreground">Brand</label>
-        <div className="space-y-2">
+        <div
+          id="brand-list"
+          className={cn(
+            "space-y-2 brand-list-container",
+            showAllBrands && "expanded"
+          )}
+        >
           {availableBrands.map((brand) => (
-            <div key={brand} className="flex items-center space-x-2 sm:space-x-3 py-1">
+            <div
+              key={brand}
+              className="brand-checkbox-item flex items-center space-x-2 sm:space-x-3 py-1"
+            >
               <Checkbox
                 id={`brand-${brand}`}
                 checked={selectedBrands.includes(brand)}
@@ -571,6 +509,20 @@ const Category = () => {
             </div>
           ))}
         </div>
+        {availableBrands.length > 6 && (
+          <button
+            id="toggle-brands-btn"
+            type="button"
+            onClick={() => setShowAllBrands((prev) => !prev)}
+            className="toggle-brands-btn inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-primary hover:text-primary/80 transition-colors mt-1"
+          >
+            <span>
+              {showAllBrands
+                ? "Show Less ▲"
+                : `Show More Brands (${availableBrands.length - 6} Hidden) ▼`}
+            </span>
+          </button>
+        )}
       </div>
 
       <Separator className="my-4 sm:my-6" />
@@ -803,26 +755,30 @@ const Category = () => {
 
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-start">
               {/* Desktop Filter Sidebar */}
-              <aside className="hidden lg:block w-full lg:w-72 xl:w-80 flex-shrink-0 self-start">
+              <aside className="hidden lg:block w-full lg:w-72 xl:w-80 flex-shrink-0 self-stretch">
                 <div 
-                  className="sticky top-[100px] space-y-4 sm:space-y-6 bg-card border border-border rounded-lg p-4 sm:p-5 md:p-6 shadow-sm"
+                  className="filter-sidebar sticky top-[100px] bg-card border border-border rounded-lg shadow-sm"
                 >
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-base sm:text-lg font-semibold text-foreground">Filters</h3>
-                    {hasActiveFilters && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={clearFilters}
-                        className="h-7 sm:h-8 text-xs text-foreground hover:text-foreground"
-                      >
-                        <X className="h-3 w-3 mr-1" />
-                        Clear
-                      </Button>
-                    )}
+                  <div className="flex flex-col p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-6">
+                    <div className="flex items-center justify-between flex-shrink-0">
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground">Filters</h3>
+                      {hasActiveFilters && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={clearFilters}
+                          className="h-7 sm:h-8 text-xs text-foreground hover:text-foreground"
+                        >
+                          <X className="h-3 w-3 mr-1" />
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    <Separator className="flex-shrink-0" />
+                    <div className="space-y-4 sm:space-y-6 flex-1">
+                      {renderFilterContent()}
+                    </div>
                   </div>
-                  <Separator />
-                  {renderFilterContent()}
                 </div>
               </aside>
 
@@ -846,11 +802,96 @@ const Category = () => {
                   </div>
                 )}
                 {filteredProducts.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-                    {filteredProducts.map((product) => (
-                      <ProductCard key={product.id} {...product} />
-                    ))}
-                  </div>
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+                      {paginatedProducts.map((product) => (
+                        <ProductCard
+                          key={product.id}
+                          {...product}
+                          onCardClick={() =>
+                            navigate(`/product/${encodeURIComponent(product.id)}`)
+                          }
+                        />
+                      ))}
+                    </div>
+
+                    {filteredProducts.length > pageSize && (
+                      <div className="mt-6 sm:mt-8 flex flex-col items-center gap-2 sm:gap-3">
+                        <p className="text-xs sm:text-sm text-muted-foreground">
+                          Showing{" "}
+                          <span className="font-medium text-foreground">
+                            {startItem.toLocaleString()}
+                          </span>
+                          {" – "}
+                          <span className="font-medium text-foreground">
+                            {endItem.toLocaleString()}
+                          </span>{" "}
+                          of{" "}
+                          <span className="font-medium text-foreground">
+                            {filteredProducts.length.toLocaleString()}
+                          </span>{" "}
+                          products
+                        </p>
+
+                        {totalPages > 1 && (
+                          <Pagination className="mt-1">
+                            <PaginationContent>
+                              <PaginationItem>
+                                <PaginationPrevious
+                                  href="#"
+                                  aria-disabled={currentPageSafe === 1}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    if (currentPageSafe > 1) {
+                                      handlePageChange(currentPageSafe - 1);
+                                    }
+                                  }}
+                                  className={currentPageSafe === 1 ? "pointer-events-none opacity-50" : ""}
+                                />
+                              </PaginationItem>
+
+                              {paginationRange.map((page, index) =>
+                                page === "ellipsis" ? (
+                                  <PaginationItem key={`ellipsis-${index}`}>
+                                    <PaginationEllipsis />
+                                  </PaginationItem>
+                                ) : (
+                                  <PaginationItem key={page}>
+                                    <PaginationLink
+                                      href="#"
+                                      isActive={page === currentPageSafe}
+                                      onClick={(event) => {
+                                        event.preventDefault();
+                                        handlePageChange(page);
+                                      }}
+                                    >
+                                      {page}
+                                    </PaginationLink>
+                                  </PaginationItem>
+                                )
+                              )}
+
+                              <PaginationItem>
+                                <PaginationNext
+                                  href="#"
+                                  aria-disabled={currentPageSafe === totalPages}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    if (currentPageSafe < totalPages) {
+                                      handlePageChange(currentPageSafe + 1);
+                                    }
+                                  }}
+                                  className={
+                                    currentPageSafe === totalPages ? "pointer-events-none opacity-50" : ""
+                                  }
+                                />
+                              </PaginationItem>
+                            </PaginationContent>
+                          </Pagination>
+                        )}
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="text-center py-16 sm:py-20">
                     <div className="max-w-md mx-auto">

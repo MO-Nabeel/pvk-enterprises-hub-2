@@ -18,6 +18,17 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Refund = lazy(() => import("./pages/Refund"));
 const Shipping = lazy(() => import("./pages/Shipping"));
 const Terms = lazy(() => import("./pages/Terms"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPostDetail = lazy(() => import("./pages/BlogPostDetail"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminSpecialServices = lazy(() => import("./pages/admin/AdminSpecialServices"));
+const AdminCustomers = lazy(() => import("./pages/admin/AdminCustomers"));
+const AdminProducts = lazy(() => import("./pages/admin/AdminProducts"));
+const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
+const AdminSales = lazy(() => import("./pages/admin/AdminSales"));
+const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
+const AdminBlogs = lazy(() => import("./pages/admin/AdminBlogs"));
 
 const queryClient = new QueryClient();
 
@@ -39,6 +50,10 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/category" element={<Category />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/product" element={<ProductDetail />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPostDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/privacy" element={<Privacy />} />
@@ -49,6 +64,14 @@ const App = () => (
             <Route path="/shipping.html" element={<Shipping />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/terms.html" element={<Terms />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/special-services" element={<AdminSpecialServices />} />
+            <Route path="/admin/customers" element={<AdminCustomers />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/sales" element={<AdminSales />} />
+            <Route path="/admin/leads" element={<AdminLeads />} />
+            <Route path="/admin/blogs" element={<AdminBlogs />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

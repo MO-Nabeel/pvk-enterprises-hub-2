@@ -216,11 +216,10 @@ const Contact = () => {
 
                   <div className="space-y-2">
                     <label htmlFor="message" className="text-sm font-medium text-slate-700">
-                      Message *
+                      Message (Optional)
                     </label>
                     <Textarea
                       id="message"
-                      required
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Your message..."

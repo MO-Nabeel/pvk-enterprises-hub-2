@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { MouseEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShoppingCart, Check } from "lucide-react";
 import { addItemToCart, getCartItems, CART_COUNT_EVENT } from "@/lib/cart";
@@ -11,10 +10,10 @@ interface ProductCardProps {
   price: number;
   image: string;
   discount?: number;
+  onCardClick?: () => void;
 }
 
-const ProductCard = ({ id, name, price, image, discount }: ProductCardProps) => {
-  const navigate = useNavigate();
+const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductCardProps) => {
   const isProductInCart = () => getCartItems().some((item) => item.id === id);
   const [isInCart, setIsInCart] = useState(isProductInCart);
   const [isAdding, setIsAdding] = useState(false);
@@ -35,9 +34,15 @@ const ProductCard = ({ id, name, price, image, discount }: ProductCardProps) => 
     };
   }, [id]);
 
-  const handleButtonClick = async () => {
+  const handleButtonClick = async (event: MouseEvent<HTMLButtonElement>) => {
+    // Prevent the card-level click handler (which navigates to PDP) from firing
+    // when the primary CTA button is clicked.
+    event.stopPropagation();
+
     if (isInCart) {
-      navigate("/cart");
+      if (typeof window !== "undefined") {
+        window.location.href = "/cart";
+      }
       return;
     }
 
@@ -52,7 +57,15 @@ const ProductCard = ({ id, name, price, image, discount }: ProductCardProps) => 
   const originalPrice = discount ? Math.round(price / (1 - discount / 100)) : null;
 
   return (
-    <div className="group bg-card rounded-xl sm:rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 ease-out will-change-transform hover:scale-[1.02] hover:border-primary/20">
+    <div
+      className={cn(
+        "group bg-card rounded-xl sm:rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 ease-out will-change-transform hover:scale-[1.02] hover:border-primary/20",
+        onCardClick && "cursor-pointer"
+      )}
+      onClick={onCardClick}
+      role={onCardClick ? "button" : undefined}
+      tabIndex={onCardClick ? 0 : undefined}
+    >
       <div className="relative aspect-square overflow-hidden bg-muted/30">
         {discount && (
           <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-accent text-accent-foreground text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full z-10 shadow-lg">

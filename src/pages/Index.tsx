@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FeatureCard from "@/components/FeatureCard";
@@ -6,6 +6,7 @@ import SectionBadge from "@/components/SectionBadge";
 import ProductCard from "@/components/ProductCard";
 import HeroSlider from "@/components/HeroSlider";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
+import BlogPostCard from "@/components/BlogPostCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,12 +44,14 @@ import printerSupplyImage from "@/assets/ct-printersupply.jpg";
 import mobileAccessoriesImage from "@/assets/ct-mobileaccesoris.webp";
 import offsetPrintingImage from "@/assets/ct-offsetprinting.png";
 import frameStudioImage from "@/assets/ct-framestudio.jpg";
+import { getAllBlogPosts } from "@/data/blogPosts";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger
+  AccordionTrigger,
 } from "@/components/ui/accordion";
+import { getCustomCategories, getCategoryOverrideMap } from "@/data/productStore";
 
 type ServiceCard = {
   title: string;
@@ -241,10 +244,43 @@ const Index = () => {
     }
   ];
 
+  const customCategories = useMemo(() => getCustomCategories(), []);
+  const categoryOverrides = useMemo(() => getCategoryOverrideMap(), []);
+
   const categoriesBySlot = categories.reduce<Record<string, typeof categories[number]>>((acc, category) => {
     acc[category.slot] = category;
     return acc;
   }, {});
+
+  // Apply default category overrides (rename / hide) to the category mosaic
+  const overriddenCategoriesBySlot = useMemo(() => {
+    const overrides = categoryOverrides;
+
+    const byTitle = new Map<string, typeof categories[number]>();
+    categories.forEach((cat) => {
+      byTitle.set(cat.title, cat);
+    });
+
+    const result: Record<string, typeof categories[number]> = {};
+
+    Object.values(categoriesBySlot).forEach((cat) => {
+      const override = overrides[cat.title];
+      if (override?.hidden) {
+        return;
+      }
+
+      const effectiveTitle = override?.name ?? cat.title;
+      const base = byTitle.get(cat.title) ?? cat;
+
+      result[cat.slot] = {
+        ...base,
+        title: effectiveTitle,
+        // Keep the original category query parameter so existing products still match
+      };
+    });
+
+    return result;
+  }, [categoriesBySlot, categoryOverrides, categories]);
 
   const accentPalette: Record<
     string,
@@ -330,7 +366,7 @@ const Index = () => {
   };
 
   const renderCategoryCard = (slot: string) => {
-    const category = categoriesBySlot[slot];
+    const category = overriddenCategoriesBySlot[slot];
     if (!category) return null;
 
     const palette = getAccentPalette(category.accent);
@@ -500,7 +536,7 @@ const Index = () => {
     }
   ];
 
-  const serviceCards: ServiceCard[] = [
+  const defaultServiceCards: ServiceCard[] = [
     {
       title: "UTI PAN CARD SERVICE",
       description: "UTI Infrastructure Technology And Services Limited",
@@ -523,6 +559,39 @@ const Index = () => {
       image: phonePeImage
     }
   ];
+
+  const [serviceCards, setServiceCards] = useState<ServiceCard[]>(defaultServiceCards);
+
+  // Link admin "Special Services" with public homepage cards using localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const stored = window.localStorage.getItem("pvk-special-services");
+      if (!stored) return;
+
+      const parsed = JSON.parse(stored) as Partial<ServiceCard>[] | null;
+      if (!parsed || !Array.isArray(parsed) || parsed.length === 0) return;
+
+      // Keep existing images, just replace text/details from admin where available.
+      const merged: ServiceCard[] = defaultServiceCards.map((fallback, index) => {
+        const override = parsed[index];
+        if (!override) return fallback;
+
+        return {
+          ...fallback,
+          title: override.title ?? fallback.title,
+          description: override.description ?? fallback.description,
+          buttonText: override.buttonText ?? fallback.buttonText,
+          buttonLink: override.buttonLink ?? fallback.buttonLink,
+        };
+      });
+
+      setServiceCards(merged);
+    } catch (error) {
+      console.error("Failed to load special services from admin:", error);
+    }
+  }, []);
 
   const testimonials = [
     {
@@ -654,6 +723,17 @@ const Index = () => {
   const [selectedService, setSelectedService] = useState<ServiceCard | null>(null);
   const [showAllFaqs, setShowAllFaqs] = useState(false);
 
+  // Latest blog posts for homepage (limit 3)
+  const latestBlogPosts = useMemo(() => {
+    const posts = getAllBlogPosts().slice(); // copy
+    posts.sort((a, b) => {
+      const aDate = new Date(a.date).getTime();
+      const bDate = new Date(b.date).getTime();
+      return bDate - aDate;
+    });
+    return posts.slice(0, 3);
+  }, []);
+
   const handleOpenInquiry = (service: ServiceCard) => {
     setSelectedService(service);
     setIsInquiryOpen(true);
@@ -698,12 +778,12 @@ const Index = () => {
       </section>
 
       {/* Categories Grid */}
-      <section id="shop-by-category" className="pt-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20 bg-background scroll-mt-20">
+      <section id="shop-by-category" className="pt-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20 bg-white dark:bg-slate-900 scroll-mt-20">
         <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
           <div className="max-w-3xl mx-auto text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12 space-y-3 md:space-y-4">
             <SectionBadge label="Collections" className="mx-auto" />
-            <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl font-bold px-2">Shop by Category</h2>
-            <p className="text-sm sm:text-base md:text-base lg:text-lg text-muted-foreground px-2">
+            <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl font-bold px-2 text-foreground dark:text-slate-100">Shop by Category</h2>
+            <p className="text-sm sm:text-base md:text-base lg:text-lg text-muted-foreground dark:text-slate-300 px-2">
               Curated collections to help you shop faster—crafted for events, offices, studios, and on-the-go creators.
             </p>
           </div>
@@ -742,6 +822,55 @@ const Index = () => {
               </div>
             </div>
           </div>
+
+          {/* Custom categories created from admin - same card style, simple grid */}
+          {customCategories.length > 0 && (
+            <div className="mt-8 sm:mt-10 md:mt-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+                {customCategories.map((name) => {
+                  const palette = getAccentPalette("custom");
+                  const cardStyle: CSSProperties = {
+                    "--card-primary": palette.primary,
+                    "--card-secondary": palette.secondary,
+                    "--card-ambient": palette.ambient,
+                    "--card-ring": palette.ring,
+                    "--card-text": "#f8fafc",
+                  } as CSSProperties;
+
+                  return (
+                    <Link
+                      key={name}
+                      to={`/category?category=${encodeURIComponent(name)}`}
+                      aria-label={`${name} category`}
+                      className={cn(
+                        "category-card group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70"
+                      )}
+                      style={cardStyle}
+                    >
+                      <span className="category-card__glow" aria-hidden="true" />
+                      <span className="category-card__mesh" aria-hidden="true" />
+                      <div className="category-card__inner">
+                        <div className="category-card__accent-row">
+                          <span className="category-card__accent-dot" aria-hidden="true" />
+                          <span className="category-card__accent-text">Custom</span>
+                        </div>
+                        <h3 className="category-card__title">{name}</h3>
+                        <p className="category-card__description">
+                          Products you assign to this category in the admin panel will appear here.
+                        </p>
+                        <div className="category-card__footer">
+                          <span>Explore</span>
+                          <span className="category-card__icon" aria-hidden="true">
+                            →
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -779,6 +908,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+
 
       {/* Promotional Banner */}
       <section className="py-6 sm:py-8 md:py-12 lg:py-16">
@@ -946,25 +1076,25 @@ const Index = () => {
       />
 
       {/* Our Work Portfolio Section */}
-      <section className="relative overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-[#F5F7FB] via-white to-[#EDF1F7]">
-        <div className="absolute -top-10 -left-10 h-48 w-48 rounded-full bg-brand-dark/10 blur-3xl" aria-hidden="true" />
-        <div className="absolute -bottom-16 right-0 h-56 w-56 rounded-full bg-brand-dark/5 blur-3xl" aria-hidden="true" />
+      <section className="relative overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-[#F5F7FB] via-white to-[#EDF1F7] dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
+        <div className="absolute -top-10 -left-10 h-48 w-48 rounded-full bg-brand-dark/10 dark:bg-brand-dark/20 blur-3xl" aria-hidden="true" />
+        <div className="absolute -bottom-16 right-0 h-56 w-56 rounded-full bg-brand-dark/5 dark:bg-brand-dark/10 blur-3xl" aria-hidden="true" />
         <div className="container relative mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
           <div className="text-center mb-10 sm:mb-12 md:mb-14 space-y-4">
             <SectionBadge label="Featured Showcase" className="mx-auto" />
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#040D1F] mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#040D1F] dark:text-slate-100 mb-4">
               Our Work Portfolio
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground dark:text-slate-300 max-w-3xl mx-auto">
               A curated look at the craftsmanship, detailing, and finishing quality across our trophies, printing solutions, and premium accessories.
             </p>
           </div>
-          <div className="grid max-w-6xl mx-auto gap-6 sm:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid max-w-6xl mx-auto gap-6 sm:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 home-portfolio-grid">
             {galleryItems.map((item, index) => (
               <Link
                 key={item.title}
                 to={item.href}
-                className="group relative isolate overflow-hidden rounded-[28px] bg-white shadow-[0_25px_65px_rgba(15,23,42,0.12)] ring-1 ring-black/5 transition-all duration-500 hover:-translate-y-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-dark/40"
+                className="group relative isolate overflow-hidden rounded-[28px] bg-white dark:bg-slate-800 shadow-[0_25px_65px_rgba(15,23,42,0.12)] dark:shadow-[0_25px_65px_rgba(0,0,0,0.4)] ring-1 ring-black/5 dark:ring-slate-700/50 transition-all duration-500 hover:-translate-y-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-dark/40 dark:focus-visible:ring-slate-400/40 portfolio-card"
                 aria-label={`View ${item.title} in products`}
               >
                 <div className="absolute inset-0">
@@ -981,21 +1111,24 @@ const Index = () => {
                     background: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.65) 45%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.2) 75%, rgba(0, 0, 0, 0.05) 90%, transparent 100%)'
                   }}
                 />
-                <div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-7 md:p-8 text-white">
-                  <div className="space-y-3">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80">
+                <div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-7 md:p-8 text-white portfolio-card-content">
+                  <div className="flex flex-col gap-2 sm:gap-3 portfolio-card-top-section">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80 w-fit portfolio-card-badge">
                       {item.category}
                     </span>
-                    <h3 className="text-2xl sm:text-3xl font-semibold leading-tight">
-                      {item.title}
-                    </h3>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.15em]">
-                      Explore Product
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                    <div className="h-10 w-10 rounded-2xl bg-white/15 text-white/90 flex items-center justify-center text-sm font-semibold shadow-inner">
+                  <div className="mt-4 flex items-center justify-between portfolio-card-link-row">
+                    {/* Title and CTA kept close together on all breakpoints */}
+                    <div className="flex flex-col gap-1 sm:gap-1.5">
+                      <h3 className="text-lg sm:text-2xl font-semibold leading-tight portfolio-card-title">
+                        {item.title}
+                      </h3>
+                      <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-[0.15em] portfolio-card-link">
+                        Explore Product
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                    <div className="h-9 min-w-[2.5rem] px-3 rounded-2xl bg-white/15 text-white/90 flex items-center justify-center text-sm font-semibold shadow-inner portfolio-card-number">
                       {String(index + 1).padStart(2, "0")}
                     </div>
                   </div>
@@ -1060,6 +1193,35 @@ const Index = () => {
                 </Button>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Blog & News */}
+      <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="mx-auto max-w-3xl text-center mb-8 sm:mb-10 md:mb-12 space-y-3">
+            <SectionBadge label="Blog & News" className="mx-auto" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+              From the PVK Blog
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
+              Fresh stories, tips, and ideas from our trophy, printing, and office solutions teams.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 home-blog-grid">
+            {latestBlogPosts.map((post) => (
+              <BlogPostCard key={post.id} post={post} />
+            ))}
+          </div>
+
+          <div className="mt-8 sm:mt-10 flex justify-center">
+            <Link to="/blog">
+              <Button className="rounded-full px-6 sm:px-8 h-10 sm:h-11 text-sm sm:text-base">
+                View all Blog & News
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

@@ -135,7 +135,7 @@ const MissionVisionGoal = () => {
                   >
                     {item.title}
                   </h3>
-                  <p className="text-sm sm:text-base md:text-base lg:text-base xl:text-lg text-gray-700 leading-relaxed flex-grow font-light dark:text-slate-200">
+                  <p className="text-sm sm:text-base md:text-base lg:text-base xl:text-lg text-gray-700 leading-relaxed flex-grow font-light dark:text-slate-300">
                     {item.description}
                   </p>
                 </div>

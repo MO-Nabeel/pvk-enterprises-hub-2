@@ -82,7 +82,7 @@ const Footer = () => {
   return (
     <footer className="mt-16 border-t border-white/10 bg-[#040d1f] text-white">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-10 text-sm md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-10 text-sm md:grid-cols-3 lg:grid-cols-3">
           <div className="space-y-4">
             <Link to="/" className="inline-flex items-center gap-3">
               <img
@@ -101,38 +101,41 @@ const Footer = () => {
             <p className="text-xs uppercase tracking-[0.35em] text-white/50">Maranchery • Kerala</p>
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold text-white">Quick Links</h3>
-            <ul className="mt-4 space-y-3 text-white/70">
-              {quickLinks.map((link) => (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="inline-flex items-center gap-2 text-sm transition hover:text-white"
-                  >
-                    <span className="h-[2px] w-4 bg-white/30" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Links cluster: Quick Links + Resources */}
+          <div className="grid grid-cols-2 gap-x-10 gap-y-8">
+            <div>
+              <h3 className="text-lg font-semibold text-white">Quick Links</h3>
+              <ul className="mt-4 space-y-3 text-white/70">
+                {quickLinks.map((link) => (
+                  <li key={link.to}>
+                    <Link
+                      to={link.to}
+                      className="inline-flex items-center gap-2 text-sm transition hover:text-white"
+                    >
+                      <span className="h-[2px] w-4 bg-white/30" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="text-lg font-semibold text-white">Resources</h3>
-            <ul className="mt-4 space-y-3 text-white/70">
-              {policyLinks.map((link) => (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="inline-flex items-center gap-2 text-sm transition hover:text-white"
-                  >
-                    <span className="h-[2px] w-4 bg-white/30" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div>
+              <h3 className="text-lg font-semibold text-white">Resources</h3>
+              <ul className="mt-4 space-y-3 text-white/70">
+                {policyLinks.map((link) => (
+                  <li key={link.to}>
+                    <Link
+                      to={link.to}
+                      className="inline-flex items-center gap-2 text-sm transition hover:text-white"
+                    >
+                      <span className="h-[2px] w-4 bg-white/30" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           <div className="space-y-4 text-white/80">
@@ -156,7 +159,7 @@ const Footer = () => {
             </div>
             <div className="flex items-start gap-3">
               <Phone className="mt-1 h-5 w-5 text-white/60 flex-shrink-0" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm flex-1">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm flex-1">
                 {phoneNumbers.map((phone) => (
                   <a
                     key={phone}
@@ -171,9 +174,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
+        <div className="mt-10 flex flex-col items-center gap-4 border-t border-white/10 pt-6 text-sm text-white/70 text-center md:flex-row md:items-center md:justify-between md:text-left">
           <p>© {new Date().getFullYear()} PVK Enterprises. All Rights Reserved.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 justify-center md:justify-start">
             {socialLinks.map(({ href, label, Icon, image, isImage, isText, text }) => (
               <a
                 key={label}
