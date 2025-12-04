@@ -1,8 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageBanner from "@/components/PageBanner";
 import MissionVisionGoal from "@/components/MissionVisionGoal";
-import trophyBanner from "@/assets/slider.jpg";
 import pvkShopImage from "@/assets/pvk shop.webp";
 import founderImage from "@/assets/founder.jpeg";
 import { Award, Users, Target, Heart, ArrowRight } from "lucide-react";
@@ -47,13 +45,7 @@ const About = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1">
-        <PageBanner
-          title="About Us"
-          subtitle="Excellence in trophy manufacturing with quality craftsmanship and service."
-          backgroundImage={trophyBanner}
-        />
-
+      <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         {/* Founder's Message Section (moved to top, before Mission/Vision/Goal) */}
         <section className="founder-message-section py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-950">
           <div className="container mx-auto px-4">

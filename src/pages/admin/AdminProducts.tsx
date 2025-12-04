@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AdminLayout from "./AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Table,
   TableBody,
@@ -14,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Package, Layers, AlertTriangle, CheckCircle2, Pencil, Trash2 } from "lucide-react";
+import { Plus, Package, Layers, AlertTriangle, CheckCircle2, Pencil, Trash2, X, Check, ChevronsUpDown } from "lucide-react";
 import { allProducts, type Product } from "@/data/productData";
 import {
   getAllProductsWithExtras,
@@ -27,6 +36,8 @@ import {
   updateCategoryOverride,
 } from "@/data/productStore";
 import { mockCategories } from "@/data/adminMockData";
+import { addBrand, getBrandsForCategory, getAllBrands, type Brand } from "@/data/brandStore";
+import { cn } from "@/lib/utils";
 
 type AdminProductStatus = "active" | "draft" | "hidden";
 
@@ -37,6 +48,170 @@ type AdminProduct = Product & {
 };
 
 const LOW_STOCK_THRESHOLD = 10;
+
+type BrandSelectorProps = {
+  value: string;
+  onChange: (value: string) => void;
+  category: string;
+  allCategories: string[];
+};
+
+const BrandSelector = ({ value, onChange, category, allCategories }: BrandSelectorProps) => {
+  const [open, setOpen] = useState(false);
+  const [allBrands, setAllBrands] = useState<Brand[]>(() => getAllBrands());
+  const [showNewForm, setShowNewForm] = useState(false);
+  const [newBrand, setNewBrand] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const filteredBrands = useMemo(() => {
+    if (!category) {
+      return allBrands;
+    }
+    const scoped = getBrandsForCategory(category);
+    // Ensure we include any just-created brand value even if associations are still syncing.
+    if (value && !scoped.some((brand) => brand.name === value)) {
+      const fallback = allBrands.find((brand) => brand.name === value);
+      if (fallback) {
+        return [...scoped, fallback];
+      }
+    }
+    return scoped;
+  }, [allBrands, category, value]);
+
+  const handleSelect = (currentValue: string) => {
+    onChange(currentValue);
+    setOpen(false);
+  };
+
+  const handleNewBrandSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const trimmed = newBrand.trim();
+    if (!trimmed) return;
+
+    if (!category) {
+      setFormError("Select a category before adding a brand.");
+      return;
+    }
+
+    setFormError(null);
+
+    const updatedBrands = addBrand(trimmed, [category]);
+    setAllBrands(updatedBrands);
+    onChange(trimmed);
+    setNewBrand("");
+    setShowNewForm(false);
+  };
+
+  const hasCategory = Boolean(category);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="h-9 w-full justify-between text-xs sm:text-sm"
+              disabled={!hasCategory}
+            >
+              {value ? value : hasCategory ? "Select brand" : "Select category first"}
+              <ChevronsUpDown className="ml-2 h-3 w-3 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="p-0">
+            <Command>
+              <CommandInput placeholder="Search brands..." className="text-xs sm:text-sm" />
+              <CommandEmpty>No brand found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  {filteredBrands.map((brand) => (
+                    <CommandItem
+                      key={brand.name}
+                      value={brand.name}
+                      onSelect={handleSelect}
+                      className="text-xs sm:text-sm"
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-3 w-3",
+                          value === brand.name ? "opacity-100" : "opacity-0",
+                        )}
+                      />
+                      {brand.name}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-9 w-9"
+          onClick={() => setShowNewForm((prev) => !prev)}
+          disabled={!hasCategory}
+        >
+          <Plus className="h-3.5 w-3.5" />
+          <span className="sr-only">Add new brand</span>
+        </Button>
+      </div>
+      {showNewForm && (
+        <form
+          onSubmit={handleNewBrandSubmit}
+          className="space-y-2 rounded-md border border-border/70 bg-muted/20 px-2.5 py-2.5 sm:px-3 sm:py-3"
+        >
+          <div className="space-y-1">
+            <Input
+              value={newBrand}
+              onChange={(event) => setNewBrand(event.target.value)}
+              placeholder="New brand name"
+              className="h-8 text-xs sm:text-sm"
+            />
+          </div>
+          <div className="space-y-1">
+            <p className="text-[11px] text-muted-foreground">
+              Associated categories
+            </p>
+            <p className="text-[11px] font-medium text-foreground">
+              {category || "Select a category above to continue."}
+            </p>
+          </div>
+          {formError && (
+            <p className="text-[11px] text-destructive">{formError}</p>
+          )}
+          <div className="flex justify-end gap-2 pt-1">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs"
+              onClick={() => {
+                setShowNewForm(false);
+                setNewBrand("");
+                setFormError(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              className="h-7 px-3 text-xs"
+              disabled={!hasCategory}
+            >
+              Save
+            </Button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+};
 
 const AdminProducts = () => {
   const [products, setProducts] = useState<AdminProduct[]>(() => {
@@ -54,6 +229,8 @@ const AdminProducts = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [customCategories, setCustomCategories] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -67,9 +244,26 @@ const AdminProducts = () => {
   });
   const [editingCategoryName, setEditingCategoryName] = useState<string | null>(null);
   const [editingCategoryValue, setEditingCategoryValue] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const thumbnailInputRef = useRef<HTMLInputElement | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
   const [categoryOverrides, setCategoryOverrides] = useState(() => getCategoryOverrideMap());
   const [showCategoryForm, setShowCategoryForm] = useState(false);
+
+  // Keep thumbnail & gallery inputs in sync with the currently edited product
+  useEffect(() => {
+    if (!editingProduct) {
+      setThumbnailUrl("");
+      setGalleryImages([]);
+      return;
+    }
+
+    const gallery = editingProduct.imageGallery || [];
+    const primary = gallery[0] ?? "";
+    const rest = gallery.slice(1);
+
+    setThumbnailUrl(primary);
+    setGalleryImages(rest);
+  }, [editingProduct]);
 
   const allCategories = useMemo(() => {
     // Categories coming from existing products
@@ -164,7 +358,7 @@ const AdminProducts = () => {
       id: `NEW-${Date.now()}`,
       sku: "",
       name: "",
-      imageURL: "",
+      imageGallery: [],
       price: 0,
       oldPrice: undefined,
       discount: undefined,
@@ -176,6 +370,49 @@ const AdminProducts = () => {
     } as AdminProduct);
   };
 
+  const handleThumbnailSelect = (files: FileList | null) => {
+    if (!files) return;
+
+    const imageFiles = Array.from(files).filter((file) => file.type.startsWith("image/"));
+    if (imageFiles.length === 0) return;
+
+    const file = imageFiles[0];
+    const url = URL.createObjectURL(file);
+    setThumbnailUrl(url);
+  };
+
+  const handleGallerySelect = (files: FileList | null) => {
+    if (!files) return;
+
+    const imageFiles = Array.from(files).filter((file) => file.type.startsWith("image/"));
+    if (imageFiles.length === 0) return;
+
+    const maxImages = 4;
+    const current = galleryImages;
+    const remainingSlots = maxImages - current.length;
+
+    if (remainingSlots <= 0) {
+      if (typeof window !== "undefined") {
+        window.alert(`You can only add up to ${maxImages} additional gallery images per product.`);
+      }
+      return;
+    }
+
+    const newImages = imageFiles
+      .slice(0, remainingSlots)
+      .map((file) => URL.createObjectURL(file));
+
+    setGalleryImages([...current, ...newImages]);
+  };
+
+  const handleRemoveGalleryImage = (index: number) => {
+    setGalleryImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleClearThumbnail = () => {
+    setThumbnailUrl("");
+  };
+
   const handleProductFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!editingProduct) return;
@@ -184,8 +421,17 @@ const AdminProducts = () => {
       return;
     }
 
+    const finalImageGallery: string[] = (() => {
+      const baseGallery = galleryImages.filter(Boolean);
+      if (thumbnailUrl) {
+        return [thumbnailUrl, ...baseGallery];
+      }
+      return baseGallery;
+    })();
+
     const productToSave: AdminProduct = {
       ...editingProduct,
+      imageGallery: finalImageGallery,
       sku: editingProduct.sku && editingProduct.sku.trim().length > 0 ? editingProduct.sku : editingProduct.id,
     };
 
@@ -227,14 +473,6 @@ const AdminProducts = () => {
       return updated;
     });
     form.reset();
-  };
-
-  const handleImageSelect = (file: File | null) => {
-    if (!file || !editingProduct) return;
-    if (!file.type.startsWith("image/")) return;
-
-    const url = URL.createObjectURL(file);
-    setEditingProduct((prev) => (prev ? { ...prev, imageURL: url } : prev));
   };
 
   const handleCategoryDelete = (name: string) => {
@@ -341,10 +579,10 @@ const AdminProducts = () => {
             {editingProduct && (
               <div className="rounded-lg border border-border bg-card/60 px-3 py-3 sm:px-4 sm:py-4">
                 <form
-                  className="grid gap-3 md:grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)]"
+                  className="grid gap-3 md:gap-4 md:grid-cols-12"
                   onSubmit={handleProductFormSubmit}
                 >
-                  <div className="space-y-1 md:col-span-2">
+                  <div className="space-y-1 md:col-span-6">
                     <label className="text-xs font-medium text-muted-foreground">Name</label>
                     <Input
                       value={editingProduct.name}
@@ -358,12 +596,14 @@ const AdminProducts = () => {
                       placeholder="Product or service name"
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 md:col-span-3">
                     <label className="text-xs font-medium text-muted-foreground">Category</label>
                     <Select
                       value={editingProduct.category}
                       onValueChange={(value) =>
-                        setEditingProduct((prev) => (prev ? { ...prev, category: value } : prev))
+                        setEditingProduct((prev) =>
+                          prev ? { ...prev, category: value, brand: "" } : prev,
+                        )
                       }
                     >
                       <SelectTrigger className="h-9 text-xs sm:text-sm">
@@ -378,7 +618,7 @@ const AdminProducts = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 md:col-span-3">
                     <label className="text-xs font-medium text-muted-foreground">Price (₹)</label>
                     <Input
                       type="number"
@@ -393,7 +633,7 @@ const AdminProducts = () => {
                     />
                   </div>
                   {isEditingExistingProduct && (
-                    <div className="space-y-1">
+                    <div className="space-y-1 md:col-span-3">
                       <label className="text-xs font-medium text-muted-foreground">Status</label>
                       <Select
                         value={editingProduct.status}
@@ -413,18 +653,18 @@ const AdminProducts = () => {
                     </div>
                   )}
 
-                  <div className="space-y-1 md:col-span-2">
+                  <div className="space-y-1 md:col-span-6">
                     <label className="text-xs font-medium text-muted-foreground">Brand</label>
-                    <Input
+                    <BrandSelector
                       value={editingProduct.brand ?? ""}
-                      onChange={(event) =>
-                        setEditingProduct((prev) => (prev ? { ...prev, brand: event.target.value } : prev))
+                      category={editingProduct.category}
+                      allCategories={allCategories}
+                      onChange={(brand) =>
+                        setEditingProduct((prev) => (prev ? { ...prev, brand } : prev))
                       }
-                      className="h-9 text-sm"
-                      placeholder="e.g. PVK, TNPL, COLOP"
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 md:col-span-3">
                     <label className="text-xs font-medium text-muted-foreground">Old price (₹)</label>
                     <Input
                       type="number"
@@ -445,7 +685,7 @@ const AdminProducts = () => {
                       placeholder="Optional"
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 md:col-span-3">
                     <label className="text-xs font-medium text-muted-foreground">Stock</label>
                     <Input
                       type="number"
@@ -459,83 +699,184 @@ const AdminProducts = () => {
                       className="h-9 text-sm"
                     />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Discount (%)</label>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={editingProduct.discount ?? ""}
-                      onChange={(event) =>
-                        setEditingProduct((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                discount:
-                                  event.target.value === "" ? undefined : Number.parseFloat(event.target.value || "0"),
-                              }
-                            : prev,
-                        )
-                      }
-                      className="h-9 text-sm"
-                      placeholder="Optional"
-                    />
-                  </div>
-
-                  <div className="space-y-1 md:col-span-2">
-                    <label className="text-xs font-medium text-muted-foreground">Product image</label>
-                    <div
-                      className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/80 bg-muted/40 px-3 py-2.5 text-xs transition hover:bg-muted"
-                      onClick={() => fileInputRef.current?.click()}
-                      onDragOver={(event) => {
-                        event.preventDefault();
-                      }}
-                      onDrop={(event) => {
-                        event.preventDefault();
-                        const file = event.dataTransfer.files?.[0];
-                        handleImageSelect(file ?? null);
-                      }}
-                    >
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-medium text-foreground">Click to browse</span>
-                        <span className="text-[11px] text-muted-foreground">
-                          or drag &amp; drop an image file here (JPG, PNG, WEBP)
+                  {/* Image & pricing meta layout (desktop: 2-column grid, mobile: stacked) */}
+                  <div className="md:col-span-12 grid gap-3 md:gap-4 md:grid-cols-2 items-start">
+                    {/* Left column: thumbnail + gallery (stacked vertically) */}
+                    <div className="space-y-3">
+                      <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
+                      <label className="text-xs font-medium text-muted-foreground">
+                        Primary Thumbnail Image
+                        <span className="ml-1 text-[11px] font-normal text-muted-foreground">
+                          (Used for Product Grid)
                         </span>
+                      </label>
+                      <div
+                        className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
+                        onClick={() => thumbnailInputRef.current?.click()}
+                        onDragOver={(event) => {
+                          event.preventDefault();
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          handleThumbnailSelect(event.dataTransfer.files);
+                        }}
+                      >
+                        <div className="flex flex-col gap-0.5 text-left">
+                          <span className="font-medium text-foreground text-xs sm:text-[13px]">
+                            Click to select thumbnail
+                          </span>
+                          <span className="text-[11px] text-muted-foreground leading-snug">
+                            Single main image used in the product grid and as the first slide on the product page.
+                          </span>
+                        </div>
                       </div>
-                      {editingProduct.imageURL && (
-                        <div className="h-10 w-10 overflow-hidden rounded-md border border-border/60 bg-background">
-                          <img
-                            src={editingProduct.imageURL}
-                            alt={editingProduct.name || "Preview"}
-                            className="h-full w-full object-cover"
-                          />
+                      <input
+                        ref={thumbnailInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(event) => handleThumbnailSelect(event.target.files)}
+                      />
+                      {thumbnailUrl && (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <div className="relative group w-24 h-24 sm:w-28 sm:h-28">
+                            <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
+                              <img
+                                src={thumbnailUrl}
+                                alt={`${editingProduct.name || "Product"} primary thumbnail`}
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                            <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-medium">
+                              Main Thumbnail
+                            </div>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={handleClearThumbnail}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                       )}
+                      </div>
+
+                      <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
+                        <label className="text-xs font-medium text-muted-foreground">
+                          Additional Gallery Images
+                          <span className="ml-1 text-[11px] font-normal text-muted-foreground">
+                            (Used for PDP Slider)
+                          </span>
+                        </label>
+                        <div
+                          className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
+                          onClick={() => galleryInputRef.current?.click()}
+                          onDragOver={(event) => {
+                            event.preventDefault();
+                          }}
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            handleGallerySelect(event.dataTransfer.files);
+                          }}
+                        >
+                          <div className="flex flex-col gap-0.5 text-left">
+                            <span className="font-medium text-foreground text-xs sm:text-[13px]">
+                              Click to add gallery images
+                            </span>
+                            <span className="text-[11px] text-muted-foreground leading-snug">
+                              Upload 1–4 extra images shown after the thumbnail on the product detail page slider.
+                            </span>
+                          </div>
+                          {galleryImages.length > 0 && (
+                            <div className="text-xs text-muted-foreground">
+                              {galleryImages.length} / 4
+                            </div>
+                          )}
+                        </div>
+                        <input
+                          ref={galleryInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="hidden"
+                          onChange={(event) => handleGallerySelect(event.target.files)}
+                        />
+                      {galleryImages.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {galleryImages.map((imageUrl, index) => (
+                            <div key={index} className="relative group w-16 h-16 sm:w-20 sm:h-20">
+                              <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
+                                <img
+                                  src={imageUrl}
+                                  alt={`${editingProduct.name || "Product"} gallery image ${index + 1}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  onClick={() => handleRemoveGalleryImage(index)}
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(event) => handleImageSelect(event.target.files?.[0] ?? null)}
-                    />
+
+                    {/* Right column: Discount + Description stacked vertically */}
+                    <div className="space-y-3">
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-muted-foreground">Discount (%)</label>
+                        <Input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={editingProduct.discount ?? ""}
+                          onChange={(event) =>
+                            setEditingProduct((prev) =>
+                              prev
+                                ? {
+                                    ...prev,
+                                    discount:
+                                      event.target.value === ""
+                                        ? undefined
+                                        : Number.parseFloat(event.target.value || "0"),
+                                  }
+                                : prev,
+                            )
+                          }
+                          className="h-9 text-sm"
+                          placeholder="Optional"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-muted-foreground">
+                          Description (shown on product page)
+                        </label>
+                        <Input
+                          value={editingProduct.description ?? ""}
+                          onChange={(event) =>
+                            setEditingProduct((prev) =>
+                              prev ? { ...prev, description: event.target.value } : prev,
+                            )
+                          }
+                          className="h-10 text-sm"
+                          placeholder="Short description visible on the product details page"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-1 md:col-span-4">
-                    <label className="text-xs font-medium text-muted-foreground">
-                      Description (shown on product page)
-                    </label>
-                    <Input
-                      value={editingProduct.description ?? ""}
-                      onChange={(event) =>
-                        setEditingProduct((prev) => (prev ? { ...prev, description: event.target.value } : prev))
-                      }
-                      className="h-10 text-sm"
-                      placeholder="Short description visible on the product details page"
-                    />
-                  </div>
-
-                  <div className="mt-2 flex flex-col gap-2 md:col-span-4 md:flex-row md:justify-end">
+                  <div className="mt-2 flex flex-col gap-2 md:col-span-12 md:flex-row md:justify-end">
                     <Button
                       type="button"
                       variant="ghost"
@@ -1000,10 +1341,10 @@ const AdminProducts = () => {
             </CardHeader>
             <CardContent>
               <form
-                className="grid gap-3 md:grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)]"
+                className="grid gap-3 md:gap-4 md:grid-cols-12"
                 onSubmit={handleProductFormSubmit}
               >
-                <div className="space-y-1 md:col-span-2">
+                <div className="space-y-1 md:col-span-6">
                   <label className="text-xs font-medium text-muted-foreground">Name</label>
                   <Input
                     value={editingProduct.name}
@@ -1017,12 +1358,14 @@ const AdminProducts = () => {
                     placeholder="Product or service name"
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-3">
                   <label className="text-xs font-medium text-muted-foreground">Category</label>
                   <Select
                     value={editingProduct.category}
                     onValueChange={(value) =>
-                      setEditingProduct((prev) => (prev ? { ...prev, category: value } : prev))
+                      setEditingProduct((prev) =>
+                        prev ? { ...prev, category: value, brand: "" } : prev,
+                      )
                     }
                   >
                     <SelectTrigger className="h-9 text-xs sm:text-sm">
@@ -1037,7 +1380,7 @@ const AdminProducts = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-3">
                   <label className="text-xs font-medium text-muted-foreground">Price (₹)</label>
                   <Input
                     type="number"
@@ -1052,7 +1395,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 {isEditingExistingProduct && (
-                  <div className="space-y-1">
+                  <div className="space-y-1 md:col-span-3">
                     <label className="text-xs font-medium text-muted-foreground">Status</label>
                     <Select
                       value={editingProduct.status}
@@ -1072,18 +1415,18 @@ const AdminProducts = () => {
                   </div>
                 )}
 
-                <div className="space-y-1 md:col-span-2">
+                <div className="space-y-1 md:col-span-6">
                   <label className="text-xs font-medium text-muted-foreground">Brand</label>
-                  <Input
+                  <BrandSelector
                     value={editingProduct.brand ?? ""}
-                    onChange={(event) =>
-                      setEditingProduct((prev) => (prev ? { ...prev, brand: event.target.value } : prev))
+                    category={editingProduct.category}
+                    allCategories={allCategories}
+                    onChange={(brand) =>
+                      setEditingProduct((prev) => (prev ? { ...prev, brand } : prev))
                     }
-                    className="h-9 text-sm"
-                    placeholder="e.g. PVK, TNPL, COLOP"
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-3">
                   <label className="text-xs font-medium text-muted-foreground">Old price (₹)</label>
                   <Input
                     type="number"
@@ -1104,7 +1447,7 @@ const AdminProducts = () => {
                     placeholder="Optional"
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-3">
                   <label className="text-xs font-medium text-muted-foreground">Stock</label>
                   <Input
                     type="number"
@@ -1118,7 +1461,7 @@ const AdminProducts = () => {
                     className="h-9 text-sm"
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-3">
                   <label className="text-xs font-medium text-muted-foreground">Discount (%)</label>
                   <Input
                     type="number"
@@ -1140,43 +1483,133 @@ const AdminProducts = () => {
                     placeholder="Optional"
                   />
                 </div>
-                <div className="space-y-1 md:col-span-2">
-                  <label className="text-xs font-medium text-muted-foreground">Product image</label>
-                  <div
-                    className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/80 bg-muted/40 px-3 py-2.5 text-xs transition hover:bg-muted"
-                    onClick={() => fileInputRef.current?.click()}
-                    onDragOver={(event) => {
-                      event.preventDefault();
-                    }}
-                    onDrop={(event) => {
-                      event.preventDefault();
-                      const file = event.dataTransfer.files?.[0];
-                      handleImageSelect(file ?? null);
-                    }}
-                  >
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-medium text-foreground">Click to browse</span>
-                      <span className="text-[11px] text-muted-foreground">
-                        or drag &amp; drop an image file here (JPG, PNG, WEBP)
+                <div className="space-y-3 md:col-span-5">
+                  <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Primary Thumbnail Image
+                      <span className="ml-1 text-[11px] font-normal text-muted-foreground">
+                        (Used for Product Grid)
                       </span>
+                    </label>
+                    <div
+                      className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
+                      onClick={() => thumbnailInputRef.current?.click()}
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        handleThumbnailSelect(event.dataTransfer.files);
+                      }}
+                    >
+                      <div className="flex flex-col gap-0.5 text-left">
+                        <span className="font-medium text-foreground text-xs sm:text-[13px]">
+                          Click to select thumbnail
+                        </span>
+                        <span className="text-[11px] text-muted-foreground leading-snug">
+                          Single main image used in the product grid and as the first slide on the product page.
+                        </span>
+                      </div>
                     </div>
-                    {editingProduct.imageURL && (
-                      <div className="h-10 w-10 overflow-hidden rounded-md border border-border/60 bg-background">
-                        <img
-                          src={editingProduct.imageURL}
-                          alt={editingProduct.name || "Preview"}
-                          className="h-full w-full object-cover"
-                        />
+                    <input
+                      ref={thumbnailInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(event) => handleThumbnailSelect(event.target.files)}
+                    />
+                    {thumbnailUrl && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <div className="relative group w-24 h-24 sm:w-28 sm:h-28">
+                          <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
+                            <img
+                              src={thumbnailUrl}
+                              alt={`${editingProduct.name || "Product"} primary thumbnail`}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-medium">
+                            Main Thumbnail
+                          </div>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={handleClearThumbnail}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     )}
                   </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(event) => handleImageSelect(event.target.files?.[0] ?? null)}
-                  />
+
+                  <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Additional Gallery Images
+                      <span className="ml-1 text-[11px] font-normal text-muted-foreground">
+                        (Used for PDP Slider)
+                      </span>
+                    </label>
+                    <div
+                      className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
+                      onClick={() => galleryInputRef.current?.click()}
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        handleGallerySelect(event.dataTransfer.files);
+                      }}
+                    >
+                      <div className="flex flex-col gap-0.5 text-left">
+                        <span className="font-medium text-foreground text-xs sm:text-[13px]">
+                          Click to add gallery images
+                        </span>
+                        <span className="text-[11px] text-muted-foreground leading-snug">
+                          Upload 1–4 extra images shown after the thumbnail on the product detail page slider.
+                        </span>
+                      </div>
+                      {galleryImages.length > 0 && (
+                        <div className="text-xs text-muted-foreground">
+                          {galleryImages.length} / 4
+                        </div>
+                      )}
+                    </div>
+                    <input
+                      ref={galleryInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(event) => handleGallerySelect(event.target.files)}
+                    />
+                    {galleryImages.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {galleryImages.map((imageUrl, index) => (
+                          <div key={index} className="relative group w-16 h-16 sm:w-20 sm:h-20">
+                            <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
+                              <img
+                                src={imageUrl}
+                                alt={`${editingProduct.name || "Product"} gallery image ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => handleRemoveGalleryImage(index)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-1 md:col-span-4">
                   <label className="text-xs font-medium text-muted-foreground">Description (shown on product page)</label>
@@ -1190,7 +1623,7 @@ const AdminProducts = () => {
                   />
                 </div>
 
-                <div className="mt-3 flex flex-col gap-2 md:col-span-4 md:flex-row md:justify-end">
+                <div className="mt-3 flex flex-col gap-2 md:col-span-12 md:flex-row md:justify-end">
                   <Button
                     type="button"
                     variant="ghost"

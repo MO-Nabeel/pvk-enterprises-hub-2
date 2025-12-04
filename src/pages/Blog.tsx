@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageBanner from "@/components/PageBanner";
 import SectionBadge from "@/components/SectionBadge";
 import BlogPostCard from "@/components/BlogPostCard";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { getAllBlogPosts, getAllCategories, getBlogPostsByCategory } from "@/data/blogPosts";
 import { cn } from "@/lib/utils";
-import bannerImage from "@/assets/slider.jpg";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,14 +44,7 @@ const Blog = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1">
-        {/* Page Banner */}
-        <PageBanner
-          title="Blog & News"
-          subtitle="Discover expert tips, industry trends, and insights from PVK Enterprises"
-          backgroundImage={bannerImage}
-        />
-
+      <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         {/* Search and Filter Section */}
         <section className="py-8 sm:py-10 md:py-12 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">

@@ -30,9 +30,38 @@ function safeWriteJSON<T>(key: string, value: T): void {
 }
 
 // --- Extra products (created from admin) ---
+// Migration helper to convert old imageURL to imageGallery
+function migrateProduct(product: any): Product {
+  // If product has imageURL but no imageGallery, migrate it
+  if (product.imageURL && !product.imageGallery) {
+    const migrated = {
+      ...product,
+      imageGallery: [product.imageURL],
+    };
+    // Remove imageURL from migrated product
+    delete migrated.imageURL;
+    return migrated;
+  }
+  // If product has neither, ensure it has an empty array
+  if (!product.imageGallery) {
+    return {
+      ...product,
+      imageGallery: [],
+    };
+  }
+  // Ensure imageGallery is an array
+  if (!Array.isArray(product.imageGallery)) {
+    return {
+      ...product,
+      imageGallery: [],
+    };
+  }
+  return product as Product;
+}
+
 function readExtraProducts(): Product[] {
-  const products = safeReadJSON<Product[]>(EXTRA_PRODUCTS_KEY, []);
-  return Array.isArray(products) ? products : [];
+  const products = safeReadJSON<any[]>(EXTRA_PRODUCTS_KEY, []);
+  return Array.isArray(products) ? products.map(migrateProduct) : [];
 }
 
 export function getExtraProducts(): Product[] {

@@ -1,9 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageBanner from "@/components/PageBanner";
 import SectionBadge from "@/components/SectionBadge";
 import ProductCard from "@/components/ProductCard";
-import bannerImage from "@/assets/banner.png";
+import ProductImageSlider from "@/components/ProductImageSlider";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getAllProductsWithExtras } from "@/data/productStore";
@@ -46,7 +45,7 @@ const ProductDetail = () => {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.imageURL,
+        image: product.imageGallery?.[0] || "",
       },
       quantity
     );
@@ -65,18 +64,19 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1">
-          <PageBanner
-            title="Product Not Found"
-            subtitle="We couldn't find the product you're looking for."
-            backgroundImage={bannerImage}
-          />
-          <section className="py-12 bg-background">
-            <div className="container mx-auto px-4 text-center space-y-4">
-              <p className="text-muted-foreground">
+        <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
+          <section className="py-8 sm:py-12 md:py-16 lg:py-20 bg-background">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-10 text-center space-y-3 sm:space-y-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2">
+                Product Not Found
+              </h1>
+              <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
+                We couldn't find the product you're looking for.
+              </p>
+              <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
                 The product might have been moved or is currently unavailable.
               </p>
-              <Button onClick={() => navigate("/category")}>
+              <Button onClick={() => navigate("/category")} className="mt-4 text-sm sm:text-base">
                 Back to Products
               </Button>
             </div>
@@ -100,78 +100,67 @@ const ProductDetail = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-1">
-        <PageBanner
-          title={product.name}
-          subtitle={product.category}
-          backgroundImage={bannerImage}
-        />
-
-        <section className="py-10 sm:py-12 md:py-16 bg-background">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-10">
-            <div className="grid grid-cols-1 lg:grid-cols-[0.8fr,1.2fr] gap-6 sm:gap-8 lg:gap-10 items-start">
-              {/* Left Column: Product Image */}
-              <div className="space-y-4">
-                <div className="bg-card rounded-2xl overflow-hidden shadow-md border border-border/60">
-                  <div className="w-full bg-muted/40 flex items-center justify-center p-4 sm:p-6">
-                    <img
-                      src={product.imageURL}
-                      alt={product.name}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-auto max-w-md max-h-[400px] sm:max-h-[450px] md:max-h-[500px] object-contain rounded-xl shadow-sm"
-                    />
-                  </div>
-                </div>
+      <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
+        <section className="py-4 sm:py-6 md:py-8 lg:py-10 bg-gray-50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12 items-start">
+              {/* Left Column: Product Image Gallery */}
+              <div className="w-full lg:sticky lg:top-24">
+                <ProductImageSlider
+                  images={product.imageGallery || []}
+                  productName={product.name}
+                />
               </div>
 
             {/* Right Column: Product Details */}
-              <div className="space-y-6">
-                <div className="space-y-3">
+              <div className="bg-white rounded-lg p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 shadow-sm border border-gray-200">
+                <div className="space-y-2 sm:space-y-3">
                   <SectionBadge label={product.category} />
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
+                  <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 leading-tight">
                     {product.name}
                   </h1>
                   {product.brand && (
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Brand: <span className="text-foreground">{product.brand}</span>
+                    <p className="text-xs sm:text-sm font-medium text-gray-600">
+                      Brand: <span className="text-gray-900 font-semibold">{product.brand}</span>
                     </p>
                   )}
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-baseline gap-3">
-                    <p className="text-2xl sm:text-3xl font-bold text-primary">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
+                    <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                       ₹{product.price.toLocaleString("en-IN")}
                     </p>
                     {originalPrice && (
-                      <p className="text-base sm:text-lg text-muted-foreground line-through">
-                        ₹{originalPrice.toLocaleString("en-IN")}
-                      </p>
-                    )}
-                    {product.discount && product.discount > 0 && (
-                      <span className="inline-flex items-center rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold dark:bg-emerald-900/40 dark:text-emerald-200">
-                        {product.discount}% OFF
-                      </span>
+                      <>
+                        <p className="text-base sm:text-lg md:text-xl text-gray-500 line-through">
+                          ₹{originalPrice.toLocaleString("en-IN")}
+                        </p>
+                        {product.discount && product.discount > 0 && (
+                          <span className="inline-flex items-center rounded px-2 py-0.5 text-xs sm:text-sm font-semibold bg-red-100 text-red-700">
+                            -{product.discount}%
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                     {description}
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4 sm:space-y-5 border-t border-gray-200 pt-4 sm:pt-5">
                   <div className="flex items-center gap-4">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground mb-1">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                         Quantity
-                      </p>
-                      <div className="flex items-center gap-2">
+                      </label>
+                      <div className="flex items-center gap-2 border border-gray-300 rounded-md w-fit">
                         <Button
                           type="button"
-                          variant="outline"
+                          variant="ghost"
                           size="icon"
-                          className="h-9 w-9"
+                          className="h-9 w-9 rounded-none hover:bg-gray-100"
                           onClick={() =>
                             setQuantity((prev) => Math.max(1, prev - 1))
                           }
@@ -185,13 +174,13 @@ const ProductDetail = () => {
                           onChange={(event) =>
                             handleQuantityChange(event.target.value)
                           }
-                          className="w-16 text-center"
+                          className="w-16 h-9 text-center text-sm border-0 focus-visible:ring-0 rounded-none"
                         />
                         <Button
                           type="button"
-                          variant="outline"
+                          variant="ghost"
                           size="icon"
-                          className="h-9 w-9"
+                          className="h-9 w-9 rounded-none hover:bg-gray-100"
                           onClick={() =>
                             setQuantity((prev) => Math.min(999, prev + 1))
                           }
@@ -202,21 +191,28 @@ const ProductDetail = () => {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <Button
-                      className="min-w-[180px] h-11 rounded-xl bg-[#111827] hover:bg-[#111827]/90 text-white font-semibold"
+                      className="w-full sm:flex-1 h-11 sm:h-12 rounded-md bg-[#111827] hover:bg-[#1f2937] text-white font-medium text-sm sm:text-base shadow-sm"
                       onClick={handleAddToCart}
                     >
                       Add to Cart
                     </Button>
                     <Button
-                      variant="outline"
-                      className="h-11 rounded-xl"
-                      onClick={() => navigate("/category")}
+                      className="w-full sm:flex-1 h-11 sm:h-12 rounded-md bg-[#111827] hover:bg-[#1f2937] text-white font-medium text-sm sm:text-base shadow-sm"
+                      onClick={handleAddToCart}
                     >
-                      Back to Products
+                      Buy Now
                     </Button>
                   </div>
+                  
+                  <Button
+                    variant="outline"
+                    className="w-full h-10 rounded-md text-sm border-gray-300 hover:bg-gray-50 hover:border-gray-400 text-[#111827] hover:text-[#111827] font-medium"
+                    onClick={() => navigate("/category")}
+                  >
+                    Back to Products
+                  </Button>
                 </div>
               </div>
             </div>
@@ -243,7 +239,7 @@ const ProductDetail = () => {
                     id={item.id}
                     name={item.name}
                     price={item.price}
-                    image={item.imageURL}
+                    image={item.imageGallery?.[0] || ""}
                     discount={item.discount}
                     onCardClick={() =>
                       navigate(

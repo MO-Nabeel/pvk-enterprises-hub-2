@@ -52,6 +52,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { getCustomCategories, getCategoryOverrideMap } from "@/data/productStore";
+import { getActiveServices } from "@/data/serviceStore";
 
 type ServiceCard = {
   title: string;
@@ -536,61 +537,45 @@ const Index = () => {
     }
   ];
 
-  const defaultServiceCards: ServiceCard[] = [
-    {
-      title: "UTI PAN CARD SERVICE",
-      description: "UTI Infrastructure Technology And Services Limited",
+  // Load services dynamically from serviceStore (only Active services)
+  const [serviceCards, setServiceCards] = useState<ServiceCard[]>([]);
+
+  const loadServiceCards = () => {
+    // Get active services from the store and convert to ServiceCard format
+    const activeServices = getActiveServices();
+    const cards: ServiceCard[] = activeServices.map((service) => ({
+      title: service.title,
+      description: service.description,
       buttonText: "Enquire Now",
       buttonLink: "/contact",
-      image: panCardImage
-    },
-    {
-      title: "JIO FIBER CONNECTION",
-      description: "Fast & Reliable Broadband Network",
-      buttonText: "Enquire Now",
-      buttonLink: "/contact",
-      image: jioFiberImage
-    },
-    {
-      title: "PHONEPE PAYMENT BOX",
-      description: "Secure & Instant Digital Payments",
-      buttonText: "Enquire Now",
-      buttonLink: "/about",
-      image: phonePeImage
-    }
-  ];
+      image: service.imageURL,
+    }));
+    setServiceCards(cards);
+  };
 
-  const [serviceCards, setServiceCards] = useState<ServiceCard[]>(defaultServiceCards);
-
-  // Link admin "Special Services" with public homepage cards using localStorage
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    try {
-      const stored = window.localStorage.getItem("pvk-special-services");
-      if (!stored) return;
-
-      const parsed = JSON.parse(stored) as Partial<ServiceCard>[] | null;
-      if (!parsed || !Array.isArray(parsed) || parsed.length === 0) return;
-
-      // Keep existing images, just replace text/details from admin where available.
-      const merged: ServiceCard[] = defaultServiceCards.map((fallback, index) => {
-        const override = parsed[index];
-        if (!override) return fallback;
-
-        return {
-          ...fallback,
-          title: override.title ?? fallback.title,
-          description: override.description ?? fallback.description,
-          buttonText: override.buttonText ?? fallback.buttonText,
-          buttonLink: override.buttonLink ?? fallback.buttonLink,
-        };
-      });
-
-      setServiceCards(merged);
-    } catch (error) {
-      console.error("Failed to load special services from admin:", error);
-    }
+    loadServiceCards();
+    
+    // Listen for storage changes (when admin updates services)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "pvk-special-services-store") {
+        loadServiceCards();
+      }
+    };
+    
+    window.addEventListener("storage", handleStorageChange);
+    
+    // Also listen for custom event (for same-tab updates)
+    const handleCustomStorage = () => {
+      loadServiceCards();
+    };
+    
+    window.addEventListener("servicesUpdated", handleCustomStorage);
+    
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("servicesUpdated", handleCustomStorage);
+    };
   }, []);
 
   const testimonials = [
@@ -826,7 +811,7 @@ const Index = () => {
           {/* Custom categories created from admin - same card style, simple grid */}
           {customCategories.length > 0 && (
             <div className="mt-8 sm:mt-10 md:mt-12">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 custom-categories-grid">
                 {customCategories.map((name) => {
                   const palette = getAccentPalette("custom");
                   const cardStyle: CSSProperties = {
@@ -944,7 +929,7 @@ const Index = () => {
 
       {/* Service Highlights */}
       <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-muted/40">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="container mx-auto px-3 sm:px-4 md:px-5 lg:px-6">
           <div className="text-center mb-8 sm:mb-10 md:mb-12 space-y-3">
             <SectionBadge label="Special Services" className="mx-auto" />
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 px-2">Special Services</h2>
@@ -952,25 +937,27 @@ const Index = () => {
               Streamlining Your Digital & Business Needs with Exclusive Offerings.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 special-services-grid">
+          <div className="special-services-grid services-list-container">
             {serviceCards.map((service, index) => (
               <div
                 key={index}
                 className={cn(
-                  "bg-card rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 shadow-lg flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 h-full",
+                  "service-card bg-card rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 shadow-lg flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 h-full",
                   index === 2 && "special-services-third-card"
                 )}
               >
                 {service.image && (
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-32 sm:h-36 md:h-40 object-cover rounded-lg sm:rounded-xl drop-shadow-md"
-                    loading="lazy"
-                  />
+                  <div className="w-full h-36 sm:h-40 md:h-44 lg:h-48 rounded-lg sm:rounded-xl overflow-hidden">
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="w-full h-full object-cover drop-shadow-md"
+                      loading="lazy"
+                    />
+                  </div>
                 )}
                 <h3 className="text-xl sm:text-2xl font-bold">{service.title}</h3>
-                <p className="text-sm sm:text-base text-muted-foreground">{service.description}</p>
+                <p className="text-sm sm:text-base text-muted-foreground flex-1">{service.description}</p>
                 <Button
                   size="lg"
                   className="enquire-button mt-auto w-full text-sm sm:text-base"

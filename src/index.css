@@ -311,6 +311,7 @@ All colors MUST be HSL.
   gap: clamp(0.9rem, 2vw, 1.2rem);
   width: 100%;
   border-radius: 30px !important;
+  justify-content: center;
 }
 
 .category-mosaic__row--five {
@@ -336,8 +337,15 @@ All colors MUST be HSL.
   }
 
   .column-five-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: clamp(1.25rem, 2.5vw, 1.75rem);
+    justify-content: center;
+    justify-items: center;
+  }
+  
+  .column-five-grid > * {
+    width: 100%;
+    max-width: 100%;
   }
 
   .category-card {
@@ -383,8 +391,16 @@ All colors MUST be HSL.
   }
 
   .column-five-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: clamp(1.4rem, 2vw, 1.8rem);
+    justify-content: center;
+    justify-items: center;
+    max-width: 100%;
+  }
+  
+  .column-five-grid > * {
+    width: 100%;
+    max-width: 100%;
   }
 
   .category-card {
@@ -996,31 +1012,213 @@ All colors MUST be HSL.
   }
 }
 
-/* Special Services Section - Responsive */
-@media (min-width: 640px) and (max-width: 1023px) {
+/* Special Services Section - CSS Grid for Equal Heights */
+.services-list-container,
+.special-services-grid {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Service Card - Individual Card Styling */
+.service-card {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Service Card Hover Effects */
+.service-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(56, 189, 248, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.service-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(15, 23, 42, 0.15),
+    0 8px 16px rgba(15, 23, 42, 0.1),
+    0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+.service-card:hover::before {
+  opacity: 1;
+}
+
+/* Service Card Image Hover Effect */
+.service-card img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+}
+
+.service-card:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+/* Service Card Title Hover Effect */
+.service-card h3 {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.service-card:hover h3 {
+  color: hsl(var(--primary));
+  transform: translateY(-2px);
+}
+
+/* Service Card Description Hover Effect */
+.service-card p {
+  transition: color 0.3s ease;
+}
+
+.service-card:hover p {
+  color: hsl(var(--foreground));
+}
+
+/* Service Card Button Hover Enhancement */
+.service-card:hover .enquire-button {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(15, 23, 42, 0.25),
+    0 8px 18px rgba(15, 23, 42, 0.18);
+}
+
+/* Dark Mode Service Card Hover Effects */
+.dark .service-card:hover {
+  box-shadow: 
+    0 25px 50px rgba(2, 6, 23, 0.6),
+    0 10px 20px rgba(2, 6, 23, 0.4),
+    0 0 0 1px rgba(99, 102, 241, 0.2);
+}
+
+.dark .service-card::before {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(56, 189, 248, 0.2));
+}
+
+.dark .service-card:hover h3 {
+  color: hsl(var(--accent));
+}
+
+/* Mobile: Full width cards with subtle hover */
+@media (max-width: 639px) {
+  .service-card {
+    max-width: 100%;
+  }
+  
+  .service-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 
+      0 12px 24px rgba(15, 23, 42, 0.12),
+      0 4px 8px rgba(15, 23, 42, 0.08);
+  }
+  
+  .service-card:hover img {
+    transform: scale(1.05);
+  }
+}
+
+/* Tablet: 2 columns with centered layout */
+@media (min-width: 640px) {
+  .services-list-container,
   .special-services-grid {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
+    max-width: 100%;
   }
-
+  
+  .service-card {
+    min-width: 300px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .service-card:hover {
+    transform: translateY(-6px) scale(1.015);
+  }
+  
   /* Center the third card when it wraps to the next row */
   .special-services-third-card {
     grid-column: 1 / -1;
     justify-self: center;
-    max-width: 70%;
+    max-width: calc(50% - 0.75rem);
   }
 }
 
+/* Desktop: 3 columns with centered layout */
 @media (min-width: 1024px) {
+  .services-list-container,
   .special-services-grid {
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, 380px);
+    justify-content: center;
+    gap: 1.75rem;
+  }
+  
+  .service-card {
+    width: 100%;
+    max-width: 380px;
+    min-width: 320px;
   }
   
   .special-services-third-card {
     grid-column: auto;
     justify-self: auto;
-    max-width: 100%;
+    max-width: 380px;
+  }
+}
+
+/* Large Desktop: Maintain 3 columns with slightly larger cards */
+@media (min-width: 1280px) {
+  .services-list-container,
+  .special-services-grid {
+    grid-template-columns: repeat(3, 400px);
+    gap: 2rem;
+  }
+  
+  .service-card {
+    max-width: 400px;
+  }
+  
+  .special-services-third-card {
+    max-width: 400px;
+  }
+}
+
+/* Custom Categories Grid - Centering Support */
+.custom-categories-grid {
+  display: grid;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .custom-categories-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .custom-categories-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    justify-content: center;
   }
 }
 

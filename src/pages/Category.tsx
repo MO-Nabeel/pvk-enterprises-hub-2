@@ -1,9 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import PageBanner from "@/components/PageBanner";
 import SectionBadge from "@/components/SectionBadge";
-import bannerImage from "@/assets/banner.png";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -36,7 +34,7 @@ const Category = () => {
   // Adapt shared data (base + admin extras) to the shape expected by ProductCard
   const products = getAllProductsWithExtras().map((product) => ({
     ...product,
-    image: product.imageURL
+    image: product.imageGallery?.[0] || ""
   }));
 
   const customCategories = useMemo(() => getCustomCategories(), []);
@@ -567,12 +565,7 @@ const Category = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1">
-        <PageBanner
-          title="Products"
-          subtitle="Browse our extensive collection of high-quality trophies, supplies, and accessories."
-          backgroundImage={bannerImage}
-        />
+      <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         <section className="py-6 sm:py-8 bg-background">
           <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-10">
             <div className="grid gap-5 sm:gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr] bg-card rounded-3xl p-4 sm:p-6 md:p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.3)] border border-border">

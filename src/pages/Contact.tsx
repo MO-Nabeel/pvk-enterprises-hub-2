@@ -1,7 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageBanner from "@/components/PageBanner";
-import supportImage from "@/assets/hero-headphones.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -101,13 +99,7 @@ const Contact = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1">
-        <PageBanner
-          title="Contact Us"
-          subtitle="We’re here to help with product enquiries, custom orders, and support."
-          backgroundImage={supportImage}
-        />
-
+      <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         {/* Contact Content */}
         <section className="relative overflow-hidden bg-slate-50 pt-12 pb-8 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
