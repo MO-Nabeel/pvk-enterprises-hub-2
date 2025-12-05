@@ -130,6 +130,13 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 }
 
@@ -535,6 +542,26 @@ All colors MUST be HSL.
 
 .hero-section__text {
   max-width: 40rem;
+}
+
+/* Smooth transitions for hero text content synchronization */
+.hero-section__eyebrow,
+.hero-section__heading,
+.hero-section__subtext,
+.hero-section__buttons {
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+/* Cross-fade animation for text content changes */
+@keyframes heroTextFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero-section__mobile-card {
@@ -1810,9 +1837,12 @@ All colors MUST be HSL.
   text-align: left;
   width: 100%;
   margin-bottom: 0;
-  white-space: nowrap;
+  /* Multi-line (2 line) ellipsis for long titles */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .portfolio-card-link-row {
@@ -1821,6 +1851,7 @@ All colors MUST be HSL.
   align-items: center;
   justify-content: space-between;
   margin-top: 0;
+  column-gap: 0.75rem;
 }
 
 .portfolio-card-link {
@@ -1835,6 +1866,7 @@ All colors MUST be HSL.
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
+  margin-left: 0.5rem;
 }
 
 /* Responsive padding adjustments for card content */
@@ -1947,5 +1979,24 @@ All colors MUST be HSL.
   .home-portfolio-grid > *:last-child:nth-child(odd) {
     grid-column: 1 / -1;
     justify-self: stretch;
+  }
+}
+
+/* Products page grid - enforce single column and full-width cards on mobile & small tablets */
+@media (max-width: 768px) {
+  .products-grid {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    width: 100%;
+    gap: 0.75rem;
+    /* Auto-responsive horizontal padding for product cards */
+    padding-left: clamp(0.75rem, 4vw, 1.5rem);
+    padding-right: clamp(0.75rem, 4vw, 1.5rem);
+    box-sizing: border-box;
+  }
+
+  .products-grid > * {
+    width: 100%;
+    max-width: 100%;
   }
 }

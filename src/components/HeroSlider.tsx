@@ -15,30 +15,59 @@ interface HeroSliderImage {
   objectPosition?: string;
 }
 
-interface HeroSliderProps {
-  images: HeroSliderImage[];
-  className?: string;
-  variant?: "default" | "background";
+export interface HeroSlide {
+  image: string;
+  alt: string;
+  objectPosition?: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
 }
 
-const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "default" }) => {
+interface HeroSliderProps {
+  images?: HeroSliderImage[];
+  slides?: HeroSlide[];
+  className?: string;
+  variant?: "default" | "background";
+  onSlideChange?: (index: number) => void;
+}
+
+const HeroSlider: React.FC<HeroSliderProps> = ({ images, slides, className, variant = "default", onSlideChange }) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const autoplayPlugin = React.useRef(
     Autoplay({ delay: 6000, stopOnInteraction: false, stopOnMouseEnter: true })
   );
 
+  // Use slides if provided, otherwise fall back to images for backward compatibility
+  const displayItems = React.useMemo(() => {
+    if (slides) {
+      return slides.map(slide => ({
+        src: slide.image,
+        alt: slide.alt,
+        objectPosition: slide.objectPosition
+      }));
+    }
+    return images || [];
+  }, [slides, images]);
+
   React.useEffect(() => {
     if (!api) {
       return;
     }
 
-    setCurrent(api.selectedScrollSnap() + 1);
+    const updateCurrent = () => {
+      const newCurrent = api.selectedScrollSnap();
+      setCurrent(newCurrent);
+      onSlideChange?.(newCurrent);
+    };
 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
+    updateCurrent();
+
+    api.on("select", updateCurrent);
+  }, [api, onSlideChange]);
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev();
@@ -51,8 +80,8 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
   const isBackground = variant === "background";
   const backgroundHeightClasses =
     "h-full min-h-[85vh] lg:min-h-screen";
-  const totalSlides = images.length;
-  const progressPercentage = totalSlides > 1 ? ((current - 1) / (totalSlides - 1)) * 100 : 100;
+  const totalSlides = displayItems.length;
+  const progressPercentage = totalSlides > 1 ? (current / (totalSlides - 1)) * 100 : 100;
 
   return (
     <div
@@ -77,7 +106,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({ images, className, variant = "d
             isBackground && `h-full !ml-0 ${backgroundHeightClasses}`
           )}
         >
-          {images.map((image, index) => (
+          {displayItems.map((image, index) => (
             <CarouselItem
               key={index}
               className={cn(

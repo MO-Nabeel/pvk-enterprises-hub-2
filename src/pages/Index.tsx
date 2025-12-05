@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import FeatureCard from "@/components/FeatureCard";
 import SectionBadge from "@/components/SectionBadge";
 import ProductCard from "@/components/ProductCard";
-import HeroSlider from "@/components/HeroSlider";
+import HeroSlider, { type HeroSlide } from "@/components/HeroSlider";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import BlogPostCard from "@/components/BlogPostCard";
 import { Button } from "@/components/ui/button";
@@ -63,55 +63,75 @@ type ServiceCard = {
 };
 
 const Index = () => {
-  // Hero slider images - showcasing all product categories
-  const heroImages = [
+  // Hero slides with synchronized image and text content
+  const heroSlides: HeroSlide[] = [
     {
-      src: headsetImage,
-      alt: "Premium accessories and headsets showcase",
-      objectPosition: "center"
+      image: heroSliderImage,
+      alt: "Trophies & Awards Excellence",
+      objectPosition: "center",
+      title: "Trophies & Awards",
+      subtitle: "Excellence",
+      description: "We design elegant, traditional and modern trophies made from a selection of metals that clients can take their pick from.",
+      buttonText: "Get Products",
+      buttonLink: "/category?category=Trophies%20%26%20Awards"
     },
     {
-      src: customMugImage,
-      alt: "Personalized mugs and gifting options",
-      objectPosition: "center"
+      image: customPrintingImage,
+      alt: "Custom Printing Solutions",
+      objectPosition: "center",
+      title: "Custom Printing",
+      subtitle: "Solutions",
+      description: "On-demand creative prints for events and promotions. From banners to business cards, we bring your vision to life.",
+      buttonText: "Get Products",
+      buttonLink: "/category?category=Custom%20Printing"
     },
     {
-      src: heroSliderImage,
-      alt: "Signature PVK hero showcase",
-      objectPosition: "center"
-    },
-    {
-      src: visitingCardImage,
-      alt: "Premium visiting card printing showcase",
-      objectPosition: "center"
-    },
-    {
-      src: tshirtImage,
-      alt: "Custom apparel and T-shirt printing selection",
-      objectPosition: "center"
-    },
-    {
-      src: officeImage,
+      image: officeImage,
       alt: "Office Stationery & Supplies",
-      objectPosition: "center"
+      objectPosition: "center",
+      title: "Office Stationery",
+      subtitle: "Essentials",
+      description: "Premium notebooks, planners, and office essentials to keep your workspace organized and professional.",
+      buttonText: "Get Products",
+      buttonLink: "/category?category=Office%20Stationery"
+    },
+    {
+      image: headsetImage,
+      alt: "Premium accessories and headsets showcase",
+      objectPosition: "center",
+      title: "Mobile Accessories",
+      subtitle: "Premium Quality",
+      description: "Modern add-ons that elevate every mobile experience. From headsets to protective cases, we have it all.",
+      buttonText: "Get Products",
+      buttonLink: "/category?category=Mobile%20Accessories"
+    },
+    {
+      image: visitingCardImage,
+      alt: "Premium visiting card printing showcase",
+      objectPosition: "center",
+      title: "Visiting Cards",
+      subtitle: "Professional Printing",
+      description: "Premium business cards with spot UV, foil, and textured stocks. Make a lasting first impression.",
+      buttonText: "Get Products",
+      buttonLink: "/category?category=visiting-card"
+    },
+    {
+      image: tshirtImage,
+      alt: "Custom apparel and T-shirt printing selection",
+      objectPosition: "center",
+      title: "Custom Apparel",
+      subtitle: "Personalized Style",
+      description: "Custom T-shirts and apparel printing for events, teams, and personal use. Express your unique style.",
+      buttonText: "Get Products",
+      buttonLink: "/category"
     }
   ];
 
-  const heroMessaging = {
-    eyebrow: "Welcome to PVK Enterprises",
-    heading: "Trophies & Awards",
-    highlight: "Excellence",
-    description:
-      "We design elegant, traditional and modern trophies made from a selection of metals that clients can take their pick from.",
-    primaryCta: {
-      label: "Get Products",
-      href: "/category"
-    },
-    secondaryCta: {
-      label: "Contact",
-      href: "/contact"
-    }
-  };
+  // Track current slide index for synchronized content
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  
+  // Get current slide data
+  const currentSlide = heroSlides[currentSlideIndex] || heroSlides[0];
 
   type Category = {
     title: string;
@@ -425,50 +445,52 @@ const Index = () => {
       >
         <p
           className={cn(
-            "hero-section__eyebrow font-semibold uppercase tracking-wide",
+            "hero-section__eyebrow font-semibold uppercase tracking-wide transition-opacity duration-500",
             isOverlay ? "text-sm text-white/80" : "text-xs tracking-[0.38em] text-[#5c6474] dark:text-slate-200"
           )}
         >
-          {heroMessaging.eyebrow}
+          Welcome to PVK Enterprises
         </p>
         <h1
           className={cn(
-            "hero-section__heading font-bold leading-tight",
+            "hero-section__heading font-bold leading-tight transition-opacity duration-500",
             isOverlay
               ? "text-4xl sm:text-5xl lg:text-6xl text-white"
               : "text-[2.1rem] sm:text-[2.4rem] leading-snug text-[#040D1F] dark:text-white"
           )}
         >
-          {heroMessaging.heading}
-          <span
-            className={cn(
-              "block mt-2 font-semibold",
-              isOverlay ? "text-white/80" : "text-[#5a6476] dark:text-slate-200/80"
-            )}
-          >
-            {heroMessaging.highlight}
-          </span>
+          {currentSlide.title || "Trophies & Awards"}
+          {currentSlide.subtitle && (
+            <span
+              className={cn(
+                "block mt-2 font-semibold transition-opacity duration-500",
+                isOverlay ? "text-white/80" : "text-[#5a6476] dark:text-slate-200/80"
+              )}
+            >
+              {currentSlide.subtitle}
+            </span>
+          )}
         </h1>
         <p
           className={cn(
-            "hero-section__subtext max-w-2xl",
+            "hero-section__subtext max-w-2xl transition-opacity duration-500",
             isOverlay
               ? "text-base sm:text-lg text-white/80"
               : "text-[0.98rem] text-[#4c5568] dark:text-slate-300 leading-relaxed"
           )}
         >
-          {heroMessaging.description}
+          {currentSlide.description || "We design elegant, traditional and modern trophies made from a selection of metals that clients can take their pick from."}
         </p>
         <div
           className={cn(
-            "hero-section__buttons flex",
+            "hero-section__buttons flex transition-opacity duration-500",
             isOverlay
               ? "flex-col sm:flex-row gap-4 items-stretch sm:items-center"
               : "flex-col gap-3"
           )}
         >
           <Link
-            to={heroMessaging.primaryCta.href}
+            to={currentSlide.buttonLink || "/category"}
             className={cn("w-full", isOverlay ? "sm:w-auto" : undefined)}
           >
             <Button
@@ -482,11 +504,11 @@ const Index = () => {
               )}
               style={isOverlay ? undefined : { borderColor: "#040D1F" }}
             >
-              {heroMessaging.primaryCta.label}
+              {currentSlide.buttonText || "Get Products"}
             </Button>
           </Link>
           <Link
-            to={heroMessaging.secondaryCta.href}
+            to="/contact"
             className={cn("w-full", isOverlay ? "sm:w-auto" : undefined)}
           >
             <Button
@@ -500,7 +522,7 @@ const Index = () => {
               )}
               style={isOverlay ? { backgroundColor: "#111827" } : undefined}
             >
-              {heroMessaging.secondaryCta.label}
+              Contact
             </Button>
           </Link>
         </div>
@@ -555,23 +577,23 @@ const Index = () => {
 
   useEffect(() => {
     loadServiceCards();
-    
+
     // Listen for storage changes (when admin updates services)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "pvk-special-services-store") {
         loadServiceCards();
       }
     };
-    
+
     window.addEventListener("storage", handleStorageChange);
-    
+
     // Also listen for custom event (for same-tab updates)
     const handleCustomStorage = () => {
       loadServiceCards();
     };
-    
+
     window.addEventListener("servicesUpdated", handleCustomStorage);
-    
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("servicesUpdated", handleCustomStorage);
@@ -744,21 +766,26 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="hero-section relative overflow-hidden min-h-screen pb-0">
         <div className="hero-section__slider">
-          <HeroSlider images={heroImages} variant="background" className="h-full" />
+          <HeroSlider 
+            slides={heroSlides} 
+            variant="background" 
+            className="h-full"
+            onSlideChange={setCurrentSlideIndex}
+          />
         </div>
 
         <div className="hero-section__content relative z-10 container mx-auto px-4 py-16 lg:py-20 min-h-screen hidden md:flex items-center">
           <div className="hero-section__content-inner flex items-center w-full">
-            <HeroMessagingBlock variant="overlay" />
+            <HeroMessagingBlock key={currentSlideIndex} variant="overlay" />
           </div>
         </div>
 
         <div className="hero-section__mobile-card md:hidden w-full px-4 pb-12 relative z-20 flex justify-center">
-          <HeroMessagingBlock variant="card" />
+          <HeroMessagingBlock key={currentSlideIndex} variant="card" />
         </div>
       </section>
 
@@ -919,7 +946,7 @@ const Index = () => {
               There are many variations of products available
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-5 md:gap-6">
             {products.map((product) => (
               <ProductCard key={product.id} {...product} />
             ))}
@@ -1092,8 +1119,8 @@ const Index = () => {
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
-                <div 
-                  className="absolute inset-0 transition-opacity duration-500" 
+                <div
+                  className="absolute inset-0 transition-opacity duration-500"
                   style={{
                     background: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.65) 45%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.2) 75%, rgba(0, 0, 0, 0.05) 90%, transparent 100%)'
                   }}
