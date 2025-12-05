@@ -5,6 +5,16 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   CART_COUNT_EVENT,
   CartEventDetail,
   CartItem,
@@ -21,6 +31,8 @@ const currencyFormatter = new Intl.NumberFormat("en-IN", {
 
 const Cart = () => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [itemToRemove, setItemToRemove] = useState<CartItem | null>(null);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,8 +83,30 @@ const Cart = () => {
     }
   };
 
-  const handleRemove = (id: string) => {
-    setItems(updateCartItemQuantity(id, 0));
+  const handleRemoveClick = (item: CartItem) => {
+    setItemToRemove(item);
+    setIsRemoveDialogOpen(true);
+  };
+
+  const handleConfirmRemove = () => {
+    if (itemToRemove) {
+      setItems(updateCartItemQuantity(itemToRemove.id, 0));
+      setItemToRemove(null);
+      setIsRemoveDialogOpen(false);
+    }
+  };
+
+  const handleCancelRemove = () => {
+    setItemToRemove(null);
+    setIsRemoveDialogOpen(false);
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsRemoveDialogOpen(open);
+    if (!open) {
+      // Clear the item to remove when dialog closes (via ESC, outside click, etc.)
+      setItemToRemove(null);
+    }
   };
 
   const isCartEmpty = items.length === 0;
@@ -101,7 +135,7 @@ const Cart = () => {
                   <p className="text-xs sm:text-sm uppercase tracking-wide text-muted-foreground">Cart Details</p>
                   <h2 className="text-base sm:text-lg md:text-xl font-semibold text-foreground mt-1">Items & Quantities</h2>
                 </div>
-                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-3 sm:px-4 w-full sm:w-auto" asChild>
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-3 sm:px-4 w-full sm:w-auto hover:bg-[#111827] hover:text-white transition-colors duration-200 ease-in-out" asChild>
                   <Link to="/category">Continue Shopping</Link>
                 </Button>
               </header>
@@ -143,8 +177,8 @@ const Cart = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-xs sm:text-sm text-muted-foreground hover:text-destructive self-start sm:self-auto shrink-0"
-                                onClick={() => handleRemove(item.id)}
+                                className="text-xs sm:text-sm text-muted-foreground hover:text-destructive hover:bg-[#111827] transition-colors duration-200 ease-in-out self-start sm:self-auto shrink-0"
+                                onClick={() => handleRemoveClick(item)}
                               >
                                 <Trash2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 <span>Remove</span>
@@ -241,6 +275,27 @@ const Cart = () => {
       </main>
 
       <Footer />
+
+      {/* Remove Item Confirmation Modal */}
+      <AlertDialog open={isRemoveDialogOpen} onOpenChange={handleDialogOpenChange}>
+        <AlertDialogContent className="sm:max-w-[425px]">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Item?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove <strong>{itemToRemove?.name}</strong> from your cart? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelRemove}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmRemove}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Yes, Remove It
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

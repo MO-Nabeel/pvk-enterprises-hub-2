@@ -1,7 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageBanner from "@/components/PageBanner";
-import saleBanner from "@/assets/sale-banner-bg.jpg";
 
 const processingDetails = [
   {
@@ -81,19 +79,21 @@ const Shipping = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <main className="flex-1">
-        <PageBanner title="Shipping & Exchange Policy" backgroundImage={saleBanner} />
-
-        <section className="py-16">
+      <main className="flex-1 pt-20 sm:pt-24 lg:pt-28">
+        <section className="py-8 sm:py-12 lg:py-16">
           <div className="container mx-auto px-4">
             <article className="mx-auto max-w-5xl rounded-3xl bg-card p-8 text-base leading-relaxed text-muted-foreground shadow-lg ring-1 ring-border sm:p-10">
-              <header className="space-y-4 text-foreground">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary">Last updated: [Dummy Date: January 1, 2024]</p>
-                <h1 className="text-3xl font-bold">Shipping Policy</h1>
-                <p>
-                  We are committed to delivering your order accurately, in good condition, and always on time. The information below
-                  outlines how we process, ship, and support every order—including international deliveries, exchanges, and missing
-                  package support.
+              <header className="space-y-4 text-foreground text-center mb-4">
+                <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-primary">
+                  Shipping &amp; Exchange Policy
+                </p>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Shipping &amp; Exchange Details</h1>
+                <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+                  We are committed to delivering your order accurately, in good condition, and on time. Below you&apos;ll find
+                  information about processing times, shipping options, exchanges, and support for missing packages.
+                </p>
+                <p className="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Last updated: [Dummy Date: January 1, 2024]
                 </p>
               </header>
 

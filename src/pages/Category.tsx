@@ -12,13 +12,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Separator } from "@/components/ui/separator";
 import { Filter, X, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  getAllProductsWithExtras,
-  getCategoryBrandMap,
-  getCustomCategories,
-  getCategoryOverrideMap,
-  type CategoryBrandMap,
-} from "@/data/productStore";
+import { getAllProductsWithExtras, getCustomCategories, getCategoryOverrideMap } from "@/data/productStore";
+import { getAllBrands, type Brand } from "@/data/brandStore";
 import {
   Pagination,
   PaginationContent,
@@ -75,87 +70,7 @@ const Category = () => {
     });
   }, [customCategories, categoryOverrides]);
 
-  // Optional master brand catalog per category to power the Brand filter,
-  // even if some brands don't yet have explicit products created.
-  const categoryBrandCatalog: Record<string, string[]> = {
-    "Office Stationery": [
-      "Akari",
-      "Anpu",
-      "Apsara",
-      "Balaji",
-      "Bbi",
-      "Camel",
-      "Camlin",
-      "Casio",
-      "Cello",
-      "Doms",
-      "Envelopes",
-      "Esha",
-      "Fasson",
-      "God's Grace",
-      "Index",
-      "Jk",
-      "Kaveri's",
-      "Ladder",
-      "Lexi",
-      "Nataraj",
-      "Novajet Mpl",
-      "Pvk Enterprises",
-      "Sharp",
-      "Sprint Plus",
-      "Sun",
-      "Tnpl",
-      "Totem",
-      "Win",
-      "Winner",
-      "X Card Sj"
-    ],
-    "Custom Rubber Stamps": [
-      "Pvk Enterprises",
-      "Colop",
-      "Exmark",
-      "Camlin",
-      "Artline",
-      "Numex",
-      "Pvk"
-    ],
-    "Printer Supplies": [
-      "Alphabet",
-      "Canon",
-      "Clair Tek",
-      "Dell",
-      "Epson",
-      "Hp",
-      "Image Master",
-      "Leveraa",
-      "Lipi",
-      "Logitech",
-      "Mente",
-      "Pvk Enterprises",
-      "Tvs Electronics"
-    ],
-    "Mobile Accessories": [
-      "Erd"
-    ],
-    "Custom Printing": [
-      "Pvk Enterprises"
-    ],
-    "Offset Printing": [
-      "Pvk Enterprises"
-    ],
-    "Frame Studio": [
-      "Jmd International",
-      "Nova",
-      "Nova Digital Media",
-      "Nova Digital Plus",
-      "Nova Prismajet",
-      "Prismajet",
-      "Pvk Enterprises",
-      "Sandisk",
-      "Sonakshi",
-      "Ubiq"
-    ]
-  };
+  const allBrands: Brand[] = useMemo(() => getAllBrands(), []);
 
   const categoryAliasMap: Record<string, string> = {
     "wedding-card": "Wedding Cards",
@@ -189,7 +104,7 @@ const Category = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [showAllBrands, setShowAllBrands] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // Calculate min and max prices from products
   const priceRangeData = useMemo(() => {
     const prices = products.map(p => p.price);
@@ -199,27 +114,19 @@ const Category = () => {
     };
   }, []);
 
-  // Dynamic admin-created brand catalog from localStorage
-  const dynamicBrandMap: CategoryBrandMap = useMemo(() => getCategoryBrandMap(), []);
-
-  // Derive brand list from currently scoped category selection
+  // Derive brand list from the dedicated brand management module
   const availableBrands = useMemo(() => {
-    const scopedProducts =
-      activeCategory === "All Products"
-        ? products
-        : products.filter((product) => product.category === activeCategory);
+    const activeBrands = allBrands.filter((brand) => brand.status === "active");
 
-    const productBrands = scopedProducts
-      .map((product) => product.brand)
-      .filter((brand): brand is string => Boolean(brand));
+    if (activeCategory === "All Products") {
+      return activeBrands.map((brand) => brand.name).sort();
+    }
 
-    const configuredBrands = categoryBrandCatalog[activeCategory] || [];
-    const dynamicBrands = dynamicBrandMap[activeCategory] || [];
-
-    const brands = Array.from(new Set([...productBrands, ...configuredBrands, ...dynamicBrands]));
-
-    return brands.sort();
-  }, [activeCategory, products, dynamicBrandMap]);
+    return activeBrands
+      .filter((brand) => brand.associatedCategories.includes(activeCategory))
+      .map((brand) => brand.name)
+      .sort();
+  }, [activeCategory, allBrands]);
 
   // Ensure previously selected brands remain valid when category changes
   useEffect(() => {
@@ -292,7 +199,7 @@ const Category = () => {
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
       const matchesDiscount = showDiscountedOnly ? (product.discount !== undefined && product.discount > 0) : true;
       const matchesBrand = selectedBrands.length === 0 || (product.brand && selectedBrands.includes(product.brand));
-      
+
       return matchesSearch && matchesCategory && matchesPrice && matchesDiscount && matchesBrand;
     });
 
@@ -564,7 +471,7 @@ const Category = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         <section className="py-6 sm:py-8 bg-background">
           <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-10">
@@ -619,7 +526,7 @@ const Category = () => {
         </section>
 
         {/* Product Filter - Category Pills */}
-        <section 
+        <section
           ref={filterSectionRef}
           id="product-filters"
           className="py-6 sm:py-8 border-b bg-gradient-to-b from-muted/30 to-background scroll-mt-20"
@@ -640,13 +547,13 @@ const Category = () => {
                     newSearchParams.set("category", category);
                   }
                   setSearchParams(newSearchParams, { replace: true });
-                  
+
                   // Scroll to products section
                   setTimeout(() => {
                     if (productsSectionRef.current) {
-                      productsSectionRef.current.scrollIntoView({ 
-                        behavior: "smooth", 
-                        block: "start" 
+                      productsSectionRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
                       });
                     }
                   }, 50);
@@ -675,7 +582,7 @@ const Category = () => {
 
         {/* Products Grid */}
         <section ref={productsSectionRef} id="products-grid" className="py-6 sm:py-8 md:py-12 bg-background scroll-mt-20 sm:scroll-mt-24">
-          <div className="container mx-auto px-4 sm:px-5 md:px-6 lg:px-8">
+          <div className="container mx-auto px-3 sm:px-5 md:px-6 lg:px-8">
             {/* Filter Controls Bar */}
             <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
@@ -704,7 +611,7 @@ const Category = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                   {/* Mobile Filter Button */}
                   <Sheet open={mobileFilterOpen} onOpenChange={setMobileFilterOpen}>
@@ -715,8 +622,8 @@ const Category = () => {
                         <span className="sm:hidden">Filter</span>
                       </Button>
                     </SheetTrigger>
-                    <SheetContent 
-                      side="left" 
+                    <SheetContent
+                      side="left"
                       className="w-[90vw] sm:w-[85vw] md:w-[400px] max-w-[400px] p-4 sm:p-6 flex flex-col bg-background border-border"
                     >
                       <SheetHeader className="mb-4 sm:mb-6 flex-shrink-0">
@@ -749,7 +656,7 @@ const Category = () => {
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-start">
               {/* Desktop Filter Sidebar */}
               <aside className="hidden lg:block w-full lg:w-72 xl:w-80 flex-shrink-0 self-stretch">
-                <div 
+                <div
                   className="filter-sidebar sticky top-[100px] bg-card border border-border rounded-lg shadow-sm"
                 >
                   <div className="flex flex-col p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-6">
@@ -796,7 +703,7 @@ const Category = () => {
                 )}
                 {filteredProducts.length > 0 ? (
                   <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+                    <div className="products-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-5 md:gap-6 w-full">
                       {paginatedProducts.map((product) => (
                         <ProductCard
                           key={product.id}
@@ -827,60 +734,62 @@ const Category = () => {
                         </p>
 
                         {totalPages > 1 && (
-                          <Pagination className="mt-1">
-                            <PaginationContent>
-                              <PaginationItem>
-                                <PaginationPrevious
-                                  href="#"
-                                  aria-disabled={currentPageSafe === 1}
-                                  onClick={(event) => {
-                                    event.preventDefault();
-                                    if (currentPageSafe > 1) {
-                                      handlePageChange(currentPageSafe - 1);
-                                    }
-                                  }}
-                                  className={currentPageSafe === 1 ? "pointer-events-none opacity-50" : ""}
-                                />
-                              </PaginationItem>
+                          <div className="w-full overflow-x-auto">
+                            <Pagination className="mt-1 min-w-max justify-center">
+                              <PaginationContent>
+                                <PaginationItem>
+                                  <PaginationPrevious
+                                    href="#"
+                                    aria-disabled={currentPageSafe === 1}
+                                    onClick={(event) => {
+                                      event.preventDefault();
+                                      if (currentPageSafe > 1) {
+                                        handlePageChange(currentPageSafe - 1);
+                                      }
+                                    }}
+                                    className={currentPageSafe === 1 ? "pointer-events-none opacity-50" : ""}
+                                  />
+                                </PaginationItem>
 
-                              {paginationRange.map((page, index) =>
-                                page === "ellipsis" ? (
-                                  <PaginationItem key={`ellipsis-${index}`}>
-                                    <PaginationEllipsis />
-                                  </PaginationItem>
-                                ) : (
-                                  <PaginationItem key={page}>
-                                    <PaginationLink
-                                      href="#"
-                                      isActive={page === currentPageSafe}
-                                      onClick={(event) => {
-                                        event.preventDefault();
-                                        handlePageChange(page);
-                                      }}
-                                    >
-                                      {page}
-                                    </PaginationLink>
-                                  </PaginationItem>
-                                )
-                              )}
+                                {paginationRange.map((page, index) =>
+                                  page === "ellipsis" ? (
+                                    <PaginationItem key={`ellipsis-${index}`}>
+                                      <PaginationEllipsis />
+                                    </PaginationItem>
+                                  ) : (
+                                    <PaginationItem key={page}>
+                                      <PaginationLink
+                                        href="#"
+                                        isActive={page === currentPageSafe}
+                                        onClick={(event) => {
+                                          event.preventDefault();
+                                          handlePageChange(page);
+                                        }}
+                                      >
+                                        {page}
+                                      </PaginationLink>
+                                    </PaginationItem>
+                                  )
+                                )}
 
-                              <PaginationItem>
-                                <PaginationNext
-                                  href="#"
-                                  aria-disabled={currentPageSafe === totalPages}
-                                  onClick={(event) => {
-                                    event.preventDefault();
-                                    if (currentPageSafe < totalPages) {
-                                      handlePageChange(currentPageSafe + 1);
+                                <PaginationItem>
+                                  <PaginationNext
+                                    href="#"
+                                    aria-disabled={currentPageSafe === totalPages}
+                                    onClick={(event) => {
+                                      event.preventDefault();
+                                      if (currentPageSafe < totalPages) {
+                                        handlePageChange(currentPageSafe + 1);
+                                      }
+                                    }}
+                                    className={
+                                      currentPageSafe === totalPages ? "pointer-events-none opacity-50" : ""
                                     }
-                                  }}
-                                  className={
-                                    currentPageSafe === totalPages ? "pointer-events-none opacity-50" : ""
-                                  }
-                                />
-                              </PaginationItem>
-                            </PaginationContent>
-                          </Pagination>
+                                  />
+                                </PaginationItem>
+                              </PaginationContent>
+                            </Pagination>
+                          </div>
                         )}
                       </div>
                     )}

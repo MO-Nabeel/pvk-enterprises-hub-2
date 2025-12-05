@@ -36,8 +36,18 @@ import {
   updateCategoryOverride,
 } from "@/data/productStore";
 import { mockCategories } from "@/data/adminMockData";
-import { addBrand, getBrandsForCategory, getAllBrands, type Brand } from "@/data/brandStore";
+import {
+  addBrand,
+  deleteBrand,
+  getBrandsForCategory,
+  getAllBrands,
+  saveBrand,
+  setBrandStatus,
+  type Brand,
+  type BrandStatus,
+} from "@/data/brandStore";
 import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
 type AdminProductStatus = "active" | "draft" | "hidden";
 
@@ -121,7 +131,14 @@ const BrandSelector = ({ value, onChange, category, allCategories }: BrandSelect
               <ChevronsUpDown className="ml-2 h-3 w-3 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="p-0">
+          <PopoverContent
+            className="p-0 max-h-64 overflow-y-auto"
+            side="bottom"
+            align="start"
+            sideOffset={4}
+            // Force menu to open downward from the trigger; internal scroll prevents viewport overflow.
+            avoidCollisions={false}
+          >
             <Command>
               <CommandInput placeholder="Search brands..." className="text-xs sm:text-sm" />
               <CommandEmpty>No brand found.</CommandEmpty>
@@ -897,7 +914,8 @@ const AdminProducts = () => {
               <TabsList className="bg-muted">
                 <TabsTrigger value="catalog">Catalogue</TabsTrigger>
                 <TabsTrigger value="stock">Stock view</TabsTrigger>
-                <TabsTrigger value="categories">Categories</TabsTrigger>
+              <TabsTrigger value="categories">Categories</TabsTrigger>
+              <TabsTrigger value="brands">Brands</TabsTrigger>
               </TabsList>
 
               {/* Catalogue tab */}
@@ -1327,6 +1345,11 @@ const AdminProducts = () => {
                   </CardContent>
                 </Card>
               </TabsContent>
+
+              {/* Brands management tab */}
+              <TabsContent value="brands" className="space-y-4">
+                <BrandManagementPanel />
+              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
@@ -1642,6 +1665,336 @@ const AdminProducts = () => {
         )}
       </section>
     </AdminLayout>
+  );
+};
+
+const BrandManagementPanel = () => {
+  const [brands, setBrands] = useState<Brand[]>(() => getAllBrands());
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editing, setEditing] = useState<Brand | null>(null);
+  const [originalName, setOriginalName] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+
+  const allCategories = useMemo(() => {
+    const defaults = [
+      "Trophies & Awards",
+      "Office Stationery",
+      "Custom Rubber Stamps",
+      "Printer Supplies",
+      "Mobile Accessories",
+      "Custom Printing",
+      "Offset Printing",
+      "Frame Studio",
+      "Wedding Cards",
+      "Customized Notebook",
+      "Student ID",
+      "Visiting Card",
+      "Notice Printing",
+    ];
+    return defaults;
+  }, []);
+
+  const resetEditing = () => {
+    setEditing(null);
+    setOriginalName(null);
+  };
+
+  const filteredBrands = useMemo(() => {
+    const query = searchTerm.toLowerCase();
+
+    return brands.filter((brand) => {
+      // Category filter
+      if (categoryFilter !== "all") {
+        const hasCategory = brand.associatedCategories.includes(categoryFilter);
+        if (!hasCategory) return false;
+      }
+
+      // Text search
+      if (!query) return true;
+
+      const inName = brand.name.toLowerCase().includes(query);
+      const inCategories = brand.associatedCategories.some((cat) =>
+        cat.toLowerCase().includes(query),
+      );
+      return inName || inCategories;
+    });
+  }, [brands, searchTerm, categoryFilter]);
+
+  const handleStatusToggle = (brand: Brand, status: BrandStatus) => {
+    const updated = setBrandStatus(brand.name, status);
+    setBrands(updated);
+  };
+
+  const handleDeleteBrand = (brand: Brand) => {
+    if (typeof window !== "undefined") {
+      const ok = window.confirm(
+        `Delete brand "${brand.name}"?\n\nIt will be removed from the filter sidebar and brand selectors.`,
+      );
+      if (!ok) return;
+    }
+    const updated = deleteBrand(brand.name);
+    setBrands(updated);
+    if (editing && editing.name === brand.name) {
+      resetEditing();
+    }
+  };
+
+  const handleEditClick = (brand: Brand) => {
+    setEditing({ ...brand });
+    setOriginalName(brand.name);
+  };
+
+  const handleNewClick = () => {
+    setEditing({
+      name: "",
+      associatedCategories: [],
+      status: "active",
+    });
+    setOriginalName(null);
+  };
+
+  const handleCategoryToggleForEditing = (category: string) => {
+    setEditing((prev) => {
+      if (!prev) return prev;
+      const exists = prev.associatedCategories.includes(category);
+      return {
+        ...prev,
+        associatedCategories: exists
+          ? prev.associatedCategories.filter((cat) => cat !== category)
+          : [...prev.associatedCategories, category],
+      };
+    });
+  };
+
+  const handleSaveEditing = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!editing) return;
+    const name = editing.name.trim();
+    if (!name) return;
+
+    const updated = saveBrand(editing, originalName ?? undefined);
+    setBrands(updated);
+    resetEditing();
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <CardTitle className="text-base font-semibold">Brands</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Manage which brands appear in the storefront filter sidebar.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="h-9 w-full text-xs sm:w-44 sm:text-sm">
+                <SelectValue placeholder="Filter by category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All categories</SelectItem>
+                {allCategories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              placeholder="Search brands…"
+              className="h-9 w-full text-sm sm:w-64"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </div>
+          <Button
+            type="button"
+            size="sm"
+            className="gap-1.5 text-xs sm:text-sm"
+            onClick={handleNewClick}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add Brand
+          </Button>
+        </div>
+      </div>
+
+      {editing && (
+        <Card className="border-border bg-card text-card-foreground shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">
+              {originalName ? `Edit brand: ${originalName}` : "Add new brand"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="grid gap-3 md:grid-cols-12" onSubmit={handleSaveEditing}>
+              <div className="space-y-1 md:col-span-4">
+                <label className="text-xs font-medium text-muted-foreground">Brand name</label>
+                <Input
+                  value={editing.name}
+                  onChange={(event) =>
+                    setEditing((prev) =>
+                      prev ? { ...prev, name: event.target.value } : prev,
+                    )
+                  }
+                  className="h-9 text-sm"
+                  placeholder="e.g. PVK, COLOP"
+                  required
+                />
+              </div>
+              <div className="space-y-1 md:col-span-5">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Associated categories
+                </label>
+                <div className="flex flex-wrap gap-1.5 rounded-md border border-border/70 bg-muted/20 p-2">
+                  {allCategories.map((category) => {
+                    const isSelected =
+                      editing.associatedCategories?.includes(category) ?? false;
+                    return (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => handleCategoryToggleForEditing(category)}
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-background text-muted-foreground hover:bg-muted",
+                        )}
+                      >
+                        {category}
+                      </button>
+                    );
+                  })}
+                  {allCategories.length === 0 && (
+                    <span className="text-[11px] text-muted-foreground">
+                      No categories defined yet.
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  These categories control where this brand appears in the product filters.
+                </p>
+              </div>
+              <div className="space-y-1 md:col-span-3">
+                <label className="text-xs font-medium text-muted-foreground">Status</label>
+                <div className="flex items-center gap-2 rounded-md border border-border/70 bg-muted/20 px-3 py-2">
+                  <Switch
+                    checked={editing.status === "active"}
+                    onCheckedChange={(checked) =>
+                      setEditing((prev) =>
+                        prev
+                          ? { ...prev, status: checked ? "active" : "hidden" }
+                          : prev,
+                      )
+                    }
+                  />
+                  <span className="text-xs text-muted-foreground">
+                    {editing.status === "active"
+                      ? "Visible in filter sidebar"
+                      : "Hidden from filter sidebar"}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-2 flex flex-col gap-2 md:col-span-12 md:flex-row md:justify-end">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs sm:text-sm"
+                  onClick={resetEditing}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" size="sm" className="text-xs sm:text-sm">
+                  Save brand
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card className="border-border bg-card text-card-foreground shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-semibold">All brands</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="overflow-x-auto rounded-md border border-border bg-card">
+            <Table>
+              <TableHeader className="bg-muted/60">
+                <TableRow>
+                  <TableHead className="text-xs text-muted-foreground">Brand</TableHead>
+                  <TableHead className="text-xs text-muted-foreground">
+                    Associated categories
+                  </TableHead>
+                  <TableHead className="text-xs text-muted-foreground">Status</TableHead>
+                  <TableHead className="text-xs text-muted-foreground text-right">
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredBrands.map((brand) => (
+                  <TableRow key={brand.name}>
+                    <TableCell className="text-sm font-medium">{brand.name}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {brand.associatedCategories.length > 0
+                        ? brand.associatedCategories.join(", ")
+                        : "No categories linked"}
+                    </TableCell>
+                    <TableCell className="text-xs">
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          checked={brand.status === "active"}
+                          onCheckedChange={(checked) =>
+                            handleStatusToggle(brand, checked ? "active" : "hidden")
+                          }
+                        />
+                        <span className="text-xs text-muted-foreground">
+                          {brand.status === "active" ? "Active" : "Hidden"}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right text-xs">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="mr-1 h-7 px-2 text-xs"
+                        onClick={() => handleEditClick(brand)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs text-destructive hover:bg-destructive/5"
+                        onClick={() => handleDeleteBrand(brand)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {filteredBrands.length === 0 && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      className="py-6 text-center text-xs text-muted-foreground"
+                    >
+                      No brands found. Use &quot;Add Brand&quot; to create one.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

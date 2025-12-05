@@ -1,7 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageBanner from "@/components/PageBanner";
-import saleBanner from "@/assets/sale-banner-bg.jpg";
 
 const refundHighlights = [
   {
@@ -60,12 +58,18 @@ const Refund = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <main className="flex-1">
-        <PageBanner title="Refund Policy" backgroundImage={saleBanner} />
-
-        <section className="py-16">
+      <main className="flex-1 pt-20 sm:pt-24 lg:pt-28">
+        <section className="py-8 sm:py-12 lg:py-16">
           <div className="container mx-auto px-4">
             <article className="mx-auto max-w-4xl rounded-3xl bg-card p-8 text-base leading-relaxed text-muted-foreground shadow-lg ring-1 ring-border sm:p-10">
+              <header className="mb-6 sm:mb-8 text-center space-y-2">
+                <p className="text-xs sm:text-sm font-semibold tracking-[0.25em] text-primary uppercase">
+                  Refund Policy
+                </p>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
+                  Returns &amp; Refunds
+                </h1>
+              </header>
               <div className="space-y-4">
                 <p>
                   This Refund Policy explains how [Your Company Name] (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) handles refund

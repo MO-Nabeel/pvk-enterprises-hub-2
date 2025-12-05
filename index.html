@@ -5,6 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <script>
+      // Immediately unregister service workers and clear caches to prevent 404 errors
+      (function() {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            registrations.forEach(function(registration) {
+              registration.unregister();
+            });
+          });
+        }
+        if ('caches' in window) {
+          caches.keys().then(function(cacheNames) {
+            cacheNames.forEach(function(cacheName) {
+              caches.delete(cacheName);
+            });
+          });
+        }
+      })();
+      
+      // Intercept fetch requests to prevent PWA entry point 404 errors
+      const originalFetch = window.fetch;
+      window.fetch = function(...args) {
+        const url = args[0];
+        if (typeof url === 'string' && url.includes('@vite-plugin-pwa/pwa-entry-point-loaded')) {
+          return Promise.resolve(new Response(`
+export function registerDevSW() {
+  // PWA plugin not installed - no-op function
+}
+export default {
+  registerDevSW
+};`, {
+            status: 200,
+            statusText: 'OK',
+            headers: { 'Content-Type': 'application/javascript' }
+          }));
+        }
+        return originalFetch.apply(this, args);
+      };
+    </script>
     <title>PVK Enterprises - Trophy & Awards Manufacturing Company | Malappuram Kerala</title>
     <meta name="description" content="PVK Enterprises - Best trophy and awards manufacturing company in Marancheri, Malappuram, Kerala. We offer elegant traditional and modern trophies, office supplies, custom printing services, and more." />
     <meta name="author" content="PVK Enterprises" />
@@ -29,6 +68,7 @@
           root.classList.add("dark");
         }
       })();
+      
     </script>
   </head>
 

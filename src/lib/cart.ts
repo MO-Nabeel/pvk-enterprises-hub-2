@@ -62,6 +62,9 @@ const writeItemsToStorage = (items: CartItem[]) => {
 
 export const getCartItems = (): CartItem[] => readItemsFromStorage();
 
+export const isProductInCart = (productId: string): boolean =>
+  readItemsFromStorage().some((item) => item.id === productId);
+
 export const getCartCount = (): number =>
   readItemsFromStorage().reduce((total, item) => total + item.quantity, 0);
 

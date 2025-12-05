@@ -5,29 +5,50 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { getCartItems, getCartTotals } from "@/lib/cart";
+
+type FulfillmentMethod = "Cash on Delivery" | "Get a Quote" | "Online Payment";
 
 type CustomerFormState = {
   name: string;
+  companyName: string;
   phone: string;
+  whatsappNumber: string;
   email: string;
   address: string;
+  landmark: string;
   pincode: string;
   notes: string;
+  projectScope: string;
+  accountHolderName: string;
+  accountNumber: string;
+  bankName: string;
+  ifscCode: string;
 };
 
 const INITIAL_FORM: CustomerFormState = {
   name: "",
+  companyName: "",
   phone: "",
+  whatsappNumber: "",
   email: "",
   address: "",
+  landmark: "",
   pincode: "",
-  notes: ""
+  notes: "",
+  projectScope: "",
+  accountHolderName: "",
+  accountNumber: "",
+  bankName: "",
+  ifscCode: ""
 };
 
 const Checkout = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState<CustomerFormState>(INITIAL_FORM);
+  const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("Cash on Delivery");
 
   const cartItems = useMemo(() => getCartItems(), []);
   const cartTotals = useMemo(() => getCartTotals(), []);
@@ -40,29 +61,100 @@ const Checkout = () => {
   };
 
   const isFormValid = useMemo(() => {
-    const nameValid = form.name.trim().length > 0;
     const phoneValid = form.phone.trim().length > 0;
     const addressValid = form.address.trim().length > 0;
-    return nameValid && phoneValid && addressValid && cartItems.length > 0;
-  }, [form.name, form.phone, form.address, cartItems.length]);
+
+    if (fulfillmentMethod === "Get a Quote") {
+      const companyValid = form.companyName.trim().length > 0;
+      const projectScopeValid = form.projectScope.trim().length > 0;
+      return companyValid && phoneValid && addressValid && projectScopeValid && cartItems.length > 0;
+    }
+
+    if (fulfillmentMethod === "Online Payment") {
+      const nameValid = form.name.trim().length > 0;
+      const emailValid = form.email.trim().length > 0;
+      const pincodeValid = form.pincode.trim().length > 0;
+      const accountHolderValid = form.accountHolderName.trim().length > 0;
+      const accountNumberValid = form.accountNumber.trim().length > 0;
+      const bankNameValid = form.bankName.trim().length > 0;
+      const ifscValid = form.ifscCode.trim().length > 0;
+      return (
+        nameValid &&
+        phoneValid &&
+        emailValid &&
+        addressValid &&
+        pincodeValid &&
+        accountHolderValid &&
+        accountNumberValid &&
+        bankNameValid &&
+        ifscValid &&
+        cartItems.length > 0
+      );
+    }
+
+    const nameValid = form.name.trim().length > 0;
+    const emailValid = form.email.trim().length > 0;
+    const pincodeValid = form.pincode.trim().length > 0;
+    return nameValid && phoneValid && emailValid && addressValid && pincodeValid && cartItems.length > 0;
+  }, [
+    form.name,
+    form.companyName,
+    form.phone,
+    form.whatsappNumber,
+    form.email,
+    form.address,
+    form.landmark,
+    form.pincode,
+    form.projectScope,
+    form.accountHolderName,
+    form.accountNumber,
+    form.bankName,
+    form.ifscCode,
+    fulfillmentMethod,
+    cartItems.length
+  ]);
 
   const generateWhatsAppMessage = (): string => {
     const lines: string[] = [];
 
     lines.push("🛒 *New Order / Enquiry*");
     lines.push("");
+    lines.push("*Fulfillment Method*");
+    lines.push(`• Method: ${fulfillmentMethod}`);
+    lines.push("");
     lines.push("*Customer Details*");
-    lines.push(`• Name: ${form.name}`);
-    lines.push(`• Phone: ${form.phone}`);
-    if (form.email.trim()) {
+
+    if (fulfillmentMethod === "Get a Quote") {
+      lines.push(`• Company Name: ${form.companyName}`);
+      lines.push(`• Contact Number: ${form.phone}`);
+      lines.push(`• Company Address: ${form.address}`);
+      if (form.projectScope.trim()) {
+        lines.push(`• Project Scope / Customization Details: ${form.projectScope}`);
+      }
+    } else {
+      lines.push(`• Name: ${form.name}`);
+      lines.push(`• Phone: ${form.phone}`);
+      if (form.whatsappNumber.trim()) {
+        lines.push(`• WhatsApp Number: ${form.whatsappNumber}`);
+      }
       lines.push(`• Email: ${form.email}`);
-    }
-    lines.push(`• Address: ${form.address}`);
-    if (form.pincode.trim()) {
+      lines.push(`• Address: ${form.address}`);
+      if (form.landmark.trim()) {
+        lines.push(`• Landmark: ${form.landmark}`);
+      }
       lines.push(`• Pincode: ${form.pincode}`);
+      if (form.notes.trim()) {
+        lines.push(`• Notes: ${form.notes}`);
+      }
     }
-    if (form.notes.trim()) {
-      lines.push(`• Notes: ${form.notes}`);
+
+    if (fulfillmentMethod === "Online Payment") {
+      lines.push("");
+      lines.push("*Client Bank Details (For Invoice)*");
+      lines.push(`• Account Holder Name: ${form.accountHolderName}`);
+      lines.push(`• Account Number: ${form.accountNumber}`);
+      lines.push(`• Bank Name: ${form.bankName}`);
+      lines.push(`• IFSC Code: ${form.ifscCode}`);
     }
 
     lines.push("");
@@ -135,13 +227,26 @@ const Checkout = () => {
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)] items-start">
               {/* Customer Details Form */}
               <section className="rounded-[32px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70 p-5 sm:p-8 lg:p-10">
-                <div className="mb-6 sm:mb-8 space-y-2">
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-900">
-                    Customer &amp; Delivery Details
-                  </h2>
-                  <p className="text-xs sm:text-sm text-slate-600">
-                    Please fill in the required fields so we can process your WhatsApp order enquiry.
-                  </p>
+                <div className="mb-6 sm:mb-8 space-y-3">
+                  <div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="rounded-2xl px-3 sm:px-4 text-xs sm:text-sm"
+                      onClick={handleBackToCart}
+                    >
+                      ← Back to Cart
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-slate-900">
+                      Customer &amp; Delivery Details
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-600">
+                      Please fill in the required fields so we can process your WhatsApp order enquiry.
+                    </p>
+                  </div>
                 </div>
 
                 <form
@@ -151,132 +256,400 @@ const Checkout = () => {
                     handleShareOnWhatsApp();
                   }}
                 >
-                  <div className="grid gap-6 md:grid-cols-2">
+                  {/* Fulfillment Method Selection - Moved to Top */}
+                  <div className="space-y-4 pb-6 border-b border-slate-200">
                     <div className="space-y-2">
-                      <label
-                        htmlFor="customer-name-input"
-                        className="text-sm font-medium text-slate-700"
-                      >
-                        Full Name *
-                      </label>
-                      <Input
-                        id="customer-name-input"
-                        type="text"
-                        required
-                        value={form.name}
-                        onChange={handleChange("name")}
-                        placeholder="Enter your full name"
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
-                      />
+                      <h3 className="text-base sm:text-lg font-semibold text-slate-900">
+                        Select Fulfillment Method
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-600">
+                        Choose how you would like to complete your order.
+                      </p>
                     </div>
-
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="customer-phone-input"
-                        className="text-sm font-medium text-slate-700"
-                      >
-                        Mobile Number *
-                      </label>
-                      <Input
-                        id="customer-phone-input"
-                        type="tel"
-                        required
-                        value={form.phone}
-                        onChange={handleChange("phone")}
-                        placeholder="Enter your mobile number"
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label htmlFor="customer-email-input" className="text-sm font-medium text-slate-700">
-                        Email Address (Optional)
-                      </label>
-                      <Input
-                        id="customer-email-input"
-                        type="email"
-                        value={form.email}
-                        onChange={handleChange("email")}
-                        placeholder="Enter your email address"
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="customer-pincode-input" className="text-sm font-medium text-slate-700">
-                        Pincode / ZIP Code
-                      </label>
-                      <Input
-                        id="customer-pincode-input"
-                        type="text"
-                        value={form.pincode}
-                        onChange={handleChange("pincode")}
-                        placeholder="e.g. 679581"
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="customer-address-input"
-                      className="text-sm font-medium text-slate-700"
+                    <RadioGroup
+                      value={fulfillmentMethod}
+                      onValueChange={(value) => setFulfillmentMethod(value as FulfillmentMethod)}
+                      className="grid grid-cols-1 md:grid-cols-3 gap-5"
                     >
-                      Complete Delivery Address *
-                    </label>
-                    <Textarea
-                      id="customer-address-input"
-                      required
-                      value={form.address}
-                      onChange={handleChange("address")}
-                      placeholder="House / Building, Street, Landmark, City, State"
-                      rows={4}
-                      className="rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
-                    />
+                      <div className="flex items-start space-x-3 p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                        <RadioGroupItem value="Cash on Delivery" id="cod" className="mt-0.5" />
+                        <Label
+                          htmlFor="cod"
+                          className="flex-1 cursor-pointer text-sm font-medium text-slate-900"
+                        >
+                          Cash on Delivery (COD)
+                          <span className="block text-xs font-normal text-slate-600 mt-1">
+                            The standard purchase method
+                          </span>
+                        </Label>
+                      </div>
+                      <div className="flex items-start space-x-3 p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                        <RadioGroupItem value="Get a Quote" id="quote" className="mt-0.5" />
+                        <Label
+                          htmlFor="quote"
+                          className="flex-1 cursor-pointer text-sm font-medium text-slate-900"
+                        >
+                          Get a Quote
+                          <span className="block text-xs font-normal text-slate-600 mt-1">
+                            For large or custom orders requiring negotiation
+                          </span>
+                        </Label>
+                      </div>
+                      <div className="flex items-start space-x-3 p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                        <RadioGroupItem value="Online Payment" id="online" className="mt-0.5" />
+                        <Label
+                          htmlFor="online"
+                          className="flex-1 cursor-pointer text-sm font-medium text-slate-900"
+                        >
+                          Online Payment
+                          <span className="block text-xs font-normal text-slate-600 mt-1">
+                            For standard immediate payment via a gateway
+                          </span>
+                        </Label>
+                      </div>
+                    </RadioGroup>
                   </div>
+                  {fulfillmentMethod === "Get a Quote" ? (
+                    <>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="company-name-input"
+                          className="text-sm font-medium text-slate-700"
+                        >
+                          Company Name *
+                        </label>
+                        <Input
+                          id="company-name-input"
+                          type="text"
+                          required
+                          value={form.companyName}
+                          onChange={handleChange("companyName")}
+                          placeholder="Enter your company name"
+                          className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="customer-notes-input"
-                      className="text-sm font-medium text-slate-700"
-                    >
-                      Notes / Special Instructions (Optional)
-                    </label>
-                    <Textarea
-                      id="customer-notes-input"
-                      value={form.notes}
-                      onChange={handleChange("notes")}
-                      placeholder="Add any delivery notes, timing preferences, or custom requests."
-                      rows={3}
-                      className="rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
-                    />
-                  </div>
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-2 md:col-span-2">
+                          <label
+                            htmlFor="customer-phone-input"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            Contact Number *
+                          </label>
+                          <Input
+                            id="customer-phone-input"
+                            type="tel"
+                            required
+                            value={form.phone}
+                            onChange={handleChange("phone")}
+                            placeholder="Enter your contact number"
+                            className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="customer-address-input"
+                          className="text-sm font-medium text-slate-700"
+                        >
+                          Company Address *
+                        </label>
+                        <Textarea
+                          id="customer-address-input"
+                          required
+                          value={form.address}
+                          onChange={handleChange("address")}
+                          placeholder="Office / Building, Street, Landmark, City, State"
+                          rows={4}
+                          className="rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="project-scope-input"
+                          className="text-sm font-medium text-slate-700"
+                        >
+                          Project Scope / Customization Details *
+                        </label>
+                        <Textarea
+                          id="project-scope-input"
+                          required
+                          value={form.projectScope}
+                          onChange={handleChange("projectScope")}
+                          placeholder="Describe requirements, customization needs, quantities, timeline, and any specifics needed for a quote."
+                          rows={5}
+                          className="rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Row 1: Name + Mobile */}
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="customer-name-input"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            Full Name *
+                          </label>
+                          <Input
+                            id="customer-name-input"
+                            type="text"
+                            required
+                            value={form.name}
+                            onChange={handleChange("name")}
+                            placeholder="Enter your full name"
+                            className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="customer-phone-input"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            Mobile Number *
+                          </label>
+                          <Input
+                            id="customer-phone-input"
+                            type="tel"
+                            required
+                            value={form.phone}
+                            onChange={handleChange("phone")}
+                            placeholder="Enter your mobile number"
+                            className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Row 2: WhatsApp + Email */}
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="whatsapp-number-input"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            WhatsApp Number
+                          </label>
+                          <Input
+                            id="whatsapp-number-input"
+                            type="tel"
+                            value={form.whatsappNumber}
+                            onChange={handleChange("whatsappNumber")}
+                            placeholder="Enter your WhatsApp number"
+                            className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="customer-email-input" className="text-sm font-medium text-slate-700">
+                            Email Address *
+                          </label>
+                          <Input
+                            id="customer-email-input"
+                            type="email"
+                            required
+                            value={form.email}
+                            onChange={handleChange("email")}
+                            placeholder="Enter your email address"
+                            className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Address full width */}
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="customer-address-input"
+                          className="text-sm font-medium text-slate-700"
+                        >
+                          Complete Delivery Address *
+                        </label>
+                        <Textarea
+                          id="customer-address-input"
+                          required
+                          value={form.address}
+                          onChange={handleChange("address")}
+                          placeholder="House / Building, Street, City, State"
+                          rows={4}
+                          className="rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                        />
+                      </div>
+
+                      {/* Row 3: Pincode + Landmark */}
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <label htmlFor="customer-pincode-input" className="text-sm font-medium text-slate-700">
+                            Pincode / ZIP Code *
+                          </label>
+                          <Input
+                            id="customer-pincode-input"
+                            type="text"
+                            required
+                            value={form.pincode}
+                            onChange={handleChange("pincode")}
+                            placeholder="e.g. 679581"
+                            className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="landmark-input"
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            Landmark
+                          </label>
+                          <Input
+                            id="landmark-input"
+                            type="text"
+                            value={form.landmark}
+                            onChange={handleChange("landmark")}
+                            placeholder="Enter nearby landmark (e.g. Near Metro Station, Opposite Mall)"
+                            className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="customer-notes-input"
+                          className="text-sm font-medium text-slate-700"
+                        >
+                          Notes / Special Instructions (Optional)
+                        </label>
+                        <Textarea
+                          id="customer-notes-input"
+                          value={form.notes}
+                          onChange={handleChange("notes")}
+                          placeholder="Add any delivery notes, timing preferences, or custom requests."
+                          rows={3}
+                          className="rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                        />
+                      </div>
+
+                      {/* Bank Details Section for Online Payment */}
+                      {fulfillmentMethod === "Online Payment" && (
+                        <div className="space-y-4 pt-4 border-t border-slate-200">
+                          <div className="space-y-2">
+                            <h3 className="text-base sm:text-lg font-semibold text-slate-900">
+                              Client Bank Details (For Invoice)
+                            </h3>
+                            <p className="text-xs sm:text-sm text-slate-600">
+                              Please provide your bank account details for invoice generation.
+                            </p>
+                          </div>
+
+                          <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="account-holder-input"
+                                className="text-sm font-medium text-slate-700"
+                              >
+                                Account Holder Name *
+                              </label>
+                              <Input
+                                id="account-holder-input"
+                                type="text"
+                                required
+                                value={form.accountHolderName}
+                                onChange={handleChange("accountHolderName")}
+                                placeholder="Enter account holder name"
+                                className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="account-number-input"
+                                className="text-sm font-medium text-slate-700"
+                              >
+                                Account Number *
+                              </label>
+                              <Input
+                                id="account-number-input"
+                                type="text"
+                                required
+                                value={form.accountNumber}
+                                onChange={handleChange("accountNumber")}
+                                placeholder="Enter account number"
+                                className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="bank-name-input"
+                                className="text-sm font-medium text-slate-700"
+                              >
+                                Bank Name *
+                              </label>
+                              <Input
+                                id="bank-name-input"
+                                type="text"
+                                required
+                                value={form.bankName}
+                                onChange={handleChange("bankName")}
+                                placeholder="e.g. HDFC Bank, Axis Bank"
+                                className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label
+                                htmlFor="ifsc-code-input"
+                                className="text-sm font-medium text-slate-700"
+                              >
+                                IFSC Code *
+                              </label>
+                              <Input
+                                id="ifsc-code-input"
+                                type="text"
+                                required
+                                value={form.ifscCode}
+                                onChange={handleChange("ifscCode")}
+                                placeholder="Enter 11-character IFSC code"
+                                maxLength={11}
+                                className="h-12 rounded-2xl border-slate-200 bg-slate-50 text-sm focus:border-slate-400 focus-visible:ring-slate-200 uppercase"
+                                style={{ textTransform: "uppercase" }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
 
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                     <Button
                       type="submit"
                       size="lg"
                       className="w-full sm:w-auto rounded-2xl bg-[#111827] text-white hover:bg-slate-900 transition"
-                      disabled={!isFormValid}
+                      disabled={!isFormValid || (fulfillmentMethod === "Get a Quote" && !form.projectScope.trim())}
                     >
-                      Place Order
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="lg"
-                      className="w-full sm:w-auto rounded-2xl"
-                      onClick={handleBackToCart}
-                    >
-                      Back to Cart
+                      {fulfillmentMethod === "Cash on Delivery"
+                        ? "Place order"
+                        : fulfillmentMethod === "Get a Quote"
+                        ? "Request Quote"
+                        : "Proceed to Payment Gateway"}
                     </Button>
                   </div>
 
                   {!isFormValid && !isCartEmpty && (
                     <p className="text-xs sm:text-sm text-amber-600 mt-1">
-                      Please fill in your name, mobile number, and complete delivery address to continue.
+                      Please fill in all required fields{" "}
+                      {fulfillmentMethod === "Get a Quote"
+                        ? "(company name, contact number, company address, and project scope)"
+                        : fulfillmentMethod === "Online Payment"
+                        ? "(name, mobile number, email address, pincode, complete delivery address, and all bank details)"
+                        : "(name, mobile number, email address, pincode, and complete delivery address)"}
+                      {" "}to continue.
                     </p>
                   )}
 

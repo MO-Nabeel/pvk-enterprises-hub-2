@@ -1,10 +1,14 @@
 import { allProducts } from "@/data/productData";
 
 const BRAND_STORE_KEY = "pvk-admin-brands";
+const BRAND_DELETED_KEY = "pvk-admin-deleted-brands";
+
+export type BrandStatus = "active" | "hidden";
 
 export type Brand = {
   name: string;
   associatedCategories: string[];
+  status: BrandStatus;
 };
 
 function safeReadJSON<T>(key: string, fallback: T): T {
@@ -26,6 +30,16 @@ function safeWriteJSON<T>(key: string, value: T): void {
   } catch {
     // ignore storage errors
   }
+}
+
+function getDeletedBrandNames(): string[] {
+  const names = safeReadJSON<string[]>(BRAND_DELETED_KEY, []);
+  return Array.isArray(names) ? names : [];
+}
+
+function setDeletedBrandNames(names: string[]): void {
+  const unique = Array.from(new Set(names.filter((name) => name && name.trim())));
+  safeWriteJSON(BRAND_DELETED_KEY, unique);
 }
 
 /**
@@ -52,6 +66,7 @@ function getInitialBrandsFromProducts(): Brand[] {
     brands.push({
       name,
       associatedCategories: Array.from(categories).sort((a, b) => a.localeCompare(b)),
+      status: "active",
     });
   });
 
@@ -70,10 +85,11 @@ function getStoredBrands(): Brand[] {
 
   for (const item of raw) {
     if (typeof item === "string") {
-      // Legacy format: just the brand name, no category associations yet.
+      // Legacy format: just the brand name, no category associations or status yet.
       normalised.push({
         name: item,
         associatedCategories: [],
+        status: "active",
       });
       // eslint-disable-next-line no-continue
       continue;
@@ -84,6 +100,7 @@ function getStoredBrands(): Brand[] {
       if (!name) continue;
 
       const rawCategories = (item as any).associatedCategories;
+      const rawStatus = (item as any).status;
       const set = new Set<string>();
 
       if (Array.isArray(rawCategories)) {
@@ -94,9 +111,12 @@ function getStoredBrands(): Brand[] {
         }
       }
 
+      const status: BrandStatus = rawStatus === "hidden" ? "hidden" : "active";
+
       normalised.push({
         name,
         associatedCategories: Array.from(set).sort((a, b) => a.localeCompare(b)),
+        status,
       });
     }
   }
@@ -106,33 +126,61 @@ function getStoredBrands(): Brand[] {
 
 /**
  * Combined brand catalogue, merging static product-derived brands with persisted admin-created brands.
- * Category associations are unioned per brand name.
+ * Category associations are unioned per brand name. Status is taken from stored data when present,
+ * otherwise defaults to "active". Deleted brands are excluded.
  */
 export function getAllBrands(): Brand[] {
   const base = getInitialBrandsFromProducts();
   const stored = getStoredBrands();
+  const deleted = new Set(getDeletedBrandNames());
 
-  const map = new Map<string, Set<string>>();
+  const map = new Map<
+    string,
+    {
+      categories: Set<string>;
+      status: BrandStatus;
+    }
+  >();
 
-  const upsert = (brand: Brand) => {
+  const upsertBase = (brand: Brand) => {
     const key = brand.name;
     if (!map.has(key)) {
-      map.set(key, new Set());
+      map.set(key, {
+        categories: new Set<string>(),
+        status: "active",
+      });
     }
     const bucket = map.get(key)!;
     for (const cat of brand.associatedCategories) {
-      if (cat.trim()) bucket.add(cat.trim());
+      if (cat.trim()) bucket.categories.add(cat.trim());
     }
   };
 
-  base.forEach(upsert);
-  stored.forEach(upsert);
+  const upsertStored = (brand: Brand) => {
+    const key = brand.name;
+    if (!map.has(key)) {
+      map.set(key, {
+        categories: new Set<string>(),
+        status: brand.status ?? "active",
+      });
+    }
+    const bucket = map.get(key)!;
+    bucket.status = brand.status ?? "active";
+    for (const cat of brand.associatedCategories) {
+      if (cat.trim()) bucket.categories.add(cat.trim());
+    }
+  };
+
+  base.forEach(upsertBase);
+  stored.forEach(upsertStored);
 
   const result: Brand[] = [];
-  map.forEach((categories, name) => {
+  map.forEach((value, name) => {
+    if (deleted.has(name)) return;
     result.push({
       name,
-      associatedCategories: Array.from(categories).sort((a, b) => a.localeCompare(b)),
+      associatedCategories: Array.from(value.categories).sort((a, b) => a.localeCompare(b)),
+      status: value.status,
     });
   });
 
@@ -162,6 +210,7 @@ export function addBrand(name: string, associatedCategories: string[]): Brand[] 
     existing.push({
       name: trimmedName,
       associatedCategories: cleanedCategories,
+      status: "active",
     });
   } else {
     const current = existing[index];
@@ -171,6 +220,7 @@ export function addBrand(name: string, associatedCategories: string[]): Brand[] 
     existing[index] = {
       ...current,
       associatedCategories: mergedCategories,
+      status: current.status ?? "active",
     };
   }
 
@@ -189,4 +239,81 @@ export function getBrandsForCategory(category: string): Brand[] {
   const all = getAllBrands();
   return all.filter((brand) => brand.associatedCategories.includes(trimmedCategory));
 }
+
+export function setBrandStatus(name: string, status: BrandStatus): Brand[] {
+  const trimmedName = name.trim();
+  if (!trimmedName) return getAllBrands();
+
+  const existing = getStoredBrands();
+  const index = existing.findIndex((brand) => brand.name === trimmedName);
+
+  if (index === -1) {
+    const effective = getAllBrands().find((brand) => brand.name === trimmedName);
+    existing.push(
+      effective
+        ? { ...effective, status }
+        : {
+            name: trimmedName,
+            associatedCategories: [],
+            status,
+          },
+    );
+  } else {
+    existing[index] = {
+      ...existing[index],
+      status,
+    };
+  }
+
+  safeWriteJSON(BRAND_STORE_KEY, existing);
+  return getAllBrands();
+}
+
+export function saveBrand(brand: Brand, originalName?: string): Brand[] {
+  const trimmedName = brand.name.trim();
+  if (!trimmedName) return getAllBrands();
+
+  const cleanedCategories = Array.from(
+    new Set(
+      (brand.associatedCategories ?? [])
+        .map((cat) => cat.trim())
+        .filter((cat) => Boolean(cat)),
+    ),
+  );
+
+  const targetName = originalName?.trim() && originalName.trim() !== trimmedName ? originalName.trim() : trimmedName;
+
+  const existing = getStoredBrands();
+  let index = existing.findIndex((b) => b.name === targetName);
+
+  const next: Brand = {
+    name: trimmedName,
+    associatedCategories: cleanedCategories,
+    status: brand.status ?? "active",
+  };
+
+  if (index === -1) {
+    existing.push(next);
+  } else {
+    existing[index] = next;
+  }
+
+  safeWriteJSON(BRAND_STORE_KEY, existing);
+  return getAllBrands();
+}
+
+export function deleteBrand(name: string): Brand[] {
+  const trimmedName = name.trim();
+  if (!trimmedName) return getAllBrands();
+
+  const stored = getStoredBrands().filter((brand) => brand.name !== trimmedName);
+  safeWriteJSON(BRAND_STORE_KEY, stored);
+
+  const deleted = new Set(getDeletedBrandNames());
+  deleted.add(trimmedName);
+  setDeletedBrandNames(Array.from(deleted));
+
+  return getAllBrands();
+}
+
 

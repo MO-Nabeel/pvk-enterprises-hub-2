@@ -80,8 +80,8 @@ const socialLinks = [
 
 const Footer = () => {
   return (
-    <footer className="mt-16 border-t border-white/10 bg-[#040d1f] text-white">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="mt-16 border-t border-white/10 bg-[#040d1f] text-white overflow-hidden">
+      <div className="container mx-auto w-full px-4 py-12">
         <div className="grid grid-cols-1 gap-10 text-sm md:grid-cols-3 lg:grid-cols-3">
           <div className="space-y-4">
             <Link to="/" className="inline-flex items-center gap-3">
