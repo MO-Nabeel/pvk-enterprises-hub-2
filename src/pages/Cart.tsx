@@ -21,6 +21,7 @@ import {
   getCartItems,
   updateCartItemQuantity
 } from "@/lib/cart";
+import { cartHasVisitingCard } from "@/lib/cartRules";
 import { Trash2, Plus, Minus } from "lucide-react";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
@@ -62,6 +63,8 @@ const Cart = () => {
     const total = subtotal + taxes;
     return { subtotal, taxes, total };
   }, [items]);
+
+  const requiresDesignUpload = useMemo(() => cartHasVisitingCard(items), [items]);
 
   const handleQuantityInput = (id: string, value: string) => {
     const parsed = Number(value);
@@ -111,6 +114,17 @@ const Cart = () => {
 
   const isCartEmpty = items.length === 0;
   const canCheckout = totals.total > 0 && !isCartEmpty;
+
+  const handleProceedToCheckout = () => {
+    if (!canCheckout) return;
+
+    if (requiresDesignUpload) {
+      navigate("/checkout/upload-design");
+      return;
+    }
+
+    navigate("/checkout");
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -261,7 +275,7 @@ const Cart = () => {
                   size="lg"
                   className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold mt-2 sm:mt-3"
                   disabled={!canCheckout}
-                  onClick={() => navigate("/checkout")}
+                  onClick={handleProceedToCheckout}
                 >
                   Proceed to Checkout
                 </Button>

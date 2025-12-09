@@ -191,7 +191,10 @@ const AdminBlogs = () => {
                   Manage your blog articles and content
                 </p>
               </div>
-              <Button onClick={handleNew} className="gap-2">
+              <Button
+                onClick={handleNew}
+                className="gap-2 bg-gradient-to-r from-[#00c6ff] to-[#00d97e] text-white hover:opacity-90 shadow-md hover:shadow-lg transition-colors"
+              >
                 <Plus className="h-4 w-4" />
                 New Post
               </Button>

@@ -13,6 +13,8 @@ export type Product = {
   imageGallery: string[];
   price: number;
   oldPrice?: number;
+  purchasePrice?: number;
+  tax?: number;
   category: string;
   brand?: string;
   discount?: number;

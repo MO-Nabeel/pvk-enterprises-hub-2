@@ -101,29 +101,29 @@ const Header = () => {
   const navInactiveClasses = "text-muted-foreground hover:bg-foreground/10 hover:text-foreground";
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[999] border-b border-border/70 bg-background/90 text-foreground shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
-      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4 lg:gap-6 py-2.5 sm:py-3 md:py-3.5 lg:py-4">
+    <header className="fixed top-0 left-0 w-full z-[999] border-b border-border/70 bg-background/90 text-foreground shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/70 overflow-hidden">
+      <div className="w-full px-3 sm:px-4 md:px-4 lg:px-8 max-w-full">
+        <div className="flex items-center justify-between gap-2 sm:gap-2 md:gap-3 lg:gap-6 py-2.5 sm:py-3 md:py-3 lg:py-4 min-w-0">
           {/* Left Section: Logo */}
           <Link 
             to="/" 
-            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 pr-2 sm:pr-3 md:pr-4 lg:pr-6"
+            className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 pr-2 sm:pr-2 md:pr-3 lg:pr-6"
           >
             <img 
               src={pvkLogo} 
               alt="PVK Enterprises Logo" 
-              className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto max-w-[140px] sm:max-w-[180px] md:max-w-[220px] lg:max-w-[260px] object-contain"
+              className="h-8 sm:h-9 md:h-10 lg:h-14 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[160px] lg:max-w-[260px] object-contain"
             />
           </Link>
 
           {/* Center Section: Main Navigation Links (Desktop & Tablet) */}
-          <nav className="hidden md:flex lg:flex items-center flex-1 justify-center">
-            <div className="flex items-center border-2 border-border rounded-full px-3 md:px-4 lg:px-5 py-2 md:py-2.5 gap-1.5 md:gap-2 bg-background/80">
+          <nav className="hidden md:flex items-center flex-1 justify-center min-w-0 max-w-full px-2">
+            <div className="flex items-center border-2 border-border rounded-full px-2 md:px-3 lg:px-5 py-1.5 md:py-2 lg:py-2.5 gap-1 md:gap-1.5 lg:gap-2 bg-background/80">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`px-3 md:px-4 lg:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all duration-200 ${
+                  className={`px-2 md:px-2.5 lg:px-5 py-1.5 md:py-2 lg:py-2.5 rounded-full text-[10px] md:text-xs lg:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                     isActive(link.to) ? navActiveClasses : navInactiveClasses
                   }`}
                 >
@@ -134,16 +134,16 @@ const Header = () => {
           </nav>
 
           {/* Right Section: Search Icon & Utility Icons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 flex-shrink-0">
-            <ThemeToggle className="inline-flex sm:inline-flex" />
+          <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 lg:gap-4 flex-shrink-0">
+            <ThemeToggle className="inline-flex sm:inline-flex h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10" />
             {/* Search Icon */}
             <Button
               size="icon"
-              className="nav-icon-button"
+              className="nav-icon-button h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10"
               onClick={() => setSearchBarOpen(!searchBarOpen)}
               aria-label="Search"
             >
-              <Search className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Search className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5" />
             </Button>
 
             {/* Shopping Cart Icon - Only visible when cart has items */}
@@ -152,15 +152,15 @@ const Header = () => {
                 <Button
                   asChild
                   size="icon"
-                  className="nav-icon-button"
+                  className="nav-icon-button h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10"
                   aria-label={`View cart (${cartCount} item${cartCount === 1 ? "" : "s"})`}
                 >
                   <Link to="/cart">
-                    <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <ShoppingCart className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                   </Link>
                 </Button>
                 <span
-                  className="pointer-events-none absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 inline-flex h-4 sm:h-5 min-w-[16px] sm:min-w-[20px] items-center justify-center rounded-full bg-foreground px-1 sm:px-1.5 text-[10px] sm:text-xs font-bold leading-none text-background shadow-lg"
+                  className="pointer-events-none absolute -top-1 -right-1 sm:-top-1 sm:-right-1 md:-top-1.5 md:-right-1.5 inline-flex h-4 sm:h-4 md:h-5 min-w-[16px] sm:min-w-[16px] md:min-w-[20px] items-center justify-center rounded-full bg-foreground px-1 sm:px-1 md:px-1.5 text-[10px] sm:text-[10px] md:text-xs font-bold leading-none text-background shadow-lg"
                   aria-live="polite"
                 >
                   {cartCount > 99 ? "99+" : cartCount}
@@ -171,10 +171,10 @@ const Header = () => {
             {/* User Profile Icon - Hidden on mobile, visible on tablet and up */}
             <Button
               size="icon"
-              className="hidden sm:flex nav-icon-button"
+              className="hidden sm:flex nav-icon-button h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10"
               aria-label="Profile"
             >
-              <User className="h-4 w-4 sm:h-5 sm:w-5" />
+              <User className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5" />
             </Button>
 
             {/* Mobile Menu Toggle */}

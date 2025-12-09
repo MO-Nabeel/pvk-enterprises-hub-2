@@ -13,6 +13,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Category = lazy(() => import("./pages/Category"));
 const Cart = lazy(() => import("./pages/Cart"));
 const Checkout = lazy(() => import("./pages/Checkout"));
+const CheckoutUploadDesign = lazy(() => import("./pages/CheckoutUploadDesign"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Refund = lazy(() => import("./pages/Refund"));
@@ -29,6 +30,7 @@ const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminSales = lazy(() => import("./pages/admin/AdminSales"));
 const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminBlogs = lazy(() => import("./pages/admin/AdminBlogs"));
+const AdminParameters = lazy(() => import("./pages/admin/AdminParameters"));
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPostDetail />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout/upload-design" element={<CheckoutUploadDesign />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/privacy.html" element={<Privacy />} />
@@ -72,6 +75,7 @@ const App = () => (
             <Route path="/admin/sales" element={<AdminSales />} />
             <Route path="/admin/leads" element={<AdminLeads />} />
             <Route path="/admin/blogs" element={<AdminBlogs />} />
+            <Route path="/admin/parameters" element={<AdminParameters />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

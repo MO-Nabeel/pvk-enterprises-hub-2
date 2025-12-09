@@ -33,7 +33,7 @@ const ThemeToggle = ({ className }: ThemeToggleProps) => {
       aria-label={label}
       disabled={!mounted}
       className={cn(
-        "nav-icon-button relative h-9 w-9 sm:h-10 sm:w-10 rounded-full",
+        "nav-icon-button relative h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-full",
         !mounted && "opacity-50",
         className
       )}

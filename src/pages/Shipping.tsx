@@ -116,25 +116,29 @@ const Shipping = () => {
               <div className="mt-12 space-y-6">
                 <h2 className="text-2xl font-semibold text-foreground">B. Shipping Rates & Delivery Estimates</h2>
                 <p>Shipping charges are calculated and displayed at checkout. Estimated timelines apply after processing is complete.</p>
-                <div className="overflow-x-auto rounded-2xl border border-border">
-                  <table className="min-w-full divide-y divide-border text-sm">
-                    <thead className="bg-muted/40 text-left text-foreground">
-                      <tr>
-                      <th scope="col" className="px-6 py-4 font-semibold">Shipping Method</th>
-                        <th scope="col" className="px-6 py-4 font-semibold">Estimated Delivery</th>
-                        <th scope="col" className="px-6 py-4 font-semibold">Cost</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {shippingMethods.map(({ method, eta, cost }) => (
-                        <tr key={method} className="text-foreground">
-                          <td className="px-6 py-4 font-medium">{method}</td>
-                          <td className="px-6 py-4">{eta}</td>
-                          <td className="px-6 py-4">{cost}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="overflow-x-auto rounded-2xl border border-border -mx-4 sm:mx-0">
+                  <div className="min-w-full inline-block align-middle">
+                    <div className="overflow-hidden">
+                      <table className="min-w-[500px] sm:min-w-full divide-y divide-border text-sm">
+                        <thead className="bg-muted/40 text-left text-foreground">
+                          <tr>
+                            <th scope="col" className="px-3 sm:px-6 py-3 sm:py-4 font-semibold text-xs sm:text-sm">Shipping Method</th>
+                            <th scope="col" className="px-3 sm:px-6 py-3 sm:py-4 font-semibold text-xs sm:text-sm">Estimated Delivery</th>
+                            <th scope="col" className="px-3 sm:px-6 py-3 sm:py-4 font-semibold text-xs sm:text-sm">Cost</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                          {shippingMethods.map(({ method, eta, cost }) => (
+                            <tr key={method} className="text-foreground">
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm">{method}</td>
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">{eta}</td>
+                              <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">{cost}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
 

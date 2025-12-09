@@ -7,6 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Edit, Trash2 } from "lucide-react";
 import {
@@ -42,6 +52,7 @@ const AdminSpecialServices = () => {
   });
   const [isDragging, setIsDragging] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);
 
   // Load services from store on mount
   useEffect(() => {
@@ -98,10 +109,9 @@ const AdminSpecialServices = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this service? This action cannot be undone.")) {
-      deleteService(id);
-      setServices(getAllServices());
-    }
+    deleteService(id);
+    setServices(getAllServices());
+    setDeleteServiceId(null);
   };
 
   const handleStatusChange = (id: string, status: ServiceStatus) => {
@@ -336,9 +346,9 @@ const AdminSpecialServices = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-9 rounded-full px-3 text-xs font-medium text-destructive hover:bg-destructive/10"
+                  className="h-9 rounded-full px-3 text-xs font-medium text-destructive hover:bg-[#111827] delete-button-hover"
                   type="button"
-                  onClick={() => handleDelete(service.id)}
+                  onClick={() => setDeleteServiceId(service.id)}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -438,9 +448,9 @@ const AdminSpecialServices = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 rounded-full px-3 text-[11px] font-medium text-destructive hover:bg-destructive/10"
+                            className="h-7 rounded-full px-3 text-[11px] font-medium text-destructive hover:bg-[#111827] delete-button-hover"
                             type="button"
-                            onClick={() => handleDelete(service.id)}
+                            onClick={() => setDeleteServiceId(service.id)}
                           >
                             Delete
                           </Button>
@@ -609,6 +619,27 @@ const AdminSpecialServices = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Service Confirmation */}
+      <AlertDialog open={deleteServiceId !== null} onOpenChange={(open) => !open && setDeleteServiceId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Service</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this service? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteServiceId && handleDelete(deleteServiceId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors duration-200"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AdminLayout>
   );
 };

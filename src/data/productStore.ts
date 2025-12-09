@@ -120,16 +120,88 @@ export function markProductDeleted(id: string): void {
 
 // --- Custom categories (created in admin UI) ---
 
-export function getCustomCategories(): string[] {
-  const cats = safeReadJSON<string[]>(CUSTOM_CATEGORIES_KEY, []);
-  return Array.isArray(cats) ? cats : [];
+export type CustomCategory = {
+  name: string;
+  position?: number;
+};
+
+// Migration: Convert old string[] format to new CustomCategory[] format
+function migrateCustomCategories(data: unknown): CustomCategory[] {
+  if (!Array.isArray(data)) return [];
+  
+  // If it's an array of strings (old format), migrate to new format
+  if (data.length > 0 && typeof data[0] === 'string') {
+    return (data as string[]).map((name, index) => ({
+      name,
+      position: undefined, // No position in old format
+    }));
+  }
+  
+  // If it's already the new format, validate and return
+  return data.filter((item): item is CustomCategory => 
+    typeof item === 'object' && 
+    item !== null && 
+    'name' in item && 
+    typeof (item as any).name === 'string'
+  );
 }
 
-// --- Default category overrides (rename / hide) ---
+export function getCustomCategories(): string[] {
+  const cats = safeReadJSON<unknown>(CUSTOM_CATEGORIES_KEY, []);
+  const migrated = migrateCustomCategories(cats);
+  // Sort by position (undefined positions go to end), then by name
+  const sorted = migrated.sort((a, b) => {
+    const posA = a.position ?? Infinity;
+    const posB = b.position ?? Infinity;
+    if (posA !== posB) return posA - posB;
+    return a.name.localeCompare(b.name);
+  });
+  return sorted.map(cat => cat.name);
+}
+
+export function getCustomCategoriesWithPosition(): CustomCategory[] {
+  const cats = safeReadJSON<unknown>(CUSTOM_CATEGORIES_KEY, []);
+  const migrated = migrateCustomCategories(cats);
+  // Sort by position (undefined positions go to end), then by name
+  return migrated.sort((a, b) => {
+    const posA = a.position ?? Infinity;
+    const posB = b.position ?? Infinity;
+    if (posA !== posB) return posA - posB;
+    return a.name.localeCompare(b.name);
+  });
+}
+
+export function saveCustomCategories(categories: CustomCategory[]): void {
+  // Validate positions are unique
+  const positions = new Set<number>();
+  const validated = categories.map(cat => {
+    if (cat.position !== undefined) {
+      if (positions.has(cat.position)) {
+        // Duplicate position found, remove it
+        return { ...cat, position: undefined };
+      }
+      positions.add(cat.position);
+    }
+    return cat;
+  });
+  
+  safeWriteJSON(CUSTOM_CATEGORIES_KEY, validated);
+  // Dispatch storage event for same-window listeners
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new StorageEvent("storage", {
+      key: CUSTOM_CATEGORIES_KEY,
+      newValue: JSON.stringify(validated),
+      storageArea: window.localStorage
+    }));
+  }
+}
+
+// --- Default category overrides (rename / hide / position) ---
 
 export type CategoryOverride = {
   name?: string;
   hidden?: boolean;
+  position?: number;
 };
 
 export type CategoryOverrideMap = Record<string, CategoryOverride>;
@@ -141,6 +213,14 @@ export function getCategoryOverrideMap(): CategoryOverrideMap {
 
 function setCategoryOverrideMap(map: CategoryOverrideMap): void {
   safeWriteJSON(CATEGORY_OVERRIDES_KEY, map);
+  // Dispatch storage event for same-window listeners
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new StorageEvent("storage", {
+      key: CATEGORY_OVERRIDES_KEY,
+      newValue: JSON.stringify(map),
+      storageArea: window.localStorage
+    }));
+  }
 }
 
 export function updateCategoryOverride(baseName: string, patch: CategoryOverride): void {
@@ -151,8 +231,8 @@ export function updateCategoryOverride(baseName: string, patch: CategoryOverride
   const existing = current[key] ?? {};
   const next: CategoryOverride = { ...existing, ...patch };
 
-  // Clean up empty override objects
-  if (!next.name && !next.hidden) {
+  // Clean up empty override objects (but keep if position is set)
+  if (!next.name && !next.hidden && next.position === undefined) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete current[key];
     setCategoryOverrideMap(current);
@@ -171,6 +251,49 @@ export function clearCategoryOverride(baseName: string): void {
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete current[key];
   setCategoryOverrideMap(current);
+}
+
+// Initialize default positions for existing categories based on their current slot order
+export function initializeDefaultCategoryPositions(): void {
+  const current = getCategoryOverrideMap();
+  
+  // Default categories in their current slot order (as defined in Index.tsx)
+  const defaultCategories = [
+    "Trophies & Awards",        // grid1-c1 -> position 1
+    "Custom Rubber Stamps",      // grid1-c2 -> position 2
+    "Custom Printing",           // grid1-c3 -> position 3
+    "Office Stationery",         // grid2-c1 -> position 4
+    "Printer Supplies",          // grid2-c2 -> position 5
+    "Mobile Accessories",        // grid3-c1 -> position 6
+    "Offset Printing",           // grid3-c2 -> position 7
+    "Frame Studio",              // grid3-c3 -> position 8
+    "Wedding Cards",             // grid3-c4 -> position 9
+    "Customized Notebook",        // grid4-c1 -> position 10
+    "Student ID",                 // grid4-c2 -> position 11
+    "Visiting Card",             // grid4-c3 -> position 12
+    "Notice Printing",           // grid4-c4 -> position 13
+  ];
+
+  let hasChanges = false;
+  const updated = { ...current };
+
+  defaultCategories.forEach((categoryName, index) => {
+    const position = index + 1;
+    const existing = updated[categoryName];
+    
+    // Only set position if it doesn't already have one
+    if (!existing || existing.position === undefined) {
+      updated[categoryName] = {
+        ...existing,
+        position,
+      };
+      hasChanges = true;
+    }
+  });
+
+  if (hasChanges) {
+    setCategoryOverrideMap(updated);
+  }
 }
 
 // --- Category brand registrations (used by storefront filters) ---

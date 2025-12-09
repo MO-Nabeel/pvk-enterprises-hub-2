@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,6 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { getCartItems, getCartTotals } from "@/lib/cart";
+import { cartHasVisitingCard } from "@/lib/cartRules";
+import { getStoredDesignUpload } from "@/lib/designUpload";
+import { buildOrderPayload, sendOrderCommunications } from "@/lib/orderSubmission";
 
 type FulfillmentMethod = "Cash on Delivery" | "Get a Quote" | "Online Payment";
 
@@ -49,9 +52,20 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState<CustomerFormState>(INITIAL_FORM);
   const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("Cash on Delivery");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const cartItems = useMemo(() => getCartItems(), []);
   const cartTotals = useMemo(() => getCartTotals(), []);
+  const requiresDesignUpload = useMemo(() => cartHasVisitingCard(cartItems), [cartItems]);
+  const designUpload = useMemo(() => getStoredDesignUpload(), []);
+  const orderId = useMemo(() => `PVK-${Date.now()}`, []);
+
+  useEffect(() => {
+    if (requiresDesignUpload && !designUpload) {
+      navigate("/checkout/upload-design", { replace: true });
+    }
+  }, [requiresDesignUpload, designUpload, navigate]);
 
   const handleChange = (field: keyof CustomerFormState) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({
@@ -88,14 +102,23 @@ const Checkout = () => {
         accountNumberValid &&
         bankNameValid &&
         ifscValid &&
-        cartItems.length > 0
+        cartItems.length > 0 &&
+        (!requiresDesignUpload || !!designUpload)
       );
     }
 
     const nameValid = form.name.trim().length > 0;
     const emailValid = form.email.trim().length > 0;
     const pincodeValid = form.pincode.trim().length > 0;
-    return nameValid && phoneValid && emailValid && addressValid && pincodeValid && cartItems.length > 0;
+    return (
+      nameValid &&
+      phoneValid &&
+      emailValid &&
+      addressValid &&
+      pincodeValid &&
+      cartItems.length > 0 &&
+      (!requiresDesignUpload || !!designUpload)
+    );
   }, [
     form.name,
     form.companyName,
@@ -111,13 +134,17 @@ const Checkout = () => {
     form.bankName,
     form.ifscCode,
     fulfillmentMethod,
-    cartItems.length
+    cartItems.length,
+    designUpload,
+    requiresDesignUpload
   ]);
 
   const generateWhatsAppMessage = (): string => {
     const lines: string[] = [];
 
     lines.push("🛒 *New Order / Enquiry*");
+    lines.push("");
+    lines.push(`Order ID: ${orderId}`);
     lines.push("");
     lines.push("*Fulfillment Method*");
     lines.push(`• Method: ${fulfillmentMethod}`);
@@ -178,6 +205,17 @@ const Checkout = () => {
       lines.push(`Total: ₹${cartTotals.total.toFixed(2)}`);
     }
 
+    if (requiresDesignUpload && designUpload) {
+      lines.push("");
+      lines.push("*Visiting Card Design Upload*");
+      lines.push(`• File: ${designUpload.name} (${designUpload.type || "file"})`);
+      lines.push(`• Size: ${(designUpload.size / (1024 * 1024)).toFixed(2)} MB`);
+      const urlPreview = designUpload.url.length > 120
+        ? `${designUpload.url.slice(0, 120)}...`
+        : designUpload.url;
+      lines.push(`• File Reference: ${urlPreview}`);
+    }
+
     lines.push("");
     lines.push("Sent via PVK Enterprises website checkout.");
 
@@ -185,10 +223,6 @@ const Checkout = () => {
   };
 
   const handleShareOnWhatsApp = () => {
-    if (!isFormValid) {
-      return;
-    }
-
     const message = generateWhatsAppMessage();
 
     // Default business number; adjust as needed
@@ -251,9 +285,32 @@ const Checkout = () => {
 
                 <form
                   className="space-y-6"
-                  onSubmit={(event) => {
+                  onSubmit={async (event) => {
                     event.preventDefault();
-                    handleShareOnWhatsApp();
+                    if (!isFormValid || isSubmitting) return;
+
+                    setIsSubmitting(true);
+                    setSubmitError(null);
+
+                    try {
+                      const payload = buildOrderPayload({
+                        id: orderId,
+                        fulfillmentMethod,
+                        cart: cartItems,
+                        totals: cartTotals,
+                        customer: form as unknown as Record<string, string>,
+                        designUpload
+                      });
+
+                      await sendOrderCommunications(payload);
+                      handleShareOnWhatsApp();
+                    } catch (error) {
+                      console.error(error);
+                      setSubmitError("We could not send your order details. Please try again.");
+                      return;
+                    } finally {
+                      setIsSubmitting(false);
+                    }
                   }}
                 >
                   {/* Fulfillment Method Selection - Moved to Top */}
@@ -631,9 +688,15 @@ const Checkout = () => {
                       type="submit"
                       size="lg"
                       className="w-full sm:w-auto rounded-2xl bg-[#111827] text-white hover:bg-slate-900 transition"
-                      disabled={!isFormValid || (fulfillmentMethod === "Get a Quote" && !form.projectScope.trim())}
+                      disabled={
+                        isSubmitting ||
+                        !isFormValid ||
+                        (fulfillmentMethod === "Get a Quote" && !form.projectScope.trim())
+                      }
                     >
-                      {fulfillmentMethod === "Cash on Delivery"
+                      {isSubmitting
+                        ? "Submitting..."
+                        : fulfillmentMethod === "Cash on Delivery"
                         ? "Place order"
                         : fulfillmentMethod === "Get a Quote"
                         ? "Request Quote"
@@ -656,6 +719,12 @@ const Checkout = () => {
                   {isCartEmpty && (
                     <p className="text-xs sm:text-sm text-red-600 mt-1">
                       Your cart is empty. Please add items to your cart before sending a WhatsApp order enquiry.
+                    </p>
+                  )}
+
+                  {submitError && (
+                    <p className="text-xs sm:text-sm text-red-600 mt-1">
+                      {submitError}
                     </p>
                   )}
                 </form>

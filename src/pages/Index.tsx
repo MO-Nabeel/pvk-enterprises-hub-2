@@ -51,8 +51,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getCustomCategories, getCategoryOverrideMap } from "@/data/productStore";
+import { getCustomCategories, getCategoryOverrideMap, getAllProductsWithExtras, getCustomCategoriesWithPosition } from "@/data/productStore";
 import { getActiveServices } from "@/data/serviceStore";
+import { getCategoryCardContent } from "@/data/categoryCardStore";
 
 type ServiceCard = {
   title: string;
@@ -75,16 +76,16 @@ const Index = () => {
       buttonText: "Get Products",
       buttonLink: "/category?category=Trophies%20%26%20Awards"
     },
-    {
-      image: customPrintingImage,
-      alt: "Custom Printing Solutions",
-      objectPosition: "center",
-      title: "Custom Printing",
-      subtitle: "Solutions",
-      description: "On-demand creative prints for events and promotions. From banners to business cards, we bring your vision to life.",
-      buttonText: "Get Products",
-      buttonLink: "/category?category=Custom%20Printing"
-    },
+    // {
+    //   image: customPrintingImage,
+    //   alt: "Custom Printing Solutions",
+    //   objectPosition: "center",
+    //   title: "Custom Printing",
+    //   subtitle: "Solutions",
+    //   description: "On-demand creative prints for events and promotions. From banners to business cards, we bring your vision to life.",
+    //   buttonText: "Get Products",
+    //   buttonLink: "/category?category=Custom%20Printing"
+    // },
     {
       image: officeImage,
       alt: "Office Stationery & Supplies",
@@ -117,13 +118,13 @@ const Index = () => {
     },
     {
       image: tshirtImage,
-      alt: "Custom apparel and T-shirt printing selection",
+      alt: "Custom Printing Solutions",
       objectPosition: "center",
-      title: "Custom Apparel",
-      subtitle: "Personalized Style",
-      description: "Custom T-shirts and apparel printing for events, teams, and personal use. Express your unique style.",
+      title: "Custom Printing",
+      subtitle: "Solutions",
+      description: "On-demand creative prints for events and promotions. From banners to business cards, we bring your vision to life.",
       buttonText: "Get Products",
-      buttonLink: "/category"
+      buttonLink: "/category?category=Custom%20Printing"
     }
   ];
 
@@ -142,6 +143,7 @@ const Index = () => {
     slot: string;
     textTone: "light" | "dark";
     imagePosition?: string;
+  originalTitle?: string;
   };
 
   const categories: Category[] = [
@@ -265,8 +267,49 @@ const Index = () => {
     }
   ];
 
-  const customCategories = useMemo(() => getCustomCategories(), []);
-  const categoryOverrides = useMemo(() => getCategoryOverrideMap(), []);
+  // Get custom categories sorted by position (already sorted in getCustomCategories)
+  const [categoryUpdateTrigger, setCategoryUpdateTrigger] = useState(0);
+  const customCategories = useMemo(() => getCustomCategories(), [categoryUpdateTrigger]);
+  const categoryOverrides = useMemo(() => getCategoryOverrideMap(), [categoryUpdateTrigger]);
+  const [cardContentUpdateTrigger, setCardContentUpdateTrigger] = useState(0);
+
+  // Listen for category updates (positions, overrides, etc.)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (
+        e.key === "pvk-custom-categories" ||
+        e.key === "pvk-category-overrides"
+      ) {
+        setCategoryUpdateTrigger((prev) => prev + 1);
+      }
+    };
+
+    const handleCustomEvent = () => {
+      setCategoryUpdateTrigger((prev) => prev + 1);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("categoryCardContentUpdated", handleCustomEvent);
+    window.addEventListener("customCategoriesUpdated", handleCustomEvent);
+    
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("categoryCardContentUpdated", handleCustomEvent);
+      window.removeEventListener("customCategoriesUpdated", handleCustomEvent);
+    };
+  }, []);
+
+  // Listen for category card content updates
+  useEffect(() => {
+    const handleContentUpdate = () => {
+      setCardContentUpdateTrigger((prev) => prev + 1);
+    };
+
+    window.addEventListener("categoryCardContentUpdated", handleContentUpdate);
+    return () => {
+      window.removeEventListener("categoryCardContentUpdated", handleContentUpdate);
+    };
+  }, []);
 
   const categoriesBySlot = categories.reduce<Record<string, typeof categories[number]>>((acc, category) => {
     acc[category.slot] = category;
@@ -296,6 +339,8 @@ const Index = () => {
       result[cat.slot] = {
         ...base,
         title: effectiveTitle,
+        // Preserve the original key so admin edits (stored by base name) map correctly
+        originalTitle: cat.title,
         // Keep the original category query parameter so existing products still match
       };
     });
@@ -390,21 +435,54 @@ const Index = () => {
     const category = overriddenCategoriesBySlot[slot];
     if (!category) return null;
 
+    // Get custom card content from store (trigger re-render on updates)
+    const contentKey = (category as any).originalTitle || category.title;
+    const cardContent = getCategoryCardContent(contentKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const _ = cardContentUpdateTrigger; // Force re-render when content updates
+    
+    // Use custom content if available, otherwise use defaults
+    const displayTitle = cardContent?.cardTitle || category.title;
+    // Use admin-provided text only; no default label/description fallback
+    const displayDescription = cardContent?.cardDescription || "";
+    const displayAccent = cardContent?.topLabel || "";
+    const badgeValue = cardContent?.badgeValue;
+
     const palette = getAccentPalette(category.accent);
+    const backgroundImage =
+      cardContent?.categoryImageURL ??
+      cardContent?.backgroundImage ??
+      undefined;
+    const backgroundPosition =
+      cardContent?.categoryImageURL || cardContent?.backgroundImage
+        ? "center"
+        : category.imagePosition ?? "center";
+
     const cardStyle: CSSProperties = {
       "--card-primary": palette.primary,
       "--card-secondary": palette.secondary,
       "--card-ambient": palette.ambient,
       "--card-ring": palette.ring,
-      "--card-text": category.textTone === "light" ? "#f8fafc" : "#0f172a"
+      "--card-text": category.textTone === "light" ? "#f8fafc" : "#0f172a",
     } as CSSProperties;
+
+    if (backgroundImage) {
+      cardStyle.backgroundImage = `linear-gradient(145deg, rgba(5, 8, 20, 0.78), rgba(16, 24, 46, 0.65)), url(${backgroundImage})`;
+      cardStyle.backgroundSize = "cover";
+      cardStyle.backgroundPosition = backgroundPosition;
+      cardStyle.backgroundRepeat = "no-repeat";
+    } else if (cardContent?.backgroundColor) {
+      cardStyle.backgroundColor = cardContent.backgroundColor;
+    } else {
+      cardStyle.backgroundColor = "rgba(5, 8, 20, 0.9)";
+    }
 
     return (
       <Link
         key={slot}
         to={category.link}
         data-slot={slot}
-        aria-label={`${category.title} category`}
+        aria-label={`${displayTitle} category`}
         className={cn(
           "category-card group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70",
           category.slot === "grid3-c4" && "category-card--wedding"
@@ -416,10 +494,15 @@ const Index = () => {
         <div className="category-card__inner">
           <div className="category-card__accent-row">
             <span className="category-card__accent-dot" aria-hidden="true" />
-            <span className="category-card__accent-text">{category.accent}</span>
+            <span className="category-card__accent-text">{displayAccent}</span>
+            {badgeValue && (
+              <span className="category-card__badge-value ml-2 text-xs font-semibold opacity-80">
+                {badgeValue}
+              </span>
+            )}
           </div>
-          <h3 className="category-card__title">{category.title}</h3>
-          <p className="category-card__description">{category.description}</p>
+          <h3 className="category-card__title">{displayTitle}</h3>
+          <p className="category-card__description">{displayDescription}</p>
           <div className="category-card__footer">
             <span>Explore</span>
             <span className="category-card__icon" aria-hidden="true">
@@ -530,34 +613,39 @@ const Index = () => {
     );
   };
 
-  const products = [
-    {
-      id: "thermal-paper-roll",
-      name: "THERMAL PAPER ROLL",
-      price: 450,
-      image: printerImage
-    },
-    {
-      id: "colop-printer-38",
-      name: "COLOP Printer 38 Dater Self-inking stamp",
-      price: 1250,
-      image: stampImage,
-      discount: 10
-    },
-    {
-      id: "sorakshi-photo-frame",
-      name: "Sorakshi Quartz Photo Frame With Clock",
-      price: 2800,
-      image: trophyImage
-    },
-    {
-      id: "prismajet-nova-paper",
-      name: "PRISMAJET NOVA RESIN COATED GLOSSY",
-      price: 3200,
-      image: officeImage,
-      discount: 15
-    }
-  ];
+  // Get products from admin dashboard (includes base products + admin-added products)
+  // Show first 8 products as featured/best sellers
+  const [productsUpdateTrigger, setProductsUpdateTrigger] = useState(0);
+  const products = useMemo(() => {
+    const allProducts = getAllProductsWithExtras();
+    // Map to format expected by ProductCard component
+    return allProducts.slice(0, 8).map((product) => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      discount: product.discount,
+      image: product.imageGallery?.[0] || printerImage,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productsUpdateTrigger]);
+
+  // Listen for product updates from admin
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (
+        e.key === "pvk-admin-extra-products" ||
+        e.key === "pvk-admin-hidden-products" ||
+        e.key === "pvk-admin-deleted-products"
+      ) {
+        setProductsUpdateTrigger((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   // Load services dynamically from serviceStore (only Active services)
   const [serviceCards, setServiceCards] = useState<ServiceCard[]>([]);
@@ -840,6 +928,18 @@ const Index = () => {
             <div className="mt-8 sm:mt-10 md:mt-12">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 custom-categories-grid">
                 {customCategories.map((name) => {
+                  // Get custom card content for this category
+                  const cardContent = getCategoryCardContent(name);
+                  // eslint-disable-next-line react-hooks/exhaustive-deps
+                  const _ = cardContentUpdateTrigger; // Force re-render when content updates
+                  
+                  // Use custom content if available, otherwise use defaults
+                  const displayTitle = cardContent?.cardTitle || name;
+                  // Use admin-provided text only; no default label/description fallback
+                  const displayDescription = cardContent?.cardDescription || "";
+                  const displayAccent = cardContent?.topLabel || "";
+                  const badgeValue = cardContent?.badgeValue;
+                  
                   const palette = getAccentPalette("custom");
                   const cardStyle: CSSProperties = {
                     "--card-primary": palette.primary,
@@ -847,13 +947,18 @@ const Index = () => {
                     "--card-ambient": palette.ambient,
                     "--card-ring": palette.ring,
                     "--card-text": "#f8fafc",
+                    ...((cardContent?.categoryImageURL || cardContent?.backgroundImage) && {
+                      backgroundImage: `url(${cardContent.categoryImageURL || cardContent.backgroundImage})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }),
                   } as CSSProperties;
 
                   return (
                     <Link
                       key={name}
                       to={`/category?category=${encodeURIComponent(name)}`}
-                      aria-label={`${name} category`}
+                      aria-label={`${displayTitle} category`}
                       className={cn(
                         "category-card group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70"
                       )}
@@ -864,12 +969,15 @@ const Index = () => {
                       <div className="category-card__inner">
                         <div className="category-card__accent-row">
                           <span className="category-card__accent-dot" aria-hidden="true" />
-                          <span className="category-card__accent-text">Custom</span>
+                          <span className="category-card__accent-text">{displayAccent}</span>
+                          {badgeValue && (
+                            <span className="category-card__badge-value ml-2 text-xs font-semibold opacity-80">
+                              {badgeValue}
+                            </span>
+                          )}
                         </div>
-                        <h3 className="category-card__title">{name}</h3>
-                        <p className="category-card__description">
-                          Products you assign to this category in the admin panel will appear here.
-                        </p>
+                        <h3 className="category-card__title">{displayTitle}</h3>
+                        <p className="category-card__description">{displayDescription}</p>
                         <div className="category-card__footer">
                           <span>Explore</span>
                           <span className="category-card__icon" aria-hidden="true">
@@ -946,7 +1054,7 @@ const Index = () => {
               There are many variations of products available
             </p>
           </div>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-5 md:gap-6">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-5 md:gap-6 justify-items-center">
             {products.map((product) => (
               <ProductCard key={product.id} {...product} />
             ))}

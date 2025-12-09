@@ -12,7 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Separator } from "@/components/ui/separator";
 import { Filter, X, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getAllProductsWithExtras, getCustomCategories, getCategoryOverrideMap } from "@/data/productStore";
+import { getAllProductsWithExtras, getCustomCategories, getCategoryOverrideMap, getCustomCategoriesWithPosition } from "@/data/productStore";
 import { getAllBrands, type Brand } from "@/data/brandStore";
 import {
   Pagination,
@@ -32,8 +32,36 @@ const Category = () => {
     image: product.imageGallery?.[0] || ""
   }));
 
-  const customCategories = useMemo(() => getCustomCategories(), []);
-  const categoryOverrides = useMemo(() => getCategoryOverrideMap(), []);
+  const [categoryUpdateTrigger, setCategoryUpdateTrigger] = useState(0);
+  
+  // Listen for category updates (positions, overrides, etc.)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent | Event) => {
+      const key = e instanceof StorageEvent ? e.key : null;
+      if (
+        key === "pvk-admin-custom-categories" ||
+        key === "pvk-admin-category-overrides"
+      ) {
+        setCategoryUpdateTrigger((prev) => prev + 1);
+      }
+    };
+
+    const handleCustomEvent = () => {
+      setCategoryUpdateTrigger((prev) => prev + 1);
+    };
+
+    // Listen for storage events (cross-tab and same-tab via dispatched events) and custom events
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("categoryCardContentUpdated", handleCustomEvent);
+    
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("categoryCardContentUpdated", handleCustomEvent);
+    };
+  }, []);
+
+  const customCategories = useMemo(() => getCustomCategories(), [categoryUpdateTrigger]);
+  const categoryOverrides = useMemo(() => getCategoryOverrideMap(), [categoryUpdateTrigger]);
 
   const categories = useMemo(() => {
     const defaultBase = [
@@ -52,23 +80,56 @@ const Category = () => {
       "Notice Printing",
     ];
 
-    const effectiveDefaults = defaultBase
-      .map((base) => {
+    type CategoryWithPosition = {
+      name: string;
+      originalName: string;
+      position?: number;
+    };
+
+    const effectiveDefaults: CategoryWithPosition[] = defaultBase
+      .map((base): CategoryWithPosition | null => {
         const override = categoryOverrides[base];
         if (override?.hidden) return null;
-        return override?.name ?? base;
+        return {
+          name: override?.name ?? base,
+          originalName: base,
+          position: override?.position,
+        };
       })
-      .filter((name): name is string => Boolean(name));
+      .filter((item): item is NonNullable<typeof item> => item !== null);
 
-    const merged = ["All Products", ...effectiveDefaults, ...customCategories];
+    // Get custom categories with positions (use fresh data, not memoized)
+    const customCatsWithPos: CategoryWithPosition[] = getCustomCategoriesWithPosition().map(cat => ({
+      name: cat.name,
+      originalName: cat.name,
+      position: cat.position,
+    }));
+
+    // Combine all categories with their positions
+    const allCategories: CategoryWithPosition[] = [
+      { name: "All Products", originalName: "All Products", position: undefined },
+      ...effectiveDefaults,
+      ...customCatsWithPos,
+    ];
+
+    // Remove duplicates
     const seen = new Set<string>();
-
-    return merged.filter((name) => {
-      if (!name || seen.has(name)) return false;
-      seen.add(name);
+    const unique = allCategories.filter((item) => {
+      if (!item.name || seen.has(item.name)) return false;
+      seen.add(item.name);
       return true;
     });
-  }, [customCategories, categoryOverrides]);
+
+    // Sort by position (undefined positions go to end), then by name
+    const sorted = unique.sort((a, b) => {
+      const posA = a.position ?? Infinity;
+      const posB = b.position ?? Infinity;
+      if (posA !== posB) return posA - posB;
+      return a.name.localeCompare(b.name);
+    });
+
+    return sorted.map(item => item.name);
+  }, [categoryUpdateTrigger, customCategories, categoryOverrides]);
 
   const allBrands: Brand[] = useMemo(() => getAllBrands(), []);
 
@@ -474,8 +535,8 @@ const Category = () => {
 
       <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         <section className="py-6 sm:py-8 bg-background">
-          <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-10">
-            <div className="grid gap-5 sm:gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr] bg-card rounded-3xl p-4 sm:p-6 md:p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.3)] border border-border">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-10 max-w-full overflow-x-hidden">
+            <div className="grid gap-5 sm:gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr] bg-card rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.3)] border border-border w-full max-w-full">
               <div className="space-y-4 sm:space-y-5">
                 <SectionBadge label="Discover" />
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground leading-tight">
@@ -525,74 +586,84 @@ const Category = () => {
           </div>
         </section>
 
-        {/* Product Filter - Category Pills */}
+        {/* Product Filter - Category Buttons Grid */}
         <section
           ref={filterSectionRef}
           id="product-filters"
-          className="py-6 sm:py-8 border-b bg-gradient-to-b from-muted/30 to-background scroll-mt-20"
+          className="py-6 sm:py-8 border-b bg-gradient-to-b from-muted/30 to-background scroll-mt-20 overflow-x-hidden"
         >
-          <div className="container mx-auto px-4">
-            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center max-w-6xl mx-auto">
-              <SectionBadge label="Categories" className="mt-2" />
-              {categories.map((category) => {
-                const isActive = activeCategory === category;
+          <div className="container mx-auto px-3 sm:px-4 max-w-full">
+            <div className="max-w-6xl mx-auto space-y-4 flex flex-col items-center w-full">
+              {/* CATEGORIES Label - Badge Style */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-300 bg-white">
+                <span className="h-2 w-2 rounded-full bg-orange-500" />
+                <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Categories</span>
+              </div>
+              
+              {/* Category Buttons Grid */}
+              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center w-full px-2">
+                {categories.map((category) => {
+                  const isActive = activeCategory === category;
 
-                const handleCategoryClick = () => {
-                  setActiveCategory(category);
-                  // Update URL with category parameter
-                  const newSearchParams = new URLSearchParams(searchParams);
-                  if (category === "All Products") {
-                    newSearchParams.delete("category");
-                  } else {
-                    newSearchParams.set("category", category);
-                  }
-                  setSearchParams(newSearchParams, { replace: true });
-
-                  // Scroll to products section
-                  setTimeout(() => {
-                    if (productsSectionRef.current) {
-                      productsSectionRef.current.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start"
-                      });
+                  const handleCategoryClick = () => {
+                    setActiveCategory(category);
+                    // Update URL with category parameter
+                    const newSearchParams = new URLSearchParams(searchParams);
+                    if (category === "All Products") {
+                      newSearchParams.delete("category");
+                    } else {
+                      newSearchParams.set("category", category);
                     }
-                  }, 50);
-                };
+                    setSearchParams(newSearchParams, { replace: true });
 
-                return (
-                  <button
-                    key={category}
-                    type="button"
-                    onClick={handleCategoryClick}
-                    aria-pressed={isActive}
-                    className={cn(
-                      "px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-medium transition-all duration-300 text-sm sm:text-base",
-                      isActive
-                        ? "bg-primary text-primary-foreground border-2 border-primary shadow-lg shadow-primary/20 scale-105"
-                        : "bg-card text-foreground border-2 border-border hover:border-primary/50 hover:bg-muted hover:shadow-md"
-                    )}
-                  >
-                    {category}
-                  </button>
-                );
-              })}
+                    // Scroll to products section
+                    setTimeout(() => {
+                      if (productsSectionRef.current) {
+                        productsSectionRef.current.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start"
+                        });
+                      }
+                    }, 50);
+                  };
+
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={handleCategoryClick}
+                      aria-pressed={isActive}
+                      className={cn(
+                        "px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg font-medium transition-all duration-200 text-xs sm:text-sm md:text-base uppercase whitespace-nowrap",
+                        isActive
+                          ? category === "All Products"
+                            ? "bg-[#1e40af] text-white font-bold shadow-md" // Dark blue for "All Products" - exact match
+                            : "bg-primary text-primary-foreground shadow-md"
+                          : "bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:shadow-sm font-medium"
+                      )}
+                    >
+                      {category}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>
 
         {/* Products Grid */}
-        <section ref={productsSectionRef} id="products-grid" className="py-6 sm:py-8 md:py-12 bg-background scroll-mt-20 sm:scroll-mt-24">
-          <div className="container mx-auto px-3 sm:px-5 md:px-6 lg:px-8">
+        <section ref={productsSectionRef} id="products-grid" className="py-6 sm:py-8 md:py-12 bg-background scroll-mt-20 sm:scroll-mt-24 overflow-x-hidden">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-full">
             {/* Filter Controls Bar */}
-            <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 w-full">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 w-full">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0 flex-1">
                   <SectionBadge label="Products" />
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground break-words">
                       Products
                       {filteredProducts.length > 0 && (
-                        <span className="text-sm sm:text-base font-normal text-muted-foreground ml-2">
+                        <span className="text-sm sm:text-base font-normal text-muted-foreground ml-1 sm:ml-2">
                           ({filteredProducts.length})
                         </span>
                       )}
@@ -612,19 +683,19 @@ const Category = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto flex-shrink-0">
                   {/* Mobile Filter Button */}
                   <Sheet open={mobileFilterOpen} onOpenChange={setMobileFilterOpen}>
                     <SheetTrigger asChild>
-                      <Button variant="outline" size="sm" className="lg:hidden flex-1 sm:flex-initial min-w-[100px]">
-                        <SlidersHorizontal className="h-4 w-4 mr-2" />
-                        <span className="hidden sm:inline">Filters</span>
-                        <span className="sm:hidden">Filter</span>
+                      <Button variant="outline" size="sm" className="lg:hidden flex-1 sm:flex-initial min-w-[80px] sm:min-w-[100px] h-9 sm:h-10">
+                        <SlidersHorizontal className="h-4 w-4 mr-1 sm:mr-2" />
+                        <span className="hidden sm:inline text-xs sm:text-sm">Filters</span>
+                        <span className="sm:hidden text-xs">Filter</span>
                       </Button>
                     </SheetTrigger>
                     <SheetContent
                       side="left"
-                      className="w-[90vw] sm:w-[85vw] md:w-[400px] max-w-[400px] p-4 sm:p-6 flex flex-col bg-background border-border"
+                      className="w-[85vw] sm:w-[80vw] md:w-[400px] max-w-[400px] p-4 sm:p-6 flex flex-col bg-background border-border overflow-y-auto"
                     >
                       <SheetHeader className="mb-4 sm:mb-6 flex-shrink-0">
                         <SheetTitle className="text-lg sm:text-xl text-foreground">Filter Products</SheetTitle>
@@ -637,7 +708,7 @@ const Category = () => {
 
                   {/* Sort Select */}
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full sm:w-[140px] md:w-[160px] lg:w-[180px] text-xs sm:text-sm">
+                    <SelectTrigger className="w-full sm:w-[140px] md:w-[160px] lg:w-[180px] text-xs sm:text-sm h-9 sm:h-10 flex-shrink-0">
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent>
@@ -683,11 +754,11 @@ const Category = () => {
               </aside>
 
               {/* Products Grid */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 w-full max-w-full overflow-x-hidden">
                 {(hasActiveSearch || hasActiveFilters) && (
-                  <div className="mb-4 sm:mb-6">
-                    <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-muted/50 rounded-full">
-                      <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
+                  <div className="mb-4 sm:mb-6 w-full">
+                    <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-muted/50 rounded-full max-w-full">
+                      <p className="text-xs sm:text-sm md:text-base text-muted-foreground break-words">
                         Showing {isAllProducts ? "results" : `${activeCategory.toLowerCase()} products`}{" "}
                         {hasActiveSearch && (
                           <>
@@ -703,7 +774,7 @@ const Category = () => {
                 )}
                 {filteredProducts.length > 0 ? (
                   <>
-                    <div className="products-grid grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-5 md:gap-6 w-full">
+                    <div className="products-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6 w-full max-w-full">
                       {paginatedProducts.map((product) => (
                         <ProductCard
                           key={product.id}
@@ -735,8 +806,8 @@ const Category = () => {
 
                         {totalPages > 1 && (
                           <div className="w-full overflow-x-auto">
-                            <Pagination className="mt-1 min-w-max justify-center">
-                              <PaginationContent>
+                            <Pagination className="mt-1 w-full justify-center">
+                              <PaginationContent className="flex-wrap justify-center gap-1 sm:gap-2">
                                 <PaginationItem>
                                   <PaginationPrevious
                                     href="#"

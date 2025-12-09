@@ -29,6 +29,7 @@ import {
   Sparkles,
   Users,
   FileText,
+  Settings,
 } from "lucide-react";
 import pvkLogo from "@/assets/pvk logo (1).png";
 import { cn } from "@/lib/utils";
@@ -198,6 +199,29 @@ const AdminLayout = ({ title = "Dashboard", children }: AdminLayoutProps) => {
                     <Link to="/admin/blogs">
                       <FileText />
                       <span>Blog Management</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <SidebarGroup>
+            <SidebarGroupLabel className="px-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Settings
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActivePath("/admin/parameters")}
+                    tooltip="Parameters"
+                    className={adminMenuButtonClasses}
+                  >
+                    <Link to="/admin/parameters">
+                      <Settings />
+                      <span>Parameters</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

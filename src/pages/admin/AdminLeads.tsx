@@ -124,9 +124,19 @@ const AdminLeads = () => {
               onValueChange={(value) => setActiveTab(value as "contact" | "special")}
               className="space-y-4"
             >
-              <TabsList className="bg-muted">
-                <TabsTrigger value="contact">Contact form</TabsTrigger>
-                <TabsTrigger value="special">Special services</TabsTrigger>
+              <TabsList className="bg-muted rounded-full p-1">
+                <TabsTrigger
+                  value="contact"
+                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                >
+                  Contact form
+                </TabsTrigger>
+                <TabsTrigger
+                  value="special"
+                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                >
+                  Special services
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="contact" className="space-y-4">

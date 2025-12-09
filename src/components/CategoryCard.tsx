@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { LucideIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 
 interface CategoryCardProps {
   title: string;
@@ -10,6 +10,7 @@ interface CategoryCardProps {
   buttonLink: string;
   bgColor: string;
   textColor?: string;
+  categoryImageURL?: string;
 }
 
 const CategoryCard = ({
@@ -19,12 +20,21 @@ const CategoryCard = ({
   buttonText,
   buttonLink,
   bgColor,
-  textColor = "text-foreground"
+  textColor = "text-foreground",
+  categoryImageURL
 }: CategoryCardProps) => {
+  const cardStyle: CSSProperties = { minHeight: "250px" };
+
+  if (categoryImageURL) {
+    cardStyle.backgroundImage = `url(${categoryImageURL})`;
+    cardStyle.backgroundSize = "cover";
+    cardStyle.backgroundPosition = "center";
+  }
+
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl p-6 ${bgColor} group hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl`}
-      style={{ minHeight: "250px" }}
+      className={`relative overflow-hidden rounded-2xl p-6 ${!categoryImageURL ? bgColor : ""} group hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl`}
+      style={cardStyle}
     >
       <div className="relative z-10 flex flex-col h-full justify-between">
         <div>

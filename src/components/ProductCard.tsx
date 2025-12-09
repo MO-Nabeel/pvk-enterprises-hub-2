@@ -11,10 +11,11 @@ interface ProductCardProps {
   price: number;
   image: string;
   discount?: number;
+  description?: string;
   onCardClick?: () => void;
 }
 
-const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, discount, description, onCardClick }: ProductCardProps) => {
   const navigate = useNavigate();
   const [isInCart, setIsInCart] = useState(() => isProductInCart(id));
   const [isAdding, setIsAdding] = useState(false);
@@ -68,8 +69,8 @@ const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductC
   return (
     <div
       className={cn(
-        "group w-full h-full bg-card rounded-xl sm:rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 ease-out hover:border-primary/20",
-        "box-border", // Ensure padding never causes horizontal overflow on small screens
+        "group w-full max-w-full bg-card rounded-xl sm:rounded-2xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 ease-out hover:border-primary/20",
+        "product-card", // Ensures proper flexbox layout and constraints
         onCardClick && "cursor-pointer",
       )}
       onClick={onCardClick}
@@ -77,11 +78,11 @@ const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductC
       tabIndex={onCardClick ? 0 : undefined}
     >
       {/* Mobile: image left, details right (high-density list). Desktop: stacked layout */}
-      <div className="flex flex-row items-start gap-3 p-3 sm:p-4 md:p-5 md:flex-col">
-        {/* Image column - fixed 100px square on mobile, scales up slightly on larger screens */}
-        <div className="relative flex-shrink-0 w-[100px] h-[100px] min-w-[100px] sm:w-[110px] sm:h-[110px] sm:min-w-[110px] md:w-full md:h-auto md:aspect-square overflow-hidden bg-muted/30 rounded-lg md:rounded-none">
+      <div className="product-card-inner flex flex-row items-stretch gap-2.5 sm:gap-3 md:flex-col h-full">
+        {/* Image container - optimized with flex-shrink-0 to prevent shrinking */}
+        <div className="product-image-container relative flex-shrink-0 w-[28%] sm:w-[32%] md:w-full md:h-auto md:aspect-square overflow-hidden bg-muted/30 rounded-lg md:rounded-none">
           {discount && (
-            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-accent text-accent-foreground text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full z-10 shadow-lg">
+            <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-accent text-accent-foreground text-[9px] xs:text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full z-10 shadow-lg whitespace-nowrap">
               {discount}% OFF
             </div>
           )}
@@ -90,40 +91,47 @@ const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductC
             alt={name}
             loading="lazy"
             decoding="async"
-            className="w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+            className="product-image w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
           />
         </div>
 
-        {/* Details column - all text left-aligned, actions anchored to bottom */}
-        <div className="flex flex-col flex-1 min-w-0 gap-2 sm:gap-3 md:mt-2 h-full">
-          <h3 className="font-semibold text-card-foreground text-sm sm:text-base md:text-lg leading-snug line-clamp-2 text-left">
-            {name}
-          </h3>
+        {/* Details section - flex-grow-1 to take remaining space */}
+        <div className="product-details flex flex-col flex-1 min-w-0 gap-2 sm:gap-3 md:mt-2">
+          <div className="product-card-text-content flex-1 min-w-0">
+            <h3 className="product-card-title font-semibold text-card-foreground leading-snug line-clamp-2 text-left">
+              {name}
+            </h3>
 
-          <div className="flex flex-col gap-1 sm:gap-1.5">
-            <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2 text-left">
-              <span className="text-base sm:text-lg md:text-2xl font-bold text-primary">
-                ₹{price.toLocaleString("en-IN")}
-              </span>
-              {originalPrice && (
-                <span className="text-[11px] sm:text-xs md:text-sm text-muted-foreground line-through">
-                  ₹{originalPrice.toLocaleString("en-IN")}
+            <div className="flex flex-col gap-1 sm:gap-1.5 mt-2">
+              <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2 text-left">
+                <span className="product-card-price text-primary font-bold">
+                  ₹{price.toLocaleString("en-IN")}
                 </span>
-              )}
+                {originalPrice && (
+                  <span className="product-card-original-price text-muted-foreground line-through">
+                    ₹{originalPrice.toLocaleString("en-IN")}
+                  </span>
+                )}
+              </div>
             </div>
+
+            {/* Product Description - Mobile Only (max-width: 768px) */}
+            {(description || "").trim() && (
+              <div className="block md:hidden mt-1.5">
+                <p className="product-card-description-mobile text-xs text-muted-foreground/70 leading-relaxed line-clamp-2">
+                  {description}
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Actions row - full width of details column, anchored to bottom on mobile */}
-          <div className="mt-2 flex flex-col sm:flex-row gap-2 w-full mt-auto">
+          {/* Actions row - fixed at bottom of card */}
+          <div className="product-card-actions">
             <Button
               onClick={handleButtonClick}
               disabled={isAdding}
               className={cn(
-                "product-card-button w-[90%] sm:flex-1 sm:w-auto relative overflow-hidden font-semibold transition-colors duration-200 ease-in-out",
-                "mx-auto sm:mx-0",
-                "h-9 sm:h-10 md:h-11",
-                "text-xs sm:text-sm md:text-base",
-                "rounded-lg sm:rounded-xl",
+                "product-card-button product-card-button-primary relative overflow-hidden font-semibold transition-colors duration-200 ease-in-out",
                 "shadow-sm hover:shadow-md active:shadow-sm",
                 "transform hover:scale-[1.01] active:scale-[0.99]",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
@@ -135,15 +143,17 @@ const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductC
             >
               <span
                 className={cn(
-                  "relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300",
+                  "relative z-10 flex items-center justify-center gap-1 sm:gap-1.5 transition-all duration-300 min-w-0",
+                  "truncate overflow-hidden",
                   isAdding && "opacity-0"
                 )}
               >
                 {isInCart ? (
                   <>
-                    <span className="text-center leading-tight">View in Cart</span>
+                    <span className="hidden min-[375px]:inline text-center leading-tight truncate">View in Cart</span>
+                    <span className="min-[375px]:hidden text-center leading-tight truncate">View</span>
                     <ArrowRight
-                      className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
+                      className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 min-[375px]:flex hidden sm:flex"
                       aria-hidden="true"
                     />
                   </>
@@ -153,7 +163,8 @@ const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductC
                       className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px] md:h-5 md:w-5 flex-shrink-0"
                       aria-hidden="true"
                     />
-                    <span className="text-center leading-tight">Add to Cart</span>
+                    <span className="hidden sm:inline text-center leading-tight truncate">Add to Cart</span>
+                    <span className="sm:hidden text-center leading-tight truncate">Add</span>
                   </>
                 )}
               </span>
@@ -189,7 +200,7 @@ const ProductCard = ({ id, name, price, image, discount, onCardClick }: ProductC
             <Button
               variant="outline"
               size="sm"
-              className="w-[90%] sm:w-auto mx-auto sm:mx-0 h-9 sm:h-10 md:h-11 text-xs sm:text-sm font-medium hover:bg-[#111827] hover:text-white transition-colors duration-200 ease-in-out"
+              className="product-card-button-secondary font-medium hover:bg-[#111827] hover:text-white transition-colors duration-200 ease-in-out"
               onClick={handleViewClick}
             >
               View

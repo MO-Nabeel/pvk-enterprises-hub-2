@@ -141,9 +141,19 @@ const AdminSales = () => {
               is fully responsive and ready for live data.
             </div>
             <Tabs defaultValue="weekly" className="space-y-3">
-              <TabsList className="bg-muted">
-                <TabsTrigger value="weekly">Weekly</TabsTrigger>
-                <TabsTrigger value="monthly">Monthly</TabsTrigger>
+              <TabsList className="bg-muted rounded-full p-1">
+                <TabsTrigger
+                  value="weekly"
+                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                >
+                  Weekly
+                </TabsTrigger>
+                <TabsTrigger
+                  value="monthly"
+                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                >
+                  Monthly
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="weekly" className="text-xs text-muted-foreground">
                 A compact weekly breakdown with mocked numbers. Replace with live API later.
