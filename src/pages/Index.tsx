@@ -130,7 +130,7 @@ const Index = () => {
 
   // Track current slide index for synchronized content
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  
+
   // Get current slide data
   const currentSlide = heroSlides[currentSlideIndex] || heroSlides[0];
 
@@ -143,7 +143,7 @@ const Index = () => {
     slot: string;
     textTone: "light" | "dark";
     imagePosition?: string;
-  originalTitle?: string;
+    originalTitle?: string;
   };
 
   const categories: Category[] = [
@@ -291,7 +291,7 @@ const Index = () => {
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("categoryCardContentUpdated", handleCustomEvent);
     window.addEventListener("customCategoriesUpdated", handleCustomEvent);
-    
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("categoryCardContentUpdated", handleCustomEvent);
@@ -440,7 +440,7 @@ const Index = () => {
     const cardContent = getCategoryCardContent(contentKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const _ = cardContentUpdateTrigger; // Force re-render when content updates
-    
+
     // Use custom content if available, otherwise use defaults
     const displayTitle = cardContent?.cardTitle || category.title;
     // Use admin-provided text only; no default label/description fallback
@@ -463,7 +463,7 @@ const Index = () => {
       "--card-secondary": palette.secondary,
       "--card-ambient": palette.ambient,
       "--card-ring": palette.ring,
-      "--card-text": category.textTone === "light" ? "#f8fafc" : "#0f172a",
+      "--card-text": "#ffffff", // Always white for high contrast
     } as CSSProperties;
 
     if (backgroundImage) {
@@ -474,7 +474,8 @@ const Index = () => {
     } else if (cardContent?.backgroundColor) {
       cardStyle.backgroundColor = cardContent.backgroundColor;
     } else {
-      cardStyle.backgroundColor = "rgba(5, 8, 20, 0.9)";
+      // Default elegant dark gradient matching the model's aesthetic
+      cardStyle.background = "linear-gradient(145deg, rgba(5, 8, 20, 0.97), rgba(16, 24, 46, 0.92))";
     }
 
     return (
@@ -492,21 +493,35 @@ const Index = () => {
         <span className="category-card__glow" aria-hidden="true" />
         <span className="category-card__mesh" aria-hidden="true" />
         <div className="category-card__inner">
-          <div className="category-card__accent-row">
-            <span className="category-card__accent-dot" aria-hidden="true" />
-            <span className="category-card__accent-text">{displayAccent}</span>
-            {badgeValue && (
-              <span className="category-card__badge-value ml-2 text-xs font-semibold opacity-80">
-                {badgeValue}
-              </span>
-            )}
+          {badgeValue && (
+            <span className="category-card__badge-value">
+              {badgeValue}
+            </span>
+          )}
+          <div className="category-card__primary-content">
+            <div className="category-card__accent-row">
+              <span className="category-card__accent-text">{displayAccent}</span>
+            </div>
+            <h3 className="category-card__title">{displayTitle}</h3>
+            <p className="category-card__description">{displayDescription}</p>
           </div>
-          <h3 className="category-card__title">{displayTitle}</h3>
-          <p className="category-card__description">{displayDescription}</p>
           <div className="category-card__footer">
-            <span>Explore</span>
-            <span className="category-card__icon" aria-hidden="true">
-              →
+            <span>EXPLORE</span>
+            <span className="category-card__icon" aria-hidden="true" role="presentation">
+              <svg 
+                viewBox="0 0 16 16" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path 
+                  d="M6 12L10 8L6 4" 
+                  stroke="currentColor" 
+                  strokeWidth="1.5" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
             </span>
           </div>
         </div>
@@ -858,9 +873,9 @@ const Index = () => {
       {/* Hero Section */}
       <section className="hero-section relative overflow-hidden min-h-screen pb-0">
         <div className="hero-section__slider">
-          <HeroSlider 
-            slides={heroSlides} 
-            variant="background" 
+          <HeroSlider
+            slides={heroSlides}
+            variant="background"
             className="h-full"
             onSlideChange={setCurrentSlideIndex}
           />
@@ -932,14 +947,14 @@ const Index = () => {
                   const cardContent = getCategoryCardContent(name);
                   // eslint-disable-next-line react-hooks/exhaustive-deps
                   const _ = cardContentUpdateTrigger; // Force re-render when content updates
-                  
+
                   // Use custom content if available, otherwise use defaults
                   const displayTitle = cardContent?.cardTitle || name;
                   // Use admin-provided text only; no default label/description fallback
                   const displayDescription = cardContent?.cardDescription || "";
                   const displayAccent = cardContent?.topLabel || "";
                   const badgeValue = cardContent?.badgeValue;
-                  
+
                   const palette = getAccentPalette("custom");
                   const cardStyle: CSSProperties = {
                     "--card-primary": palette.primary,
@@ -979,9 +994,22 @@ const Index = () => {
                         <h3 className="category-card__title">{displayTitle}</h3>
                         <p className="category-card__description">{displayDescription}</p>
                         <div className="category-card__footer">
-                          <span>Explore</span>
-                          <span className="category-card__icon" aria-hidden="true">
-                            →
+                          <span>EXPLORE</span>
+                          <span className="category-card__icon" aria-hidden="true" role="presentation">
+                            <svg 
+                              viewBox="0 0 16 16" 
+                              fill="none" 
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                            >
+                              <path 
+                                d="M6 12L10 8L6 4" 
+                                stroke="currentColor" 
+                                strokeWidth="1.5" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                              />
+                            </svg>
                           </span>
                         </div>
                       </div>
@@ -1109,7 +1137,7 @@ const Index = () => {
       <Dialog open={isInquiryOpen} onOpenChange={handleDialogChange}>
         <DialogContent className="inquiry-dialog-content text-card-foreground">
           <div className="inquiry-dialog-shell">
-            <div className="inquiry-dialog-form flex-1 md:basis-[55%] order-2 md:order-1 flex flex-col gap-3">
+            <div className="inquiry-dialog-form flex-1 md:basis-[50%] order-2 md:order-1 flex flex-col gap-3 max-w-full">
               <DialogHeader className="text-left space-y-1.5">
                 <DialogTitle className="text-2xl md:text-[28px] font-bold tracking-tight text-slate-900 leading-tight">
                   {selectedService ? `Inquire About ${selectedService.title}` : "Call Me Back"}

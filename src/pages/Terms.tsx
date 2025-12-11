@@ -1,75 +1,60 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const definitions = [
-  {
-    term: "Service",
-    description:
-      "Refers to the website operated by [Your Company Name], along with any related products and services."
-  },
-  {
-    term: "User / You",
-    description:
-      "The individual accessing or using the Service, or the company or other legal entity on whose behalf an individual accesses or uses the Service."
-  },
-  {
-    term: "Company / We / Us / Our",
-    description:
-      "Refers to [Your Company Name], located at [Dummy Address: 123 Main Street, Anytown, State 12345]."
-  },
-  {
-    term: "Content",
-    description:
-      "Any text, graphics, images, music, software, audio, video, works of authorship, or other materials made available through the Service."
-  }
+const introParagraphs = [
+  "Welcome to PVK Enterprises. By accessing or placing an order on our website, you agree to the following Terms & Conditions. Please read them carefully."
 ];
 
 const sections = [
   {
-    title: "General Conditions",
+    title: "1. General Information",
     description: [
-      "Acceptance: By using the Service, you confirm that you are at least [Dummy Age: 18] years old (or the legal age of majority in your jurisdiction) and capable of entering into a binding contract.",
-      "Modification: We reserve the right to modify or replace these Terms at any time. We will provide at least [Dummy Notice Period: 30] days' notice before new terms take effect, and what constitutes a material change will be determined at our sole discretion.",
-      "Accuracy: Information on this site is provided for general purposes only. We are not responsible if the material made available is not accurate, complete, or current, and it should not be relied upon as the sole basis for decisions."
+      "PVK Enterprises operates as a retail and wholesale provider of printing, trophies, stationery, and customized products. All users must comply with applicable laws and regulations while using our website."
     ]
   },
   {
-    title: "User Accounts (Dummy Section)",
+    title: "2. Ordering & Payment",
     description: [
-      "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account and password (e.g., Dummy User: JohnDoe123).",
-      "You agree to notify us immediately of any unauthorized use of your account.",
-      "We reserve the right to terminate or suspend your account for any breach of these Terms."
+      "Customers can place orders directly through the website and complete payment using our integrated payment gateway.",
+      "All orders are processed only after successful payment confirmation."
     ]
   },
   {
-    title: "Intellectual Property Rights",
+    title: "3. Pricing",
     description: [
-      "The Service and its original Content (excluding user-provided Content), features, and functionality are and will remain the exclusive property of [Your Company Name] and its licensors.",
-      "The Content is protected by copyright, trademark, and other laws of both the [Dummy Jurisdiction: State/Country] and foreign countries.",
-      "Your use of the Service does not grant you any right or license to reproduce or otherwise use any [Your Company Name] trademarks or proprietary materials."
+      "All prices displayed on the website are subject to change without prior notice based on market and supplier conditions."
     ]
   },
   {
-    title: "Prohibited Uses",
+    title: "4. Product & Custom Orders",
     description: [
-      "(a) Using the site or its Content for any unlawful purpose (e.g., Dummy Example: Phishing schemes).",
-      "(b) Soliciting others to perform or participate in unlawful acts.",
-      "(c) Violating any international, federal, provincial, or state regulations, rules, laws, or local ordinances.",
-      "(d) Harassing, abusing, insulting, harming, defaming, slandering, disparaging, intimidating, or discriminating against others based on gender, sexual orientation, religion, ethnicity, race, age, national origin, or disability."
+      "For stationery items, custom products, printing items, and gift items, the specifications provided by the customer will be considered final while placing the order.",
+      "PVK Enterprises is not responsible for spelling, design, or information errors provided by the customer."
     ]
   },
   {
-    title: "Limitation of Liability",
+    title: "5. Delivery",
     description: [
-      "In no event shall [Your Company Name], its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages. This includes, without limitation, loss of profits, data, use, goodwill, or other intangible losses resulting from:",
-      "(a) Your access to or use of or inability to access or use the Service.",
-      "(b) Any conduct or content of any third party on the Service (e.g., Dummy Loss: $5,000 in perceived business loss)."
+      "Delivery availability depends on location. Estimated delivery timelines may vary.",
+      "If items are damaged before handover to the customer, the product can be exchanged as per our return policy."
     ]
   },
   {
-    title: "Governing Law",
+    title: "6. Intellectual Property",
     description: [
-      "These Terms shall be governed and construed in accordance with the laws of [Dummy Jurisdiction: The State of Example], without regard to its conflict of law provisions."
+      "All content including logos, text, product images, and designs belong to PVK Enterprises and cannot be copied or used without written permission."
+    ]
+  },
+  {
+    title: "7. Limitation of Liability",
+    description: [
+      "PVK Enterprises is not liable for product misuse, delays caused by logistics partners, or incorrect information entered by customers."
+    ]
+  },
+  {
+    title: "8. Governing Law",
+    description: [
+      "All terms are governed by applicable Indian laws and jurisdiction."
     ]
   }
 ];
@@ -85,30 +70,21 @@ const Terms = () => {
             <article className="mx-auto max-w-4xl rounded-3xl bg-card p-8 text-base leading-relaxed text-muted-foreground shadow-lg ring-1 ring-border sm:p-10">
               <header className="mb-6 sm:mb-8 text-center space-y-2">
                 <p className="text-xs sm:text-sm font-semibold tracking-[0.25em] text-primary uppercase">
-                  Terms &amp; Conditions
+                  Terms & Conditions
                 </p>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
-                  Website Terms &amp; Conditions
+                  Terms & Conditions – PVK Enterprises
                 </h1>
-              </header>
-              <div className="space-y-4">
-                <p>
-                  Please read these Terms and Conditions carefully before using the Service. Your access to and use of the
-                  Service is conditioned on your acceptance of and compliance with these Terms. By accessing or using any
-                  part of the Service, you agree to be bound by these Terms.
+                <p className="text-sm text-muted-foreground mt-2">
+                  Last Updated: 10/12/2025
                 </p>
-              </div>
-
-              <div className="mt-10 space-y-6">
-                <h2 className="text-2xl font-semibold text-foreground">1. Definitions</h2>
-                <div className="space-y-4">
-                  {definitions.map(({ term, description }) => (
-                    <div key={term} className="rounded-2xl border border-border bg-muted/30 p-5">
-                      <p className="font-semibold text-foreground">{term}</p>
-                      <p className="mt-2">{description}</p>
-                    </div>
-                  ))}
-                </div>
+              </header>
+              <div className="space-y-5 text-lg">
+                {introParagraphs.map((paragraph) => (
+                  <p key={paragraph} className="text-muted-foreground">
+                    {paragraph}
+                  </p>
+                ))}
               </div>
 
               <div className="mt-12 space-y-10">
@@ -122,17 +98,32 @@ const Terms = () => {
                 ))}
               </div>
 
-              <div className="mt-12 space-y-6">
-                <h2 className="text-2xl font-semibold text-foreground">Contact Information</h2>
+              <div className="mt-12 space-y-4">
+                <h2 className="text-2xl font-semibold text-foreground">Contact Us</h2>
                 <p>
-                  Questions about the Terms and Conditions should be sent to [Dummy Email: legal@yourcompany.com] or via
-                  postal mail at the address listed in Section 1.
+                  If you have any questions regarding these terms and conditions, you may contact us using the information
+                  below:
                 </p>
-              </div>
-
-              <div className="mt-12 rounded-2xl border border-border bg-muted/20 p-6 text-sm sm:text-base">
-                <p className="font-semibold text-foreground">🗓 Effective Date</p>
-                <p className="mt-2">These Terms and Conditions are effective as of [Dummy Date: January 1, 2024].</p>
+                <div className="rounded-2xl border border-border bg-muted/20 p-6 text-sm sm:text-base">
+                  <p className="font-semibold text-foreground">PVK ENTERPRISES</p>
+                  <p>PVK TOWER, Near Village Office, Maranchery Centre, Marancheri, Malappuram, Kerala 679581</p>
+                  <p className="mt-2">
+                    Email:{" "}
+                    <a href="mailto:pvkmaranchery707@gmail.com" className="text-primary underline-offset-4 hover:underline">
+                      pvkmaranchery707@gmail.com
+                    </a>
+                  </p>
+                  <p className="mt-1">
+                    Phone:{" "}
+                    <a href="tel:+919142107707" className="text-primary underline-offset-4 hover:underline">
+                      +91-9142107707
+                    </a>
+                    {" / "}
+                    <a href="tel:+919072331707" className="text-primary underline-offset-4 hover:underline">
+                      +91-9072331707
+                    </a>
+                  </p>
+                </div>
               </div>
             </article>
           </div>

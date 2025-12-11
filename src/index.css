@@ -44,24 +44,24 @@ All colors MUST be HSL.
     --ring: 222 47% 11%;
 
     --radius: 0.75rem;
-    
+
     /* Brand colors */
     --brand-red: 0 84% 55%;
     --brand-yellow: 45 100% 51%;
     --brand-green: 142 71% 45%;
     --brand-blue: 222 47% 11%;
     --brand-dark: 222 47% 11%;
-    
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(222 47% 20%) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(0 0% 95%) 0%, hsl(0 0% 98%) 100%);
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1);
     --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1);
     --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1);
-    
+
     /* Transitions */
     --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
@@ -150,12 +150,11 @@ All colors MUST be HSL.
 .category-card {
   position: relative;
   overflow: hidden;
-  border-radius: clamp(20px, 4vw, 30px);
-  padding: clamp(1rem, 1.6vw, 1.75rem);
-  min-height: clamp(170px, 19vw, 220px);
+  border-radius: clamp(24px, 4.5vw, 32px);
+  padding: clamp(1.25rem, 2vw, 1.875rem);
+  min-height: clamp(200px, 22vw, 260px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   color: #ffffff;
   background: linear-gradient(145deg, rgba(5, 8, 20, 0.97), rgba(16, 24, 46, 0.92));
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -196,20 +195,16 @@ All colors MUST be HSL.
 }
 
 .category-card__mesh {
-  background-image: repeating-linear-gradient(
-      35deg,
+  background-image: repeating-linear-gradient(35deg,
       transparent,
       transparent 6px,
       rgba(255, 255, 255, 0.04) 6px,
-      rgba(255, 255, 255, 0.04) 8px
-    ),
-    repeating-linear-gradient(
-      125deg,
+      rgba(255, 255, 255, 0.04) 8px),
+    repeating-linear-gradient(125deg,
       transparent,
       transparent 10px,
       rgba(255, 255, 255, 0.03) 10px,
-      rgba(255, 255, 255, 0.03) 12px
-    );
+      rgba(255, 255, 255, 0.03) 12px);
   mix-blend-mode: screen;
   opacity: 0.45;
 }
@@ -220,17 +215,47 @@ All colors MUST be HSL.
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: clamp(0.45rem, 1vw, 0.85rem);
+  min-height: 100%;
+  justify-content: space-between;
+}
+
+.category-card__primary-content {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.1vw, 0.875rem);
+  flex: 1;
+  min-height: 0;
+}
+
+.category-card__badge-value {
+  position: absolute;
+  top: clamp(1.25rem, 2vw, 1.875rem);
+  right: clamp(1.25rem, 2vw, 1.875rem);
+  font-size: clamp(0.7rem, 1vw, 0.875rem);
+  font-weight: 600;
+  opacity: 0.85;
+  color: rgba(255, 255, 255, 0.95);
+  z-index: 3;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .category-card__accent-row {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.5rem;
-  font-size: 0.55rem;
-  letter-spacing: 0.35em;
+  font-size: clamp(0.6rem, 0.9vw, 0.7rem);
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
+  border-left: 2px solid var(--card-primary, rgba(255, 255, 255, 0.5));
+  padding-left: 0.75rem;
+  width: fit-content;
+  margin-left: 0;
+  margin-right: auto;
+  line-height: 1.2;
 }
 
 .category-card__accent-dot {
@@ -243,19 +268,23 @@ All colors MUST be HSL.
 .category-card__accent-text {
   flex: 1;
   font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .category-card__title {
-  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
+  font-size: clamp(1.25rem, 1.7vw, 1.5rem);
   font-weight: 600;
   line-height: 1.25;
   color: #ffffff;
+  margin: 0;
+  margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
 }
 
 .category-card__description {
   font-size: clamp(0.8rem, 1vw, 0.95rem);
   color: rgba(255, 255, 255, 0.95);
-  line-height: 1.45;
+  line-height: 1.5;
+  margin: 0;
   flex: 1;
 }
 
@@ -263,28 +292,43 @@ All colors MUST be HSL.
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: clamp(0.7rem, 0.95vw, 0.8rem);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
-  padding-top: 0.6rem;
+  color: rgba(255, 255, 255, 0.95);
+  padding-top: clamp(0.75rem, 1.2vw, 1rem);
+  margin-top: auto;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .category-card__icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease, background 0.3s ease;
-  background: rgba(255, 255, 255, 0.06);
+  display: none;
+}
+
+.category-card__icon svg {
+  width: clamp(1rem, 1.3vw, 1.125rem);
+  height: clamp(1rem, 1.3vw, 1.125rem);
+  display: block;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .category-card:hover .category-card__icon {
-  transform: translateX(6px);
-  background: rgba(255, 255, 255, 0.16);
+  transform: scale(1.05);
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.category-card:hover .category-card__icon svg {
+  transform: translateX(2px);
+}
+
+.category-card__icon:active {
+  transform: scale(0.98);
+  transition: transform 0.15s ease;
 }
 
 /* Dark theme: keep category cards completely flat (no outer shadow look) */
@@ -337,7 +381,7 @@ All colors MUST be HSL.
   .category-mosaic {
     gap: clamp(1rem, 2.5vw, 1.3rem);
   }
-  
+
   .column-five-grid {
     gap: clamp(1rem, 2.5vw, 1.3rem);
   }
@@ -356,8 +400,8 @@ All colors MUST be HSL.
     justify-content: center;
     justify-items: center;
   }
-  
-  .column-five-grid > * {
+
+  .column-five-grid>* {
     width: 100%;
     max-width: 100%;
   }
@@ -411,8 +455,8 @@ All colors MUST be HSL.
     justify-items: center;
     max-width: 100%;
   }
-  
-  .column-five-grid > * {
+
+  .column-five-grid>* {
     width: 100%;
     max-width: 100%;
   }
@@ -461,14 +505,21 @@ All colors MUST be HSL.
 
   .category-card {
     padding: clamp(0.875rem, 3vw, 1.25rem);
-    min-height: clamp(160px, 45vw, 200px);
+    min-height: clamp(180px, 48vw, 220px);
     border-radius: clamp(20px, 5vw, 28px);
   }
 
+  .category-card__badge-value {
+    top: clamp(0.875rem, 3vw, 1.25rem);
+    right: clamp(0.875rem, 3vw, 1.25rem);
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+  }
+
   .category-card__accent-row {
-    font-size: clamp(0.45rem, 1.2vw, 0.55rem);
-    letter-spacing: 0.28em;
+    font-size: clamp(0.5rem, 1.3vw, 0.6rem);
+    letter-spacing: 0.25em;
     gap: 0.4rem;
+    margin-bottom: clamp(0.4rem, 1vw, 0.6rem);
   }
 
   .category-card__accent-dot {
@@ -477,24 +528,35 @@ All colors MUST be HSL.
   }
 
   .category-card__title {
-    font-size: clamp(1rem, 4vw, 1.25rem);
-    line-height: 1.3;
+    font-size: clamp(1.1rem, 4.2vw, 1.3rem);
+    line-height: 1.25;
+    margin-bottom: clamp(0.4rem, 1vw, 0.6rem);
   }
 
   .category-card__description {
     font-size: clamp(0.75rem, 2.8vw, 0.875rem);
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   .category-card__footer {
     font-size: clamp(0.65rem, 2.5vw, 0.75rem);
-    letter-spacing: 0.15em;
-    padding-top: 0.5rem;
+    letter-spacing: 0.2em;
+    padding-top: clamp(0.6rem, 1.2vw, 0.75rem);
+    margin-top: auto;
   }
 
   .category-card__icon {
-    width: clamp(28px, 7vw, 32px);
-    height: clamp(28px, 7vw, 32px);
+    width: clamp(2.25rem, 5.5vw, 2.75rem);
+    height: clamp(2.25rem, 5.5vw, 2.75rem);
+    min-width: clamp(2.25rem, 5.5vw, 2.75rem);
+    min-height: clamp(2.25rem, 5.5vw, 2.75rem);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(15, 23, 42, 0.5);
+  }
+
+  .category-card__icon svg {
+    width: clamp(0.875rem, 2.2vw, 1rem);
+    height: clamp(0.875rem, 2.2vw, 1rem);
   }
 }
 
@@ -565,6 +627,7 @@ All colors MUST be HSL.
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -645,7 +708,7 @@ All colors MUST be HSL.
     gap: 1rem;
   }
 
-  .hero-section__buttons > * {
+  .hero-section__buttons>* {
     width: auto;
   }
 
@@ -776,23 +839,21 @@ All colors MUST be HSL.
     gap: 0.75rem;
   }
 
-  .hero-section__buttons > * {
+  .hero-section__buttons>* {
     width: 100%;
   }
 }
 
 /* Hero Section Gradient Overlay - Responsive */
 .hero-gradient-overlay {
-  background: linear-gradient(
-    to right,
-    rgba(17, 24, 39, 0.95) 0%,
-    rgba(17, 24, 39, 0.85) 25%,
-    rgba(17, 24, 39, 0.65) 40%,
-    rgba(17, 24, 39, 0.4) 55%,
-    rgba(17, 24, 39, 0.2) 70%,
-    rgba(17, 24, 39, 0.05) 85%,
-    transparent 100%
-  ) !important;
+  background: linear-gradient(to right,
+      rgba(17, 24, 39, 0.95) 0%,
+      rgba(17, 24, 39, 0.85) 25%,
+      rgba(17, 24, 39, 0.65) 40%,
+      rgba(17, 24, 39, 0.4) 55%,
+      rgba(17, 24, 39, 0.2) 70%,
+      rgba(17, 24, 39, 0.05) 85%,
+      transparent 100%) !important;
 }
 
 .hero-slider__frame {
@@ -824,16 +885,14 @@ All colors MUST be HSL.
 /* Tablet - Balanced gradient */
 @media (min-width: 641px) and (max-width: 1024px) {
   .hero-gradient-overlay {
-    background: linear-gradient(
-      to right,
-      rgba(17, 24, 39, 0.9) 0%,
-      rgba(17, 24, 39, 0.8) 22%,
-      rgba(17, 24, 39, 0.6) 38%,
-      rgba(17, 24, 39, 0.4) 52%,
-      rgba(17, 24, 39, 0.2) 68%,
-      rgba(17, 24, 39, 0.05) 82%,
-      transparent 100%
-    ) !important;
+    background: linear-gradient(to right,
+        rgba(17, 24, 39, 0.9) 0%,
+        rgba(17, 24, 39, 0.8) 22%,
+        rgba(17, 24, 39, 0.6) 38%,
+        rgba(17, 24, 39, 0.4) 52%,
+        rgba(17, 24, 39, 0.2) 68%,
+        rgba(17, 24, 39, 0.05) 82%,
+        transparent 100%) !important;
   }
 }
 
@@ -843,8 +902,8 @@ All colors MUST be HSL.
     height: 500px !important;
     min-height: 500px !important;
   }
-  
-  .hero-section__slider > div.h-full,
+
+  .hero-section__slider>div.h-full,
   .hero-section__slider .carousel.h-full,
   .hero-section__slider [class*="min-h-\[85vh\]"] {
     height: 500px !important;
@@ -855,16 +914,14 @@ All colors MUST be HSL.
 /* Desktop - Smooth gradient fade */
 @media (min-width: 1025px) {
   .hero-gradient-overlay {
-    background: linear-gradient(
-      to right,
-      rgba(17, 24, 39, 0.88) 0%,
-      rgba(17, 24, 39, 0.78) 20%,
-      rgba(17, 24, 39, 0.58) 35%,
-      rgba(17, 24, 39, 0.38) 50%,
-      rgba(17, 24, 39, 0.18) 65%,
-      rgba(17, 24, 39, 0.05) 80%,
-      transparent 100%
-    ) !important;
+    background: linear-gradient(to right,
+        rgba(17, 24, 39, 0.88) 0%,
+        rgba(17, 24, 39, 0.78) 20%,
+        rgba(17, 24, 39, 0.58) 35%,
+        rgba(17, 24, 39, 0.38) 50%,
+        rgba(17, 24, 39, 0.18) 65%,
+        rgba(17, 24, 39, 0.05) 80%,
+        transparent 100%) !important;
   }
 }
 
@@ -934,13 +991,13 @@ All colors MUST be HSL.
   header {
     overflow-x: hidden;
   }
-  
+
   header nav {
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  
+
   header nav::-webkit-scrollbar {
     display: none;
   }
@@ -948,26 +1005,27 @@ All colors MUST be HSL.
 
 /* Mobile view responsive fixes for product page */
 @media (max-width: 640px) {
+
   /* Prevent horizontal overflow on mobile */
   body {
     overflow-x: hidden;
     width: 100%;
     max-width: 100vw;
   }
-  
+
   /* Ensure containers don't overflow */
   .container {
     max-width: 100%;
     padding-left: clamp(0.75rem, 4vw, 1rem);
     padding-right: clamp(0.75rem, 4vw, 1rem);
   }
-  
+
   /* Category buttons responsive on mobile */
   #product-filters button {
     font-size: 0.625rem;
     padding: 0.5rem 0.75rem;
   }
-  
+
   /* Products grid single column on mobile */
   .products-grid {
     grid-template-columns: 1fr !important;
@@ -975,20 +1033,20 @@ All colors MUST be HSL.
     padding-right: clamp(0.75rem, 4vw, 1rem) !important;
     gap: clamp(0.75rem, 3vw, 1rem) !important;
   }
-  
+
   /* Product cards full width on mobile */
-  .products-grid > * {
+  .products-grid>* {
     width: 100% !important;
     max-width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
-  
+
   /* Filter controls responsive */
   #products-grid .flex-col {
     gap: 0.75rem;
   }
-  
+
   /* Pagination responsive */
   #products-grid .overflow-x-auto {
     padding: 0 0.5rem;
@@ -1092,6 +1150,7 @@ All colors MUST be HSL.
     border-radius: 32px;
   }
 }
+
 /* Shop by Category Section - Professional Spacing */
 #shop-by-category {
   margin-top: clamp(1.5rem, 4vw, 3rem);
@@ -1162,7 +1221,7 @@ All colors MUST be HSL.
 
 .service-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(15, 23, 42, 0.15),
     0 8px 16px rgba(15, 23, 42, 0.1),
     0 0 0 1px rgba(99, 102, 241, 0.1);
@@ -1204,14 +1263,14 @@ All colors MUST be HSL.
 /* Service Card Button Hover Enhancement */
 .service-card:hover .enquire-button {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(15, 23, 42, 0.25),
     0 8px 18px rgba(15, 23, 42, 0.18);
 }
 
 /* Dark Mode Service Card Hover Effects */
 .dark .service-card:hover {
-  box-shadow: 
+  box-shadow:
     0 25px 50px rgba(2, 6, 23, 0.6),
     0 10px 20px rgba(2, 6, 23, 0.4),
     0 0 0 1px rgba(99, 102, 241, 0.2);
@@ -1230,14 +1289,14 @@ All colors MUST be HSL.
   .service-card {
     max-width: 100%;
   }
-  
+
   .service-card:hover {
     transform: translateY(-4px) scale(1.01);
-    box-shadow: 
+    box-shadow:
       0 12px 24px rgba(15, 23, 42, 0.12),
       0 4px 8px rgba(15, 23, 42, 0.08);
   }
-  
+
   .service-card:hover img {
     transform: scale(1.05);
   }
@@ -1245,23 +1304,24 @@ All colors MUST be HSL.
 
 /* Tablet: 2 columns with centered layout */
 @media (min-width: 640px) {
+
   .services-list-container,
   .special-services-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     max-width: 100%;
   }
-  
+
   .service-card {
     min-width: 300px;
     width: 100%;
     max-width: 100%;
   }
-  
+
   .service-card:hover {
     transform: translateY(-6px) scale(1.015);
   }
-  
+
   /* Center the third card when it wraps to the next row */
   .special-services-third-card {
     grid-column: 1 / -1;
@@ -1272,19 +1332,20 @@ All colors MUST be HSL.
 
 /* Desktop: 3 columns with centered layout */
 @media (min-width: 1024px) {
+
   .services-list-container,
   .special-services-grid {
     grid-template-columns: repeat(3, 380px);
     justify-content: center;
     gap: 1.75rem;
   }
-  
+
   .service-card {
     width: 100%;
     max-width: 380px;
     min-width: 320px;
   }
-  
+
   .special-services-third-card {
     grid-column: auto;
     justify-self: auto;
@@ -1294,16 +1355,17 @@ All colors MUST be HSL.
 
 /* Large Desktop: Maintain 3 columns with slightly larger cards */
 @media (min-width: 1280px) {
+
   .services-list-container,
   .special-services-grid {
     grid-template-columns: repeat(3, 400px);
     gap: 2rem;
   }
-  
+
   .service-card {
     max-width: 400px;
   }
-  
+
   .special-services-third-card {
     max-width: 400px;
   }
@@ -1355,8 +1417,8 @@ All colors MUST be HSL.
   .mission-vision-goal-section .grid {
     align-items: stretch;
   }
-  
-  .mission-vision-goal-section .grid > div {
+
+  .mission-vision-goal-section .grid>div {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -1387,7 +1449,7 @@ All colors MUST be HSL.
 
 /* Ensure equal heights for all cards */
 @media (min-width: 768px) {
-  .mission-vision-goal-section .grid > div {
+  .mission-vision-goal-section .grid>div {
     min-height: 100%;
   }
 }
@@ -1611,64 +1673,194 @@ All colors MUST be HSL.
 
 /* Inquiry Dialog - Special Services Popup */
 .inquiry-dialog-content {
-  width: 100%;
-  max-width: 100vw;
+  width: calc(100% - 1rem);
+  max-width: calc(100vw - 1rem);
   padding: 0;
   border: 0;
   background: transparent;
   box-shadow: 0 22px 60px rgba(15, 23, 42, 0.35);
-  max-height: 100vh;
+  max-height: calc(100vh - 1rem);
   overflow: hidden;
+  margin: 0.5rem auto;
+  border-radius: clamp(20px, 5vw, 28px);
 }
 
 .inquiry-dialog-shell {
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border-radius: 0;
+  border-radius: clamp(20px, 5vw, 28px);
   height: 100%;
+  min-height: auto;
+  margin: 0 auto;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .inquiry-dialog-form {
-  padding: 1rem 1.25rem 1.1rem;
+  padding: clamp(1.25rem, 4vw, 1.5rem) clamp(1rem, 4vw, 1.5rem) clamp(1rem, 4vw, 1.25rem);
   overflow-y: auto;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (min-width: 640px) {
   .inquiry-dialog-content {
-    max-width: 620px;
+    max-width: 520px;
     max-height: 92vh;
-    border-radius: 22px;
+    border-radius: clamp(24px, 4.5vw, 32px);
+    width: calc(100% - 2rem);
+    margin: 0 auto;
   }
 
   .inquiry-dialog-shell {
-    border-radius: 22px;
+    border-radius: clamp(24px, 4.5vw, 32px);
   }
 
   .inquiry-dialog-form {
-    padding: 1.25rem 1.75rem 1.4rem;
+    padding: 1.5rem 2rem 1.75rem;
   }
 }
 
 @media (min-width: 768px) {
+  .inquiry-dialog-content {
+    max-width: 600px;
+    width: calc(100% - 2rem);
+    margin: 0 auto;
+    border-radius: clamp(24px, 4.5vw, 32px);
+  }
+
   .inquiry-dialog-shell {
     flex-direction: row;
+    border-radius: clamp(24px, 4.5vw, 32px);
+  }
+
+  .inquiry-dialog-form {
+    padding: 2rem 2.25rem;
+    max-width: 100%;
+    flex: 0 0 50%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .inquiry-dialog-content {
+    max-width: 640px;
+    border-radius: clamp(24px, 4.5vw, 32px);
+  }
+
+  .inquiry-dialog-shell {
+    border-radius: clamp(24px, 4.5vw, 32px);
+  }
+
+  .inquiry-dialog-form {
+    padding: 2.25rem 2.5rem;
   }
 }
 
 @media (max-width: 639px) {
+  .inquiry-dialog-content {
+    width: calc(100% - 1rem) !important;
+    max-width: calc(100vw - 1rem) !important;
+    max-height: calc(100vh - 1rem) !important;
+    margin: 0.5rem auto !important;
+    border-radius: clamp(18px, 4vw, 24px) !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed !important;
+  }
+
+  .inquiry-dialog-shell {
+    border-radius: clamp(18px, 4vw, 24px);
+    max-height: calc(100vh - 1rem);
+    min-height: auto;
+    height: auto;
+  }
+
   .inquiry-dialog-form {
-    min-height: 100vh;
+    padding: clamp(1.25rem, 5vw, 1.75rem) clamp(1rem, 4vw, 1.5rem) clamp(1rem, 4vw, 1.5rem);
+    min-height: auto;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 3vw, 1rem);
+  }
+
+  /* Ensure form elements are properly sized on mobile */
+  .inquiry-dialog-form input,
+  .inquiry-dialog-form button {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Responsive title and description */
+  .inquiry-dialog-form .text-2xl,
+  .inquiry-dialog-form h2 {
+    font-size: clamp(1.25rem, 5vw, 1.5rem) !important;
+    line-height: 1.3;
+    margin-bottom: clamp(0.5rem, 2vw, 0.75rem);
+  }
+
+  .inquiry-dialog-form .text-sm,
+  .inquiry-dialog-form p {
+    font-size: clamp(0.875rem, 3vw, 0.9375rem) !important;
+    line-height: 1.5;
+  }
+
+  /* Ensure labels and inputs are properly spaced */
+  .inquiry-dialog-form label {
+    font-size: clamp(0.8125rem, 3vw, 0.875rem);
+    margin-bottom: clamp(0.25rem, 1vw, 0.375rem);
+  }
+
+  .inquiry-dialog-form input {
+    font-size: clamp(0.9375rem, 3.5vw, 1rem) !important;
+    padding: clamp(0.625rem, 2vw, 0.75rem) clamp(0.875rem, 3vw, 1rem) !important;
+    height: clamp(2.75rem, 8vw, 3rem) !important;
+  }
+
+  .inquiry-dialog-form button {
+    font-size: clamp(0.875rem, 3vw, 0.9375rem) !important;
+    padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 4vw, 1.25rem) !important;
+    height: clamp(2.75rem, 8vw, 3rem) !important;
+    min-height: 44px; /* Better touch target */
+  }
+
+  /* Prevent horizontal overflow */
+  .inquiry-dialog-form * {
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  /* Form field spacing */
+  .inquiry-dialog-form > form {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 3vw, 1.25rem);
+  }
+
+  .inquiry-dialog-form > form > div {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.375rem, 1.5vw, 0.5rem);
   }
 }
 
 /* Product Card - Enhanced Add to Cart Button Styles */
 /* Products Grid - Ensure grid items stretch */
 .products-grid {
-  align-items: stretch; /* Ensure all grid items have same height */
+  align-items: stretch;
+  /* Ensure all grid items have same height */
 }
 
-.products-grid > * {
+.products-grid>* {
   height: 100%;
 }
 
@@ -1677,7 +1869,7 @@ All colors MUST be HSL.
   align-items: stretch;
 }
 
-.grid:has(.product-card) > * {
+.grid:has(.product-card)>* {
   height: 100%;
 }
 
@@ -1691,8 +1883,10 @@ All colors MUST be HSL.
   height: 100%;
   min-height: 280px;
   padding: clamp(0.75rem, 2vw, 1rem);
-  padding-left: clamp(0.75rem, 4vw, 1rem); /* Left padding on mobile */
-  padding-right: clamp(0.75rem, 4vw, 1rem); /* Right padding on mobile */
+  padding-left: clamp(0.75rem, 4vw, 1rem);
+  /* Left padding on mobile */
+  padding-right: clamp(0.75rem, 4vw, 1rem);
+  /* Right padding on mobile */
   margin-left: 0;
   margin-right: 0;
 }
@@ -1705,7 +1899,8 @@ All colors MUST be HSL.
   height: 100%;
   box-sizing: border-box;
   gap: clamp(0.625rem, 1.5vw, 0.875rem);
-  padding: 0; /* No additional padding on inner container */
+  padding: 0;
+  /* No additional padding on inner container */
 }
 
 /* Responsive minimum heights */
@@ -1725,7 +1920,7 @@ All colors MUST be HSL.
     padding-left: clamp(1rem, 3vw, 1.25rem);
     padding-right: clamp(1rem, 3vw, 1.25rem);
   }
-  
+
   .product-card-inner {
     flex-direction: column;
   }
@@ -1846,16 +2041,19 @@ All colors MUST be HSL.
 /* Product Card Actions Container - Fixed Alignment at Bottom */
 .product-card-actions {
   display: flex;
-  flex-direction: column; /* Mobile-first: Vertical stack */
+  flex-direction: column;
+  /* Mobile-first: Vertical stack */
   align-items: stretch;
   justify-content: flex-start;
   width: 100%;
   max-width: 100%;
   flex-shrink: 0;
   margin-top: auto;
-  gap: 0.5rem; /* 8px vertical spacing between buttons */
+  gap: 0.5rem;
+  /* 8px vertical spacing between buttons */
   box-sizing: border-box;
-  overflow: hidden; /* Prevent overflow */
+  overflow: hidden;
+  /* Prevent overflow */
   /* Add padding on mobile for button spacing from card edges */
   padding-left: 0;
   padding-right: 0;
@@ -1873,7 +2071,8 @@ All colors MUST be HSL.
   padding: clamp(0.625rem, 2vw, 0.875rem) clamp(0.75rem, 2.5vw, 1rem);
   border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
   box-sizing: border-box;
-  overflow: hidden; /* Ensure text doesn't overflow */
+  overflow: hidden;
+  /* Ensure text doesn't overflow */
   text-overflow: ellipsis;
   /* Ensure button content is centered */
   display: flex;
@@ -1885,7 +2084,7 @@ All colors MUST be HSL.
 }
 
 /* Button inner content */
-.product-card-button-primary > span {
+.product-card-button-primary>span {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1919,9 +2118,10 @@ All colors MUST be HSL.
 /* Extra small screens - Full width vertical stack with adjusted padding */
 @media (max-width: 374px) {
   .product-card-actions {
-    gap: 0.5rem; /* 8px vertical spacing */
+    gap: 0.5rem;
+    /* 8px vertical spacing */
   }
-  
+
   .product-card-button-primary {
     width: 100%;
     max-width: 100%;
@@ -1929,7 +2129,7 @@ All colors MUST be HSL.
     padding: clamp(0.625rem, 2vw, 0.75rem) clamp(0.625rem, 2vw, 0.875rem);
     font-size: clamp(0.75rem, 2.5vw, 0.875rem);
   }
-  
+
   .product-card-button-secondary {
     width: 100%;
     max-width: 100%;
@@ -1942,9 +2142,10 @@ All colors MUST be HSL.
 /* Small screens - Maintain full width vertical stack */
 @media (min-width: 375px) and (max-width: 767px) {
   .product-card-actions {
-    gap: 0.5rem; /* 8px vertical spacing */
+    gap: 0.5rem;
+    /* 8px vertical spacing */
   }
-  
+
   .product-card-button-primary {
     width: 100%;
     max-width: 100%;
@@ -1952,7 +2153,7 @@ All colors MUST be HSL.
     padding: clamp(0.625rem, 1.8vw, 0.875rem) clamp(0.75rem, 2.2vw, 1rem);
     font-size: clamp(0.8125rem, 2vw, 0.9375rem);
   }
-  
+
   .product-card-button-secondary {
     width: 100%;
     max-width: 100%;
@@ -1969,7 +2170,7 @@ All colors MUST be HSL.
     align-items: center;
     gap: 0.625rem;
   }
-  
+
   .product-card-button-primary {
     flex: 0 0 calc(70% - 0.3125rem);
     width: calc(70% - 0.3125rem);
@@ -1978,11 +2179,12 @@ All colors MUST be HSL.
     font-size: clamp(0.8125rem, 1.8vw, 0.875rem);
     padding: clamp(0.625rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
   }
-  
-  .product-card-button-primary > span {
-    white-space: nowrap; /* Allow full text on larger screens */
+
+  .product-card-button-primary>span {
+    white-space: nowrap;
+    /* Allow full text on larger screens */
   }
-  
+
   .product-card-button-secondary {
     flex: 0 0 calc(30% - 0.3125rem);
     width: calc(30% - 0.3125rem);
@@ -2000,7 +2202,7 @@ All colors MUST be HSL.
     align-items: center;
     gap: 0.625rem;
   }
-  
+
   .product-card-button-primary {
     flex: 0 0 calc(70% - 0.3125rem);
     width: calc(70% - 0.3125rem);
@@ -2009,11 +2211,12 @@ All colors MUST be HSL.
     font-size: clamp(0.875rem, 1.5vw, 1rem);
     padding: clamp(0.75rem, 1.5vw, 0.875rem) clamp(1rem, 2vw, 1.25rem);
   }
-  
-  .product-card-button-primary > span {
-    white-space: nowrap; /* Allow full text on desktop */
+
+  .product-card-button-primary>span {
+    white-space: nowrap;
+    /* Allow full text on desktop */
   }
-  
+
   .product-card-button-secondary {
     flex: 0 0 calc(30% - 0.3125rem);
     width: calc(30% - 0.3125rem);
@@ -2049,9 +2252,11 @@ All colors MUST be HSL.
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(0.96);
   }
+
   100% {
     transform: scale(1);
   }
@@ -2066,6 +2271,7 @@ All colors MUST be HSL.
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -2074,9 +2280,11 @@ All colors MUST be HSL.
 /* Responsive button text and icon sizing - Now handled in button classes above */
 /* Additional touch target optimization for very small screens */
 @media (max-width: 480px) {
+
   .product-card-button-primary,
   .product-card-button-secondary {
-    min-height: 44px; /* Better touch target on mobile */
+    min-height: 44px;
+    /* Better touch target on mobile */
   }
 }
 
@@ -2094,6 +2302,7 @@ All colors MUST be HSL.
   0% {
     transform: translateX(-100%) translateY(-50%);
   }
+
   100% {
     transform: translateX(100%) translateY(-50%);
   }
@@ -2284,26 +2493,26 @@ All colors MUST be HSL.
   .portfolio-card-content {
     padding: clamp(1rem, 4vw, 1.5rem) !important;
   }
-  
+
   .portfolio-card-badge {
     font-size: clamp(0.6rem, 2.5vw, 0.7rem);
     padding: clamp(0.4rem, 1.5vw, 0.5rem) clamp(0.6rem, 2vw, 0.75rem);
   }
-  
+
   .portfolio-card-title {
     font-size: clamp(1.1rem, 4.2vw, 1.4rem);
     margin-bottom: clamp(6px, 2vw, 10px);
   }
-  
+
   .portfolio-card-link-row {
     margin-top: clamp(2px, 1vw, 8px);
     gap: clamp(0.5rem, 2vw, 1rem);
   }
-  
+
   .portfolio-card-link {
     font-size: clamp(0.7rem, 2.5vw, 0.875rem);
   }
-  
+
   .portfolio-card-number {
     width: clamp(2rem, 8vw, 2.5rem);
     height: clamp(2rem, 8vw, 2.5rem);
@@ -2317,25 +2526,25 @@ All colors MUST be HSL.
   .portfolio-card-content {
     padding: clamp(1.5rem, 3vw, 1.75rem) !important;
   }
-  
+
   .portfolio-card-badge {
     font-size: clamp(0.65rem, 1.5vw, 0.7rem);
   }
-  
+
   .portfolio-card-title {
     font-size: clamp(1.35rem, 2.8vw, 1.75rem);
     margin-bottom: clamp(8px, 1.8vw, 12px);
   }
-  
+
   .portfolio-card-link-row {
     margin-top: clamp(4px, 1.2vw, 10px);
     gap: clamp(0.75rem, 2vw, 1.25rem);
   }
-  
+
   .portfolio-card-link {
     font-size: clamp(0.8rem, 1.8vw, 0.875rem);
   }
-  
+
   .portfolio-card-number {
     width: clamp(2.25rem, 6vw, 2.5rem);
     height: clamp(2.25rem, 6vw, 2.5rem);
@@ -2349,12 +2558,12 @@ All colors MUST be HSL.
   .portfolio-card-content {
     padding: clamp(1.75rem, 2vw, 2rem) !important;
   }
-  
+
   .portfolio-card-link-row {
     margin-top: clamp(8px, 1vw, 12px);
     gap: 1.25rem;
   }
-  
+
   .portfolio-card-number {
     width: 2.5rem;
     height: 2.5rem;
@@ -2381,12 +2590,12 @@ All colors MUST be HSL.
 
 /* Center-align lone blog card in home page grid on tablet sizes */
 @media (min-width: 640px) and (max-width: 1023.98px) {
-  .home-blog-grid > *:last-child:nth-child(odd) {
+  .home-blog-grid>*:last-child:nth-child(odd) {
     grid-column: 1 / -1;
     justify-self: stretch;
   }
 
-  .home-portfolio-grid > *:last-child:nth-child(odd) {
+  .home-portfolio-grid>*:last-child:nth-child(odd) {
     grid-column: 1 / -1;
     justify-self: stretch;
   }
@@ -2405,17 +2614,22 @@ All colors MUST be HSL.
     padding-right: clamp(0.75rem, 4vw, 1rem) !important;
     box-sizing: border-box;
     overflow-x: hidden;
-    justify-items: center !important; /* Center align cards horizontally on mobile */
-    align-items: stretch; /* Allow cards to stretch vertically */
+    justify-items: center !important;
+    /* Center align cards horizontally on mobile */
+    align-items: stretch;
+    /* Allow cards to stretch vertically */
   }
 
-  .products-grid > * {
+  .products-grid>* {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    justify-self: center !important; /* Center align each card */
-    margin-left: auto; /* Center align */
-    margin-right: auto; /* Center align */
+    justify-self: center !important;
+    /* Center align each card */
+    margin-left: auto;
+    /* Center align */
+    margin-right: auto;
+    /* Center align */
   }
 }
 
@@ -2435,12 +2649,15 @@ All colors MUST be HSL.
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  margin-left: auto; /* Center align on mobile */
-  margin-right: auto; /* Center align on mobile */
+  margin-left: auto;
+  /* Center align on mobile */
+  margin-right: auto;
+  /* Center align on mobile */
 }
 
 /* Mobile view: Center align all product cards */
 @media (max-width: 767px) {
+
   .products-grid .product-card,
   .grid:has(.product-card) .product-card,
   [class*="grid"]:has(.product-card) .product-card {
@@ -2448,7 +2665,7 @@ All colors MUST be HSL.
     margin-right: auto;
     display: flex;
   }
-  
+
   /* Center align product card grids - mobile only */
   .products-grid,
   .grid:has(.product-card),
@@ -2466,7 +2683,8 @@ All colors MUST be HSL.
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-word;
-    max-height: 2.5rem; /* Approximate height for 2 lines */
+    max-height: 2.5rem;
+    /* Approximate height for 2 lines */
     margin-top: 0.375rem;
     font-size: 0.75rem;
     line-height: 1.25rem;
@@ -2478,15 +2696,16 @@ All colors MUST be HSL.
 
 /* Responsive table improvements for mobile devices */
 @media (max-width: 640px) {
+
   /* Extra small breakpoint for very small screens */
   .xs\:text-xs {
     font-size: 0.75rem;
   }
-  
+
   .xs\:text-\[10px\] {
     font-size: 0.625rem;
   }
-  
+
   .xs\:text-\[11px\] {
     font-size: 0.6875rem;
   }
@@ -2502,7 +2721,8 @@ All colors MUST be HSL.
 }
 
 /* Prevent horizontal overflow on all pages */
-html, body {
+html,
+body {
   overflow-x: hidden;
   max-width: 100vw;
   position: relative;
@@ -2523,7 +2743,9 @@ html, body {
   box-sizing: border-box;
 }
 
-img, video, iframe {
+img,
+video,
+iframe {
   max-width: 100%;
   height: auto;
 }
@@ -2542,7 +2764,7 @@ img, video, iframe {
   .text-responsive {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
   }
-  
+
   .heading-responsive {
     font-size: clamp(1.5rem, 5vw, 2rem);
   }
@@ -2562,9 +2784,29 @@ section {
     padding-left: clamp(1rem, 4vw, 1.5rem);
     padding-right: clamp(1rem, 4vw, 1.5rem);
   }
-  
+
   .py-responsive {
     padding-top: clamp(1rem, 4vw, 2rem);
     padding-bottom: clamp(1rem, 4vw, 2rem);
   }
+}
+
+/* Portfolio Card Fixes - Prevent Overlap */
+.portfolio-card-number {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  max-width: fit-content !important;
+  min-width: 2.5rem;
+}
+
+.portfolio-card-link-row {
+  isolation: isolate;
+  gap: 1rem;
+}
+
+.portfolio-card-title,
+.portfolio-card-link {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
 }
