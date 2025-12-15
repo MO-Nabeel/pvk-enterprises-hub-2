@@ -902,7 +902,50 @@ const Index = () => {
               Curated collections to help you shop faster—crafted for events, offices, studios, and on-the-go creators.
             </p>
           </div>
-          <div className="category-mosaic">
+
+          {/* Mobile Category Buttons Layout */}
+          <div className="block md:hidden mb-8">
+            <div className="mobile-category-buttons-container">
+              {/* CATEGORIES Header */}
+              <div className="mobile-category-header-btn">
+                <span className="mobile-category-header-dot"></span>
+                CATEGORIES
+              </div>
+
+              {/* Category Buttons Grid */}
+              <div className="mobile-category-buttons-grid">
+                {Object.values(overriddenCategoriesBySlot).map((category) => (
+                  <Link
+                    key={category.slot}
+                    to={category.link}
+                    className="mobile-category-btn"
+                  >
+                    {category.title.toUpperCase()}
+                  </Link>
+                ))}
+                {customCategories.map((name) => (
+                  <Link
+                    key={name}
+                    to={`/category?category=${encodeURIComponent(name)}`}
+                    className="mobile-category-btn"
+                  >
+                    {name.toUpperCase()}
+                  </Link>
+                ))}
+              </div>
+
+              {/* ALL PRODUCTS Button */}
+              <Link
+                to="/category"
+                className="mobile-all-products-btn"
+              >
+                ALL PRODUCTS
+              </Link>
+            </div>
+          </div>
+
+          {/* Desktop Category Cards - Hidden on Mobile */}
+          <div className="hidden md:block category-mosaic">
             <div className="category-mosaic__column column-left">
               <div className="column-left-grid">
                 {renderCategoryCard("grid1-c1")}

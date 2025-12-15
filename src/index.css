@@ -754,7 +754,9 @@ All colors MUST be HSL.
 
 @media (max-width: 767px) {
   .hero-section__slider {
-    min-height: clamp(16rem, 55vh, 22rem);
+    height: 40vh;
+    min-height: 40vh;
+    max-height: 300px;
   }
 
   .hero-section__content {
@@ -873,6 +875,97 @@ All colors MUST be HSL.
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Mobile - Reduce height and ensure images cover the section perfectly */
+@media (max-width: 768px) {
+  /* Reduce hero section min-height to allow content below to appear sooner */
+  .hero-section {
+    min-height: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .hero-slider__frame {
+    height: 40vh !important;
+    min-height: 40vh !important;
+    max-height: 300px !important;
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .hero-slider__background {
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none;
+  }
+
+  .hero-slider__image {
+    object-fit: cover !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-position: center center;
+  }
+
+  /* Ensure carousel containers respect the reduced height and fill width */
+  .hero-section__slider {
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .hero-section__slider > div.h-full,
+  .hero-section__slider .carousel.h-full,
+  .hero-section__slider [class*="min-h-\[85vh\]"] {
+    height: 40vh !important;
+    min-height: 40vh !important;
+    max-height: 300px !important;
+    width: 100% !important;
+  }
+
+  .hero-section__slider .carousel-content,
+  .hero-section__slider [class*="h-full"] {
+    height: 40vh !important;
+    min-height: 40vh !important;
+    max-height: 300px !important;
+    width: 100% !important;
+  }
+
+  /* Ensure carousel items fill the container */
+  .hero-section__slider .carousel-item {
+    width: 100% !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+  }
+
+  /* Ensure carousel content has no gaps */
+  .hero-section__slider .carousel-content {
+    margin-left: 0 !important;
+    gap: 0 !important;
+  }
+
+  /* Ensure the image container fills completely */
+  .hero-section__slider .hero-slider__frame {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .hero-section__slider .hero-slider__frame > div {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Remove any border-radius on mobile for full coverage */
+  .hero-section__slider .hero-slider__image {
+    border-radius: 0 !important;
+  }
 }
 
 /* Mobile - Subtle uniform tint to let imagery stay bright */
@@ -1929,18 +2022,18 @@ All colors MUST be HSL.
 /* Product Image Container - Prevents Shrinking */
 .product-image-container {
   flex-shrink: 0;
-  width: 30%;
-  min-width: 90px;
-  max-width: 120px;
-  aspect-ratio: 1;
+  width: 40%;
+  min-width: 120px;
+  max-width: none;
+  height: 100%;
   box-sizing: border-box;
 }
 
 @media (min-width: 480px) {
   .product-image-container {
-    width: 32%;
-    min-width: 100px;
-    max-width: 130px;
+    width: 35%;
+    min-width: 140px;
+    max-width: none;
   }
 }
 
@@ -1949,6 +2042,7 @@ All colors MUST be HSL.
     width: 100%;
     min-width: 100%;
     max-width: 100%;
+    height: auto;
     aspect-ratio: 1;
   }
 }
@@ -2322,6 +2416,65 @@ All colors MUST be HSL.
 /* Smooth transitions for all button states */
 .product-card-button * {
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Dark Theme - Product Card Buttons */
+.dark .product-card-button-primary {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark .product-card-button-primary:hover {
+  background: #1f2937 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.dark .product-card-button-primary:active {
+  background: #0f172a !important;
+}
+
+.dark .product-card-button-primary:focus-visible {
+  outline-color: #60a5fa !important;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2) !important;
+}
+
+.dark .product-card-button-secondary {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #e5e7eb !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark .product-card-button-secondary:hover {
+  background: #111827 !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.dark .product-card-button-secondary:active {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+}
+
+.dark .product-card-button-secondary:focus-visible {
+  outline-color: #60a5fa !important;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2) !important;
+}
+
+/* Dark theme - Button with "View in Cart" state */
+.dark .product-card-button-primary.bg-primary\/5,
+.dark .product-card-button-primary[class*="bg-primary"] {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark .product-card-button-primary.bg-primary\/5:hover,
+.dark .product-card-button-primary[class*="bg-primary"]:hover {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 /* Responsive padding adjustments - Now handled in button classes above */
@@ -2757,6 +2910,279 @@ iframe {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+/* Product Detail Page - Mobile Responsive Fixes */
+@media (max-width: 767px) {
+  /* Ensure product detail container doesn't overflow */
+  .container {
+    padding-left: clamp(0.75rem, 4vw, 1rem) !important;
+    padding-right: clamp(0.75rem, 4vw, 1rem) !important;
+  }
+
+  /* Product detail section - prevent overflow */
+  section.bg-gray-50 {
+    padding-left: clamp(0.5rem, 3vw, 1rem) !important;
+    padding-right: clamp(0.5rem, 3vw, 1rem) !important;
+  }
+
+  /* Product detail card - ensure proper spacing and wrapping */
+  .bg-white.rounded-lg {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: clamp(1rem, 4vw, 1.5rem) !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+  }
+
+  /* Product title - prevent overlap */
+  .bg-white.rounded-lg h1 {
+    font-size: clamp(1.125rem, 4vw, 1.5rem) !important;
+    line-height: 1.3 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Product description - proper wrapping */
+  .bg-white.rounded-lg p {
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1.6 !important;
+    font-size: clamp(0.875rem, 3vw, 1rem) !important;
+  }
+
+  /* Price section - prevent overlap */
+  .bg-white.rounded-lg .flex.flex-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: clamp(0.5rem, 2vw, 0.75rem) !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Price text - ensure it wraps */
+  .bg-white.rounded-lg .flex.flex-wrap > p {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+  }
+
+  /* Discount badge - prevent overlap */
+  .bg-white.rounded-lg span.inline-flex {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* Brand text - prevent overlap */
+  .bg-white.rounded-lg p.text-xs,
+  .bg-white.rounded-lg p.text-sm {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+  }
+
+  /* Quantity and buttons section - prevent overlap */
+  .bg-white.rounded-lg .grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: clamp(0.75rem, 3vw, 1rem) !important;
+  }
+
+  /* Buttons - full width on mobile */
+  .bg-white.rounded-lg button {
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    padding: clamp(0.625rem, 2vw, 0.875rem) clamp(0.75rem, 3vw, 1rem) !important;
+  }
+
+  /* Quantity input container */
+  .bg-white.rounded-lg .max-w-\[150px\] {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Mobile Category Buttons Layout - Only show on mobile */
+@media (max-width: 767px) {
+  .mobile-category-buttons-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  /* CATEGORIES Header */
+  .mobile-category-header-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.25rem) !important;
+    background: #f3f4f6 !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.5rem !important;
+    font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    text-align: left !important;
+    margin-bottom: clamp(1rem, 3vw, 1.5rem) !important;
+  }
+
+  .mobile-category-header-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #f97316 !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Category Buttons Grid - Single Column Vertical List */
+  .mobile-category-buttons-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: clamp(0.75rem, 2vw, 1rem) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: clamp(1.5rem, 4vw, 2rem) !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-category-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: clamp(0.875rem, 2.5vw, 1rem) clamp(1rem, 3vw, 1.25rem) !important;
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.5rem !important;
+    font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    min-height: 48px !important;
+    line-height: 1.4 !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    margin: 0 !important;
+  }
+
+  .mobile-category-btn:hover {
+    background: #f9fafb !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+  }
+
+  .mobile-category-btn:active {
+    background: #f3f4f6 !important;
+    transform: scale(0.98) !important;
+  }
+
+  /* ALL PRODUCTS Button */
+  .mobile-all-products-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    padding: clamp(0.875rem, 2.5vw, 1.125rem) clamp(1rem, 3vw, 1.5rem) !important;
+    background: #111827 !important;
+    border: none !important;
+    border-radius: 0.5rem !important;
+    font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .mobile-all-products-btn:hover {
+    background: #1f2937 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .mobile-all-products-btn:active {
+    background: #0f172a !important;
+    transform: scale(0.98) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+/* Dark mode support for mobile category buttons */
+.dark .mobile-category-header-btn {
+  background: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .mobile-category-header-btn:hover {
+  background: #374151;
+}
+
+.dark .mobile-category-btn {
+  background: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .mobile-category-btn:hover {
+  background: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .mobile-all-products-btn {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .mobile-all-products-btn:hover {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+.dark .mobile-all-products-btn:active {
+  background: #0f172a !important;
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .mobile-all-products-btn:focus-visible {
+  outline: 2px solid #60a5fa !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2) !important;
 }
 
 /* Responsive text sizing utilities */

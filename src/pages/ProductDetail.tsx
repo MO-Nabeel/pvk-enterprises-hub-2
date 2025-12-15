@@ -156,7 +156,7 @@ const ProductDetail = () => {
               </div>
 
               {/* Right Column: Product Details */}
-              <div className="bg-white rounded-lg p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 shadow-sm border border-gray-200">
+              <div className="bg-white rounded-lg p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 shadow-sm border border-gray-200 w-full max-w-full overflow-hidden">
                 <div className="flex items-center justify-between gap-3">
                   <Button
                     variant="outline"
@@ -179,25 +179,25 @@ const ProductDetail = () => {
                   )}
                 </div>
 
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                    <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+                <div className="space-y-3 sm:space-y-4 w-full max-w-full">
+                  <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 w-full max-w-full">
+                    <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 break-words">
                       ₹{product.price.toLocaleString("en-IN")}
                     </p>
                     {originalPrice && (
                       <>
-                        <p className="text-base sm:text-lg md:text-xl text-gray-500 line-through">
+                        <p className="text-base sm:text-lg md:text-xl text-gray-500 line-through break-words">
                           ₹{originalPrice.toLocaleString("en-IN")}
                         </p>
                         {product.discount && product.discount > 0 && (
-                          <span className="inline-flex items-center rounded px-2 py-0.5 text-xs sm:text-sm font-semibold bg-red-100 text-red-700">
+                          <span className="inline-flex items-center rounded px-2 py-0.5 text-xs sm:text-sm font-semibold bg-red-100 text-red-700 flex-shrink-0">
                             -{product.discount}%
                           </span>
                         )}
                       </>
                     )}
                   </div>
-                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed break-words max-w-full">
                     {description}
                   </p>
                 </div>

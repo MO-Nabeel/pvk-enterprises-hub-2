@@ -637,7 +637,7 @@ const Category = () => {
                         "px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg font-medium transition-all duration-200 text-xs sm:text-sm md:text-base uppercase whitespace-nowrap",
                         isActive
                           ? category === "All Products"
-                            ? "bg-[#1e40af] text-white font-bold shadow-md" // Dark blue for "All Products" - exact match
+                            ? "bg-[#111827] text-white font-bold shadow-md" // Dark blue for "All Products"
                             : "bg-primary text-primary-foreground shadow-md"
                           : "bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:shadow-sm font-medium"
                       )}

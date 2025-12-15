@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MissionVisionGoal from "@/components/MissionVisionGoal";
+import PVKJourney from "@/components/PVKJourney";
 import pvkShopImage from "@/assets/pvk shop.webp";
 import founderImage from "@/assets/founder.jpeg";
 import { Award, Users, Target, Heart, ArrowRight } from "lucide-react";
@@ -155,6 +156,11 @@ const About = () => {
                   approach in design and with the help of our dedicated and experienced team.
                 </p>
               </div>
+            </div>
+
+            {/* PVK Journey Timeline Section */}
+            <div className="mt-16">
+              <PVKJourney />
             </div>
 
             {/* Values Grid */}
