@@ -272,6 +272,7 @@ const Index = () => {
   const customCategories = useMemo(() => getCustomCategories(), [categoryUpdateTrigger]);
   const categoryOverrides = useMemo(() => getCategoryOverrideMap(), [categoryUpdateTrigger]);
   const [cardContentUpdateTrigger, setCardContentUpdateTrigger] = useState(0);
+  const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
 
   // Listen for category updates (positions, overrides, etc.)
   useEffect(() => {
@@ -458,25 +459,8 @@ const Index = () => {
         ? "center"
         : category.imagePosition ?? "center";
 
-    const cardStyle: CSSProperties = {
-      "--card-primary": palette.primary,
-      "--card-secondary": palette.secondary,
-      "--card-ambient": palette.ambient,
-      "--card-ring": palette.ring,
-      "--card-text": "#ffffff", // Always white for high contrast
-    } as CSSProperties;
-
-    if (backgroundImage) {
-      cardStyle.backgroundImage = `linear-gradient(145deg, rgba(5, 8, 20, 0.78), rgba(16, 24, 46, 0.65)), url(${backgroundImage})`;
-      cardStyle.backgroundSize = "cover";
-      cardStyle.backgroundPosition = backgroundPosition;
-      cardStyle.backgroundRepeat = "no-repeat";
-    } else if (cardContent?.backgroundColor) {
-      cardStyle.backgroundColor = cardContent.backgroundColor;
-    } else {
-      // Default elegant dark gradient matching the model's aesthetic
-      cardStyle.background = "linear-gradient(145deg, rgba(5, 8, 20, 0.97), rgba(16, 24, 46, 0.92))";
-    }
+    // Create gradient from palette colors
+    const gradient = `linear-gradient(135deg, ${palette.primary} 0%, ${palette.secondary} 100%)`;
 
     return (
       <Link
@@ -485,46 +469,68 @@ const Index = () => {
         data-slot={slot}
         aria-label={`${displayTitle} category`}
         className={cn(
-          "category-card group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70",
-          category.slot === "grid3-c4" && "category-card--wedding"
+          "group relative overflow-hidden rounded-2xl sm:rounded-3xl",
+          "min-h-[200px] sm:min-h-[220px] md:min-h-[240px]",
+          "flex flex-col justify-between p-5 sm:p-6",
+          "transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70"
         )}
-        style={cardStyle}
+        style={{
+          background: backgroundImage
+            ? `linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.55) 100%), url(${backgroundImage})`
+            : cardContent?.backgroundColor || gradient,
+          backgroundSize: backgroundImage ? "cover" : undefined,
+          backgroundPosition: backgroundImage ? backgroundPosition : undefined,
+          backgroundRepeat: backgroundImage ? "no-repeat" : undefined,
+        }}
       >
-        <span className="category-card__glow" aria-hidden="true" />
-        <span className="category-card__mesh" aria-hidden="true" />
-        <div className="category-card__inner">
-          {badgeValue && (
-            <span className="category-card__badge-value">
-              {badgeValue}
-            </span>
-          )}
-          <div className="category-card__primary-content">
-            <div className="category-card__accent-row">
-              <span className="category-card__accent-text">{displayAccent}</span>
+        {/* Content */}
+        <div className="relative z-10 flex flex-col h-full justify-between text-white">
+          {/* Top Section */}
+          <div className="space-y-3 sm:space-y-4">
+            {/* Category Badge */}
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-6 bg-white/60 rounded-full" />
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-semibold text-white/90">
+                {displayAccent || badgeValue || "CATEGORY"}
+              </span>
             </div>
-            <h3 className="category-card__title">{displayTitle}</h3>
-            <p className="category-card__description">{displayDescription}</p>
+
+            {/* Title */}
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
+              {displayTitle}
+            </h3>
+
+            {/* Description */}
+            {displayDescription && (
+              <p className="text-sm sm:text-base text-white/90 leading-relaxed max-w-md">
+                {displayDescription}
+              </p>
+            )}
           </div>
-          <div className="category-card__footer">
-            <span>EXPLORE</span>
-            <span className="category-card__icon" aria-hidden="true" role="presentation">
-              <svg 
-                viewBox="0 0 16 16" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path 
-                  d="M6 12L10 8L6 4" 
-                  stroke="currentColor" 
-                  strokeWidth="1.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                />
-              </svg>
+
+          {/* Bottom Section - EXPLORE */}
+          <div className="mt-6 sm:mt-8 flex items-center justify-between">
+            <span className="text-xs sm:text-sm uppercase tracking-[0.15em] font-semibold text-white underline decoration-white/60 underline-offset-4 group-hover:decoration-white transition-all">
+              EXPLORE
             </span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white/40 bg-white/10 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:bg-white/20 group-hover:border-white/60 group-hover:scale-110">
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
           </div>
         </div>
+
+        {/* Product Image Overlay (if provided) */}
+        {backgroundImage && (
+          <div className="absolute inset-0 z-0 opacity-30 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none">
+            <img
+              src={backgroundImage}
+              alt={displayTitle}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        )}
       </Link>
     );
   };
@@ -903,82 +909,49 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Mobile Category Buttons Layout */}
-          <div className="block md:hidden mb-8">
-            <div className="mobile-category-buttons-container">
-              {/* CATEGORIES Header */}
-              <div className="mobile-category-header-btn">
-                <span className="mobile-category-header-dot"></span>
-                CATEGORIES
-              </div>
-
-              {/* Category Buttons Grid */}
-              <div className="mobile-category-buttons-grid">
-                {Object.values(overriddenCategoriesBySlot).map((category) => (
-                  <Link
-                    key={category.slot}
-                    to={category.link}
-                    className="mobile-category-btn"
-                  >
-                    {category.title.toUpperCase()}
-                  </Link>
-                ))}
-                {customCategories.map((name) => (
-                  <Link
-                    key={name}
-                    to={`/category?category=${encodeURIComponent(name)}`}
-                    className="mobile-category-btn"
-                  >
-                    {name.toUpperCase()}
-                  </Link>
-                ))}
-              </div>
-
-              {/* ALL PRODUCTS Button */}
-              <Link
-                to="/category"
-                className="mobile-all-products-btn"
-              >
-                ALL PRODUCTS
-              </Link>
-            </div>
-          </div>
-
           {/* Desktop Category Cards - Hidden on Mobile */}
-          <div className="hidden md:block category-mosaic">
-            <div className="category-mosaic__column column-left">
-              <div className="column-left-grid">
-                {renderCategoryCard("grid1-c1")}
-                {renderCategoryCard("grid1-c2")}
-                {renderCategoryCard("grid1-c3")}
-              </div>
-            </div>
-            <div className="category-mosaic__column column-center">
-              <div className="column-center-grid">
-                {renderCategoryCard("grid2-c1")}
-                {renderCategoryCard("grid2-c2")}
-              </div>
-            </div>
-            <div className="category-mosaic__column column-right">
-              <div className="column-right-grid">
-                {renderCategoryCard("grid3-c1")}
+          <div className="hidden md:grid category-mosaic">
+            {/* Row 1 */}
+            {renderCategoryCard("grid1-c1")}
+            {renderCategoryCard("grid1-c2")}
+            {renderCategoryCard("grid1-c3")}
+
+            {/* Row 2 */}
+            {renderCategoryCard("grid2-c1")}
+            {renderCategoryCard("grid2-c2")}
+
+            {/* Row 3 - First Item (completes the 2nd row on desktop 3-col grid) */}
+            {renderCategoryCard("grid3-c1")}
+
+            {/* Hidden items - Shown on clicking "Show More" */}
+            {isCategoryExpanded && (
+              <>
                 {renderCategoryCard("grid3-c2")}
                 {renderCategoryCard("grid3-c3")}
                 {renderCategoryCard("grid3-c4")}
-              </div>
-            </div>
-          </div>
 
-          {/* Second Row - 4 New Categories */}
-          <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12">
-            <div className="category-mosaic__row category-mosaic__row--five">
-              <div className="column-five-grid">
+                {/* Row 4 */}
                 {renderCategoryCard("grid4-c1")}
                 {renderCategoryCard("grid4-c2")}
                 {renderCategoryCard("grid4-c3")}
                 {renderCategoryCard("grid4-c4")}
-              </div>
-            </div>
+              </>
+            )}
+          </div>
+
+          <div className="hidden md:flex justify-center mt-8">
+            <Button
+              variant="outline"
+              onClick={() => setIsCategoryExpanded(!isCategoryExpanded)}
+              className="min-w-[200px] gap-2 rounded-full border-slate-200 hover:bg-slate-50 hover:text-primary transition-all duration-300"
+            >
+              {isCategoryExpanded ? "Show Less" : "Show All Products"}
+              {isCategoryExpanded ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </Button>
           </div>
 
           {/* Custom categories created from admin - same card style, simple grid */}
@@ -1006,7 +979,7 @@ const Index = () => {
                     "--card-ring": palette.ring,
                     "--card-text": "#f8fafc",
                     ...((cardContent?.categoryImageURL || cardContent?.backgroundImage) && {
-                      backgroundImage: `url(${cardContent.categoryImageURL || cardContent.backgroundImage})`,
+                      backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.55) 100%), url(${cardContent.categoryImageURL || cardContent.backgroundImage})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }),
@@ -1039,17 +1012,17 @@ const Index = () => {
                         <div className="category-card__footer">
                           <span>EXPLORE</span>
                           <span className="category-card__icon" aria-hidden="true" role="presentation">
-                            <svg 
-                              viewBox="0 0 16 16" 
-                              fill="none" 
+                            <svg
+                              viewBox="0 0 16 16"
+                              fill="none"
                               xmlns="http://www.w3.org/2000/svg"
                               aria-hidden="true"
                             >
-                              <path 
-                                d="M6 12L10 8L6 4" 
-                                stroke="currentColor" 
-                                strokeWidth="1.5" 
-                                strokeLinecap="round" 
+                              <path
+                                d="M6 12L10 8L6 4"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
                                 strokeLinejoin="round"
                               />
                             </svg>
@@ -1306,7 +1279,7 @@ const Index = () => {
                 />
                 <div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-7 md:p-8 text-white portfolio-card-content">
                   <div className="flex flex-col gap-2 sm:gap-3 portfolio-card-top-section">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80 w-fit portfolio-card-badge">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80 w-fit max-w-[70%] portfolio-card-badge">
                       {item.category}
                     </span>
                   </div>
