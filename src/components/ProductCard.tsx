@@ -12,10 +12,11 @@ interface ProductCardProps {
   image: string;
   discount?: number;
   description?: string;
+  tax?: number;
   onCardClick?: () => void;
 }
 
-const ProductCard = ({ id, name, price, image, discount, description, onCardClick }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, discount, description, tax, onCardClick }: ProductCardProps) => {
   const navigate = useNavigate();
   const [isInCart, setIsInCart] = useState(() => isProductInCart(id));
   const [isAdding, setIsAdding] = useState(false);
@@ -49,7 +50,7 @@ const ProductCard = ({ id, name, price, image, discount, description, onCardClic
     }
 
     setIsAdding(true);
-    addItemToCart({ id, name, price, image });
+    addItemToCart({ id, name, price, image, tax });
     setIsInCart(true);
 
     // Reset adding state after animation

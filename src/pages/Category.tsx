@@ -33,7 +33,7 @@ const Category = () => {
   }));
 
   const [categoryUpdateTrigger, setCategoryUpdateTrigger] = useState(0);
-  
+
   // Listen for category updates (positions, overrides, etc.)
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent | Event) => {
@@ -53,7 +53,7 @@ const Category = () => {
     // Listen for storage events (cross-tab and same-tab via dispatched events) and custom events
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("categoryCardContentUpdated", handleCustomEvent);
-    
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("categoryCardContentUpdated", handleCustomEvent);
@@ -496,7 +496,7 @@ const Category = () => {
       {/* Category Filter (for mobile) */}
       <div className="lg:hidden space-y-3">
         <label className="text-sm font-semibold text-foreground">Category</label>
-        <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-2">
           {categories.map((category) => {
             const isActive = activeCategory === category;
             return (
@@ -514,11 +514,12 @@ const Category = () => {
                   setSearchParams(newSearchParams, { replace: true });
                 }}
                 className={cn(
-                  "w-full text-left px-3 py-2 rounded-md text-sm transition-colors",
+                  "w-full text-center px-2 py-2 rounded-md text-xs sm:text-sm transition-colors truncate",
                   isActive
                     ? "bg-primary text-primary-foreground dark:bg-primary dark:text-primary-foreground"
                     : "bg-muted hover:bg-muted/80 text-foreground"
                 )}
+                title={category}
               >
                 {category}
               </button>
@@ -599,9 +600,9 @@ const Category = () => {
                 <span className="h-2 w-2 rounded-full bg-orange-500" />
                 <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Categories</span>
               </div>
-              
+
               {/* Category Buttons Grid */}
-              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center w-full px-2">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 justify-center w-full px-2">
                 {categories.map((category) => {
                   const isActive = activeCategory === category;
 
@@ -634,13 +635,14 @@ const Category = () => {
                       onClick={handleCategoryClick}
                       aria-pressed={isActive}
                       className={cn(
-                        "px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg font-medium transition-all duration-200 text-xs sm:text-sm md:text-base uppercase whitespace-nowrap",
+                        "px-2 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg font-medium transition-all duration-200 text-[10px] sm:text-sm md:text-base uppercase truncate text-center",
                         isActive
                           ? category === "All Products"
                             ? "bg-[#111827] text-white font-bold shadow-md" // Dark blue for "All Products"
                             : "bg-primary text-primary-foreground shadow-md"
                           : "bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:shadow-sm font-medium"
                       )}
+                      title={category}
                     >
                       {category}
                     </button>

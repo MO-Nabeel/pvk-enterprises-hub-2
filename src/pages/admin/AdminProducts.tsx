@@ -1526,6 +1526,31 @@ const AdminProducts = () => {
                         </div>
 
                         <div className="space-y-1">
+                          <label className="text-xs font-medium text-muted-foreground">Tax / GST (%)</label>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={editingProduct.tax ?? ""}
+                            onChange={(event) =>
+                              setEditingProduct((prev) =>
+                                prev
+                                  ? {
+                                    ...prev,
+                                    tax:
+                                      event.target.value === ""
+                                        ? undefined
+                                        : Number.parseFloat(event.target.value || "0"),
+                                  }
+                                  : prev,
+                              )
+                            }
+                            className="h-9 text-sm"
+                            placeholder="e.g. 18"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
                           <label className="text-xs font-medium text-muted-foreground">
                             Description (shown on product page)
                           </label>

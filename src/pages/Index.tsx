@@ -646,6 +646,7 @@ const Index = () => {
       price: product.price,
       discount: product.discount,
       image: product.imageGallery?.[0] || printerImage,
+      tax: product.tax,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productsUpdateTrigger]);

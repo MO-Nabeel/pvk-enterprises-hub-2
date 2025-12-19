@@ -9,6 +9,7 @@ import { getAllProductsWithExtras } from "@/data/productStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { addItemToCart, isProductInCart, CART_COUNT_EVENT, type CartEventDetail } from "@/lib/cart";
+import { cartHasVisitingCard } from "@/lib/cartRules";
 import { useToast } from "@/hooks/use-toast";
 
 const ProductDetail = () => {
@@ -70,6 +71,7 @@ const ProductDetail = () => {
         name: product.name,
         price: product.price,
         image: product.imageGallery?.[0] || "",
+        tax: product.tax,
       },
       quantity
     );
@@ -82,16 +84,25 @@ const ProductDetail = () => {
 
   const handleBuyNow = () => {
     if (!product) return;
-    addItemToCart(
-      {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.imageGallery?.[0] || "",
-      },
-      quantity
-    );
-    navigate("/checkout");
+
+    const checkoutItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.imageGallery?.[0] || "",
+      tax: product.tax,
+      quantity: quantity
+    };
+
+    // Check if this specific item requires a design upload (e.g., Visiting Card)
+    // We utilize the robust helper that checks keywords and category
+    const needsUpload = cartHasVisitingCard([checkoutItem]);
+
+    if (needsUpload) {
+      navigate("/checkout/upload-design", { state: { checkoutItem } });
+    } else {
+      navigate("/checkout", { state: { checkoutItem } });
+    }
   };
 
   const handleQuantityChange = (value: string) => {
@@ -284,6 +295,7 @@ const ProductDetail = () => {
                     price={item.price}
                     image={item.imageGallery?.[0] || ""}
                     discount={item.discount}
+                    tax={item.tax}
                     onCardClick={() =>
                       navigate(
                         `/product/${encodeURIComponent(item.id)}`,

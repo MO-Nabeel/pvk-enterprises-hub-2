@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -50,13 +50,29 @@ const INITIAL_FORM: CustomerFormState = {
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const singleItem = location.state?.checkoutItem;
+
   const [form, setForm] = useState<CustomerFormState>(INITIAL_FORM);
   const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("Cash on Delivery");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const cartItems = useMemo(() => getCartItems(), []);
-  const cartTotals = useMemo(() => getCartTotals(), []);
+  const cartItems = useMemo(() => {
+    if (singleItem) return [singleItem];
+    return getCartItems();
+  }, [singleItem]);
+
+  const cartTotals = useMemo(() => {
+    if (singleItem) {
+      const subtotal = singleItem.price * singleItem.quantity;
+      const taxRate = singleItem.tax !== undefined ? singleItem.tax / 100 : 0.18;
+      const taxes = Number((subtotal * taxRate).toFixed(2));
+      const total = subtotal + taxes;
+      return { subtotal, taxes, total };
+    }
+    return getCartTotals();
+  }, [singleItem]);
   const requiresDesignUpload = useMemo(() => cartHasVisitingCard(cartItems), [cartItems]);
   const designUpload = useMemo(() => getStoredDesignUpload(), []);
   const orderId = useMemo(() => `PVK-${Date.now()}`, []);
@@ -267,7 +283,7 @@ const Checkout = () => {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="rounded-2xl px-3 sm:px-4 text-xs sm:text-sm"
+                      className="rounded-2xl px-3 sm:px-4 text-xs sm:text-sm hover:bg-[#111827] hover:text-white"
                       onClick={handleBackToCart}
                     >
                       ← Back to Cart
@@ -687,7 +703,7 @@ const Checkout = () => {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full sm:w-auto rounded-2xl bg-[#111827] text-white hover:bg-slate-900 transition"
+                      className="w-full sm:w-auto rounded-2xl bg-[#111827] text-white hover:bg-[#111827]/90 transition"
                       disabled={
                         isSubmitting ||
                         !isFormValid ||
@@ -697,10 +713,10 @@ const Checkout = () => {
                       {isSubmitting
                         ? "Submitting..."
                         : fulfillmentMethod === "Cash on Delivery"
-                        ? "Place order"
-                        : fulfillmentMethod === "Get a Quote"
-                        ? "Request Quote"
-                        : "Proceed to Payment Gateway"}
+                          ? "Place order"
+                          : fulfillmentMethod === "Get a Quote"
+                            ? "Request Quote"
+                            : "Proceed to Payment Gateway"}
                     </Button>
                   </div>
 
@@ -710,8 +726,8 @@ const Checkout = () => {
                       {fulfillmentMethod === "Get a Quote"
                         ? "(company name, contact number, company address, and project scope)"
                         : fulfillmentMethod === "Online Payment"
-                        ? "(name, mobile number, email address, pincode, complete delivery address, and all bank details)"
-                        : "(name, mobile number, email address, pincode, and complete delivery address)"}
+                          ? "(name, mobile number, email address, pincode, complete delivery address, and all bank details)"
+                          : "(name, mobile number, email address, pincode, and complete delivery address)"}
                       {" "}to continue.
                     </p>
                   )}
@@ -776,7 +792,7 @@ const Checkout = () => {
                         <span className="font-medium">₹{cartTotals.subtotal.toFixed(2)}</span>
                       </div>
                       <div className="flex items-center justify-between text-slate-600">
-                        <span>Taxes &amp; Fees (18%)</span>
+                        <span>Taxes &amp; GST</span>
                         <span className="font-medium">₹{cartTotals.taxes.toFixed(2)}</span>
                       </div>
                       <div className="flex items-center justify-between pt-3 border-t border-dashed border-slate-200 mt-1">

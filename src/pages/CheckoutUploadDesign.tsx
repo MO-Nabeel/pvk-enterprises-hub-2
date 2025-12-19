@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,13 @@ const ACCEPT_ATTR = ".pdf,.png,.jpg,.jpeg,.ai,.cdr";
 
 const CheckoutUploadDesign = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => getCartItems());
+  const location = useLocation();
+  const singleItem = location.state?.checkoutItem;
+
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (singleItem) return [singleItem];
+    return getCartItems();
+  });
   const [design, setDesign] = useState<DesignUpload | null>(() => getStoredDesignUpload());
   const [status, setStatus] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -33,11 +39,14 @@ const CheckoutUploadDesign = () => {
 
   useEffect(() => {
     if (!requiresDesignUpload) {
-      navigate("/checkout", { replace: true });
+      navigate("/checkout", { replace: true, state: { checkoutItem: singleItem } });
     }
-  }, [requiresDesignUpload, navigate]);
+  }, [requiresDesignUpload, navigate, singleItem]);
 
   useEffect(() => {
+    // If checking out a specific single item, don't sync with global cart
+    if (singleItem) return;
+
     const sync = () => setCartItems(getCartItems());
     const listener = (event: Event) => {
       const detail = (event as CustomEvent<CartEventDetail>).detail;
@@ -50,7 +59,7 @@ const CheckoutUploadDesign = () => {
 
     window.addEventListener(CART_COUNT_EVENT, listener as EventListener);
     return () => window.removeEventListener(CART_COUNT_EVENT, listener as EventListener);
-  }, []);
+  }, [singleItem]);
 
   const handleFile = async (file: File | null | undefined) => {
     if (!file) return;
@@ -78,7 +87,7 @@ const CheckoutUploadDesign = () => {
       setStatus("Upload your visiting card design to continue.");
       return;
     }
-    navigate("/checkout");
+    navigate("/checkout", { state: { checkoutItem: singleItem } });
   };
 
   const handleRemove = () => {
@@ -116,7 +125,7 @@ const CheckoutUploadDesign = () => {
                       We need your visiting card artwork before proceeding to delivery details.
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => navigate("/cart")} className="rounded-2xl">
+                  <Button variant="outline" size="sm" onClick={() => navigate("/cart")} className="rounded-2xl hover:bg-[#111827] hover:text-white">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Cart
                   </Button>
@@ -177,14 +186,14 @@ const CheckoutUploadDesign = () => {
                 <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
                   <Button
                     variant="outline"
-                    className="w-full sm:w-auto rounded-2xl"
+                    className="w-full sm:hidden rounded-2xl hover:bg-[#111827] hover:text-white"
                     onClick={() => navigate("/cart")}
                   >
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Cart
                   </Button>
                   <Button
-                    className="w-full sm:w-auto rounded-2xl bg-[#111827] text-white hover:bg-slate-900"
+                    className="w-full sm:w-auto rounded-2xl bg-[#111827] text-white hover:bg-[#111827]/90"
                     onClick={handleContinue}
                     disabled={!design || isSaving}
                   >

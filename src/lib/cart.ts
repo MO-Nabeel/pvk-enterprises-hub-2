@@ -1,7 +1,7 @@
 const CART_COUNT_KEY = "pvk-cart-count";
 const CART_ITEMS_KEY = "pvk-cart-items";
 export const CART_COUNT_EVENT = "pvk-cart-count-change";
-const TAX_RATE = 0.18;
+const DEFAULT_TAX_RATE = 0.18;
 
 export type CartItem = {
   id: string;
@@ -9,6 +9,7 @@ export type CartItem = {
   price: number;
   image: string;
   quantity: number;
+  tax?: number;
 };
 
 export type CartEventDetail = {
@@ -70,8 +71,21 @@ export const getCartCount = (): number =>
 
 export const getCartTotals = () => {
   const items = readItemsFromStorage();
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxes = Number((subtotal * TAX_RATE).toFixed(2));
+
+  let subtotal = 0;
+  let taxes = 0;
+
+  items.forEach((item) => {
+    const itemTotal = item.price * item.quantity;
+    subtotal += itemTotal;
+
+    // Calculate tax for this item
+    // If item.tax is provided (e.g. 12 for 12%), use it. Otherwise default to 18%.
+    const taxRate = item.tax !== undefined ? item.tax / 100 : DEFAULT_TAX_RATE;
+    taxes += itemTotal * taxRate;
+  });
+
+  taxes = Number(taxes.toFixed(2));
   const total = subtotal + taxes;
 
   return { subtotal, taxes, total };
@@ -86,6 +100,11 @@ export const addItemToCart = (product: CartProductInput, quantity = 1) => {
 
   if (existingIndex > -1) {
     items[existingIndex].quantity += normalizedQuantity;
+    // Update tax/details in case they changed
+    if (product.tax !== undefined) {
+      items[existingIndex].tax = product.tax;
+    }
+    items[existingIndex].price = product.price; // Update price too if it changed
   } else {
     items.push({
       ...product,
@@ -105,13 +124,13 @@ export const updateCartItemQuantity = (id: string, quantity: number) => {
     sanitizedQuantity === 0
       ? items.filter((item) => item.id !== id)
       : items.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                quantity: sanitizedQuantity
-              }
-            : item
-        );
+        item.id === id
+          ? {
+            ...item,
+            quantity: sanitizedQuantity
+          }
+          : item
+      );
 
   writeItemsToStorage(nextItems);
   return nextItems;

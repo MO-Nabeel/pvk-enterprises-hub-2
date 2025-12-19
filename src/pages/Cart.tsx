@@ -188,15 +188,32 @@ const Cart = () => {
                                   Unit Price: {currencyFormatter.format(item.price)}
                                 </p>
                               </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-xs sm:text-sm text-muted-foreground hover:text-destructive hover:bg-[#111827] transition-colors duration-200 ease-in-out self-start sm:self-auto shrink-0"
-                                onClick={() => handleRemoveClick(item)}
-                              >
-                                <Trash2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                <span>Remove</span>
-                              </Button>
+                              <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-xs sm:text-sm hover:bg-[#111827] hover:text-white transition-colors duration-200 ease-in-out"
+                                  onClick={() => {
+                                    const needsUpload = cartHasVisitingCard([item]);
+                                    if (needsUpload) {
+                                      navigate("/checkout/upload-design", { state: { checkoutItem: item } });
+                                    } else {
+                                      navigate("/checkout", { state: { checkoutItem: item } });
+                                    }
+                                  }}
+                                >
+                                  Buy Now
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-xs sm:text-sm text-muted-foreground hover:text-destructive hover:bg-[#111827] transition-colors duration-200 ease-in-out"
+                                  onClick={() => handleRemoveClick(item)}
+                                >
+                                  <Trash2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                  <span>Remove</span>
+                                </Button>
+                              </div>
                             </div>
                             <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-3 sm:gap-4">
                               <label
@@ -300,10 +317,10 @@ const Cart = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleCancelRemove}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={handleCancelRemove} className="hover:bg-[#111827] hover:text-white">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmRemove}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-[#111827] text-white hover:bg-[#111827]/90"
             >
               Yes, Remove It
             </AlertDialogAction>
