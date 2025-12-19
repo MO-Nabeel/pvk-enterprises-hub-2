@@ -96,7 +96,7 @@ const ProductCard = ({ id, name, price, image, discount, description, tax, onCar
       {/* Mobile: image left, details right (high-density list). Desktop: stacked layout */}
       <div className="product-card-inner flex flex-row items-stretch gap-2.5 sm:gap-3 md:flex-col h-full">
         {/* Image container - optimized with flex-shrink-0 to prevent shrinking */}
-        <div className="product-image-container relative flex-shrink-0 w-[40%] sm:w-[35%] md:w-full md:h-auto md:aspect-square overflow-hidden bg-muted/30 rounded-lg md:rounded-none h-full md:h-auto">
+        <div className="product-image-container relative flex-shrink-0 w-[40%] sm:w-[35%] md:w-full md:h-auto md:aspect-square overflow-hidden bg-muted/30 rounded-lg md:rounded-none h-full">
           {discount && (
             <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-accent text-accent-foreground text-[9px] xs:text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full z-10 shadow-lg whitespace-nowrap">
               {discount}% OFF
