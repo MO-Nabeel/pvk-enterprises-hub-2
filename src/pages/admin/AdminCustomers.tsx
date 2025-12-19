@@ -94,7 +94,7 @@ const AdminCustomers = () => {
 
   return (
     <AdminLayout title="Customer Directory">
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="border-border bg-card text-card-foreground shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total customers (mock)</CardTitle>
@@ -162,10 +162,10 @@ const AdminCustomers = () => {
                     <SelectValue placeholder="All segments" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All segments</SelectItem>
-                    <SelectItem value="retail">Retail</SelectItem>
-                    <SelectItem value="corporate">Corporate</SelectItem>
-                    <SelectItem value="wholesale">Wholesale</SelectItem>
+                    <SelectItem value="all" className="focus:bg-[#111827] focus:text-white">All segments</SelectItem>
+                    <SelectItem value="retail" className="focus:bg-[#111827] focus:text-white">Retail</SelectItem>
+                    <SelectItem value="corporate" className="focus:bg-[#111827] focus:text-white">Corporate</SelectItem>
+                    <SelectItem value="wholesale" className="focus:bg-[#111827] focus:text-white">Wholesale</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

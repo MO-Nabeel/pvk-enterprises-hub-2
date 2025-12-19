@@ -1153,52 +1153,52 @@ const Index = () => {
       <Dialog open={isInquiryOpen} onOpenChange={handleDialogChange}>
         <DialogContent className="inquiry-dialog-content text-card-foreground">
           <div className="inquiry-dialog-shell">
-            <div className="inquiry-dialog-form flex-1 md:basis-[50%] order-2 md:order-1 flex flex-col gap-3 max-w-full">
-              <DialogHeader className="text-left space-y-1.5">
-                <DialogTitle className="text-2xl md:text-[28px] font-bold tracking-tight text-slate-900 leading-tight">
+            <div className="inquiry-dialog-form flex-1 md:basis-[50%] order-2 md:order-1 flex flex-col gap-2 md:gap-3 max-w-full">
+              <DialogHeader className="text-left space-y-1">
+                <DialogTitle className="text-xl md:text-2xl font-bold tracking-tight text-slate-900 leading-tight">
                   {selectedService ? `Inquire About ${selectedService.title}` : "Call Me Back"}
                 </DialogTitle>
-                <DialogDescription className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                <DialogDescription className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                   Leave your details and we&apos;ll call you with the next steps.
                 </DialogDescription>
               </DialogHeader>
-              <form className="flex flex-col gap-2.5 pb-2" onSubmit={handleInquirySubmit}>
+              <form className="flex flex-col gap-2 pb-1" onSubmit={handleInquirySubmit}>
                 <div className="flex flex-col gap-0.5">
-                  <Label htmlFor="fullName" className="text-sm font-semibold text-slate-700">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Full Name</Label>
                   <Input
                     id="fullName"
                     name="fullName"
                     placeholder="Enter your full name"
                     required
-                    className="h-12 w-full rounded-2xl border border-slate-200 bg-white text-slate-900 focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
+                    className="h-10 w-full rounded-xl border border-slate-200 bg-white text-slate-900 text-sm focus-visible:border-slate-900 focus-visible:ring-1 focus-visible:ring-slate-900/20"
                   />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <Label htmlFor="phone" className="text-sm font-semibold text-slate-700">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Phone Number</Label>
                   <Input
                     id="phone"
                     name="phone"
                     type="tel"
                     placeholder="+91 98765 43210"
                     required
-                    className="h-12 w-full rounded-2xl border border-slate-200 bg-white text-slate-900 focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
+                    className="h-10 w-full rounded-xl border border-slate-200 bg-white text-slate-900 text-sm focus-visible:border-slate-900 focus-visible:ring-1 focus-visible:ring-slate-900/20"
                   />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <Label htmlFor="email" className="text-sm font-semibold text-slate-700">Email Address</Label>
+                  <Label htmlFor="email" className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Email Address</Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
                     placeholder="you@example.com"
                     required
-                    className="h-11 w-full rounded-2xl border border-slate-200 bg-white text-slate-900 focus-visible:border-slate-900 focus-visible:ring-2 focus-visible:ring-slate-900/20"
+                    className="h-10 w-full rounded-xl border border-slate-200 bg-white text-slate-900 text-sm focus-visible:border-slate-900 focus-visible:ring-1 focus-visible:ring-slate-900/20"
                   />
                 </div>
-                <div className="pt-0.5">
+                <div className="pt-1">
                   <Button
                     type="submit"
-                    className="w-full h-11 rounded-2xl border border-slate-900 bg-white text-slate-900 font-semibold tracking-wide hover:bg-slate-50"
+                    className="w-full h-10 rounded-xl border border-slate-900 bg-slate-900 text-white font-semibold tracking-wide hover:bg-slate-800 shadow-lg shadow-slate-900/10 transition-all hover:scale-[1.01]"
                   >
                     Submit Inquiry
                   </Button>

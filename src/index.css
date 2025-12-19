@@ -3294,3 +3294,50 @@ section {
   z-index: 2;
   max-width: 100%;
 }
+
+/* Inquiry/Special Service Popup Styles */
+.inquiry-dialog-content {
+  max-width: 1050px !important;
+  width: 95vw !important;
+  padding: 0 !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.inquiry-dialog-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #ffffff;
+  /* Fixed: Solid white background */
+}
+
+/* Desktop layout: Side-by-side, fixed height */
+@media (min-width: 768px) {
+  .inquiry-dialog-shell {
+    flex-direction: row;
+    height: 480px;
+    /* Reduced height */
+  }
+
+  .inquiry-dialog-form {
+    padding: 2rem 2.5rem !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+/* Mobile layout: Stacked, auto height */
+@media (max-width: 767px) {
+  .inquiry-dialog-shell {
+    height: auto;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .inquiry-dialog-form {
+    padding: 1.5rem !important;
+  }
+}

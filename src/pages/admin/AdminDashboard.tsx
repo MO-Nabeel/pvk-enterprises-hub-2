@@ -34,7 +34,7 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout title="Admin Overview">
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-border bg-card text-card-foreground shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -106,7 +106,7 @@ const AdminDashboard = () => {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
-        <Card className="order-2 border-border bg-card text-card-foreground shadow-sm lg:order-1 lg:col-span-2">
+        <Card className="order-2 border-border bg-card text-card-foreground shadow-sm lg:order-1 lg:col-span-2 min-w-0">
           <CardHeader>
             <div className="flex items-center justify-between gap-2">
               <div>
@@ -117,23 +117,23 @@ const AdminDashboard = () => {
                   High-level view of recent orders and customer activity.
                 </p>
               </div>
-              <Badge className="bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 text-[11px] uppercase tracking-wide text-white shadow-sm">
+              <Badge className="bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 text-[11px] uppercase tracking-wide text-white shadow-sm shrink-0">
                 Realtime-ready
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <Tabs defaultValue="orders" className="space-y-4">
-              <TabsList className="bg-muted">
+              <TabsList className="bg-muted p-1 rounded-full w-full justify-start overflow-x-auto sm:w-fit">
                 <TabsTrigger
                   value="orders"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="rounded-full px-4 data-[state=active]:bg-gradient-to-r data-[state=active]:from-sky-500 data-[state=active]:via-cyan-400 data-[state=active]:to-emerald-400 data-[state=active]:text-white data-[state=active]:shadow-md transition-all duration-300 flex-1 sm:flex-none"
                 >
                   Orders
                 </TabsTrigger>
                 <TabsTrigger
                   value="customers"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="rounded-full px-4 data-[state=active]:bg-gradient-to-r data-[state=active]:from-sky-500 data-[state=active]:via-cyan-400 data-[state=active]:to-emerald-400 data-[state=active]:text-white data-[state=active]:shadow-md transition-all duration-300 flex-1 sm:flex-none"
                 >
                   Customers
                 </TabsTrigger>
@@ -227,14 +227,14 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="order-1 border-border bg-card text-card-foreground shadow-sm lg:order-2">
+        <Card className="order-1 border-border bg-card text-card-foreground shadow-sm lg:order-2 min-w-0">
           <CardHeader>
             <CardTitle className="text-base font-semibold text-foreground">
               Sales Snapshot
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-md border border-dashed border-border bg-muted px-4 py-6 text-center text-sm text-muted-foreground">
+            <div className="rounded-md border border-dashed border-border bg-muted px-3 py-4 sm:px-4 sm:py-6 text-center text-sm text-muted-foreground break-words whitespace-normal">
               Plug in your preferred charting library or use the built-in chart
               component to visualise weekly and monthly sales trends.
             </div>
@@ -257,7 +257,7 @@ const AdminDashboard = () => {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
+        <Card className="border-border bg-card text-card-foreground shadow-sm min-w-0">
           <CardHeader>
             <CardTitle className="text-base font-semibold text-foreground">
               Lead Management
@@ -277,7 +277,7 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
+        <Card className="border-border bg-card text-card-foreground shadow-sm min-w-0">
           <CardHeader>
             <CardTitle className="text-base font-semibold text-foreground">
               Admin Notes

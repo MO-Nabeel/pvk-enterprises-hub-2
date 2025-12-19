@@ -196,17 +196,23 @@ const BrandSelector = ({ value, onChange, category, allCategories }: BrandSelect
             </Command>
           </PopoverContent>
         </Popover>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="h-9 w-9"
-          onClick={() => setShowNewForm((prev) => !prev)}
-          disabled={!hasCategory}
-        >
-          <Plus className="h-3.5 w-3.5" />
-          <span className="sr-only">Add new brand</span>
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              size="icon"
+              className="h-9 w-9 bg-[#111827] hover:bg-black text-white rounded-lg shadow-sm border-0 transition-colors duration-200"
+              onClick={() => setShowNewForm((prev) => !prev)}
+              disabled={!hasCategory}
+            >
+              <Plus className="h-5 w-5" />
+              <span className="sr-only">Add new brand</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Add new brand</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
       {showNewForm && (
         <form
@@ -301,7 +307,7 @@ const clearProductDraft = () => {
 const AdminProducts = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get("tab") || "catalog";
-  
+
   const handleTabChange = (value: string) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
@@ -359,7 +365,7 @@ const AdminProducts = () => {
       galleryImages,
     });
   };
-  
+
   // Delete confirmation states
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
   const [deleteCategoryName, setDeleteCategoryName] = useState<string | null>(null);
@@ -386,14 +392,14 @@ const AdminProducts = () => {
       setEditingCardContent((prev) =>
         prev
           ? {
-              ...prev,
-              content: {
-                ...(prev.content ?? { categoryName: prev.categoryName }),
-                categoryImageURL: dataUrl,
-                // Keep legacy backgroundImage in sync for backward compatibility
-                backgroundImage: dataUrl,
-              },
-            }
+            ...prev,
+            content: {
+              ...(prev.content ?? { categoryName: prev.categoryName }),
+              categoryImageURL: dataUrl,
+              // Keep legacy backgroundImage in sync for backward compatibility
+              backgroundImage: dataUrl,
+            },
+          }
           : prev
       );
     } catch (error) {
@@ -444,7 +450,7 @@ const AdminProducts = () => {
     const handleContentUpdate = () => {
       setCategoryContentUpdateTrigger(prev => prev + 1);
     };
-    
+
     if (typeof window !== "undefined") {
       window.addEventListener("categoryCardContentUpdated", handleContentUpdate);
       return () => {
@@ -559,7 +565,7 @@ const AdminProducts = () => {
       productCount: number;
       position?: number;
     };
-    
+
     // Get default categories with positions
     const defaultCatsWithPosition: CategoryWithPosition[] = mockCategories.map((cat) => {
       const override = categoryOverrides[cat.name];
@@ -568,7 +574,7 @@ const AdminProducts = () => {
         position: override?.position,
       };
     });
-    
+
     // Get custom categories with positions
     const customCatsWithPosition: CategoryWithPosition[] = customCategories.map((cat) => {
       const productCount = categoryProductCountMap.get(cat.name) ?? 0;
@@ -579,13 +585,13 @@ const AdminProducts = () => {
         position: cat.position,
       };
     });
-    
+
     // Combine all categories
     const allCatsWithPosition: CategoryWithPosition[] = [
       ...defaultCatsWithPosition,
       ...customCatsWithPosition,
     ];
-    
+
     // Sort by position (undefined positions go to end), then by name
     return allCatsWithPosition.sort((a, b) => {
       const posA = a.position ?? Infinity;
@@ -777,7 +783,7 @@ const AdminProducts = () => {
 
     const positionStr = (formData.get("position") as string)?.trim();
     const position = positionStr ? parseInt(positionStr, 10) : undefined;
-    
+
     // Validate position is a positive number
     if (position !== undefined && (isNaN(position) || position < 1)) {
       alert("Position must be a positive number (1 or greater)");
@@ -802,7 +808,7 @@ const AdminProducts = () => {
         allPositions.add(override.position);
       }
     });
-    
+
     // If position is not provided, automatically assign the next available position
     let finalPosition = position;
     if (finalPosition === undefined) {
@@ -810,7 +816,7 @@ const AdminProducts = () => {
       const maxPosition = allPositions.size > 0 ? Math.max(...Array.from(allPositions)) : 0;
       finalPosition = maxPosition + 1;
     }
-    
+
     if (allPositions.has(finalPosition)) {
       alert(`Position ${finalPosition} is already assigned to another category. Please choose a different position.`);
       return;
@@ -870,17 +876,17 @@ const AdminProducts = () => {
 
   const handlePositionChange = (currentPosition: number | undefined) => {
     if (!editingCardContent) return;
-    
+
     const inputValue = positionInputValue.trim();
-    
+
     // If empty, clear position
     if (inputValue === "") {
       const isCustomCategory = customCategories.some(cat => cat.name === editingCardContent.categoryName);
       if (isCustomCategory) {
         setCustomCategories((prev) => {
-          const updated = prev.map((cat) => 
-            cat.name === editingCardContent!.categoryName 
-              ? { ...cat, position: undefined } 
+          const updated = prev.map((cat) =>
+            cat.name === editingCardContent!.categoryName
+              ? { ...cat, position: undefined }
               : cat
           );
           saveCustomCategories(updated);
@@ -899,52 +905,52 @@ const AdminProducts = () => {
       setPositionInputValue("");
       return;
     }
-    
+
     // Parse and validate position
     const positionNum = parseInt(inputValue, 10);
     if (isNaN(positionNum) || positionNum < 1) {
       alert("Please enter a valid position number (1 or greater)");
       return;
     }
-    
+
     // If the new position is the same as current, do nothing
     if (currentPosition === positionNum) {
       setIsEditingPosition(false);
       setPositionInputValue("");
       return;
     }
-    
+
     // Get current category info
     const isCustomCategory = customCategories.some(cat => cat.name === editingCardContent.categoryName);
-    
+
     // Find which category currently has the target position
     let categoryWithTargetPosition: { name: string; isCustom: boolean } | null = null;
-    
+
     // Check custom categories
-    const customCatWithPosition = customCategories.find(cat => 
+    const customCatWithPosition = customCategories.find(cat =>
       cat.name !== editingCardContent.categoryName && cat.position === positionNum
     );
     if (customCatWithPosition) {
       categoryWithTargetPosition = { name: customCatWithPosition.name, isCustom: true };
     } else {
       // Check category overrides
-      const overrideWithPosition = Object.entries(categoryOverrides).find(([name, override]) => 
+      const overrideWithPosition = Object.entries(categoryOverrides).find(([name, override]) =>
         name !== editingCardContent.categoryName && override.position === positionNum
       );
       if (overrideWithPosition) {
         categoryWithTargetPosition = { name: overrideWithPosition[0], isCustom: false };
       }
     }
-    
+
     // If position is taken, swap positions
     if (categoryWithTargetPosition) {
       // Swap: give the other category the current position (or undefined if no current position)
       if (categoryWithTargetPosition.isCustom) {
         // Update the other custom category with current position
         setCustomCategories((prev) => {
-          const updated = prev.map((cat) => 
-            cat.name === categoryWithTargetPosition!.name 
-              ? { ...cat, position: currentPosition } 
+          const updated = prev.map((cat) =>
+            cat.name === categoryWithTargetPosition!.name
+              ? { ...cat, position: currentPosition }
               : cat
           );
           saveCustomCategories(updated);
@@ -953,21 +959,21 @@ const AdminProducts = () => {
       } else {
         // Update the other category's override with current position
         const otherOverride = categoryOverrides[categoryWithTargetPosition.name] || {};
-        updateCategoryOverride(categoryWithTargetPosition.name, { 
-          ...otherOverride, 
-          position: currentPosition 
+        updateCategoryOverride(categoryWithTargetPosition.name, {
+          ...otherOverride,
+          position: currentPosition
         });
         setCategoryOverrides(getCategoryOverrideMap());
       }
     }
-    
+
     // Update the current category with the new position
     if (isCustomCategory) {
       // Update custom category position
       setCustomCategories((prev) => {
-        const updated = prev.map((cat) => 
-          cat.name === editingCardContent!.categoryName 
-            ? { ...cat, position: positionNum } 
+        const updated = prev.map((cat) =>
+          cat.name === editingCardContent!.categoryName
+            ? { ...cat, position: positionNum }
             : cat
         );
         saveCustomCategories(updated);
@@ -983,7 +989,7 @@ const AdminProducts = () => {
       window.dispatchEvent(new CustomEvent("categoryCardContentUpdated"));
       window.dispatchEvent(new CustomEvent("customCategoriesUpdated"));
     }
-    
+
     // Reset editing state
     setIsEditingPosition(false);
     setPositionInputValue("");
@@ -1017,13 +1023,13 @@ const AdminProducts = () => {
   const handleCategoryRename = (originalName: string) => {
     if (!editingCategoryValue.trim()) return;
     const newName = editingCategoryValue.trim();
-    
+
     // Check if new name already exists
     if (customCategories.some(cat => cat.name === newName && cat.name !== originalName)) {
       alert("A category with this name already exists");
       return;
     }
-    
+
     setCustomCategories((prev) => {
       const updated = prev.map((item) => (item.name === originalName ? { ...item, name: newName } : item));
       saveCustomCategories(updated);
@@ -1045,7 +1051,7 @@ const AdminProducts = () => {
   return (
     <AdminLayout title="Products & Inventory">
       {/* KPI row */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-border bg-card text-card-foreground shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Products</CardTitle>
@@ -1123,13 +1129,13 @@ const AdminProducts = () => {
                 clearProductDraft();
               }
             }}>
-              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogContent className="w-full max-w-lg sm:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
                 <DialogHeader>
                   <DialogTitle>
                     {editingProduct && products.some((p) => p.id === editingProduct.id) ? "Edit Product" : "New Product"}
                   </DialogTitle>
                   <DialogDescription>
-                    {editingProduct && products.some((p) => p.id === editingProduct.id) 
+                    {editingProduct && products.some((p) => p.id === editingProduct.id)
                       ? "Update product details, pricing, and inventory."
                       : "Add a new product to your catalog. Fill in the details below."}
                   </DialogDescription>
@@ -1139,397 +1145,403 @@ const AdminProducts = () => {
                     className="grid gap-3 md:gap-4 md:grid-cols-12"
                     onSubmit={handleProductFormSubmit}
                   >
-                  <div className="space-y-1 md:col-span-6">
-                    <label className="text-xs font-medium text-muted-foreground">Name</label>
-                    <Input
-                      value={editingProduct.name}
-                      onChange={(event) =>
-                        setEditingProduct((prev) =>
-                          prev ? { ...prev, name: normalizeProductName(event.target.value) } : prev,
-                        )
-                      }
-                      required
-                      className="h-9 text-sm"
-                      placeholder="Product or service name"
-                    />
-                  </div>
-                  <div className="space-y-1 md:col-span-3">
-                    <label className="text-xs font-medium text-muted-foreground">Category</label>
-                    <select
-                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs sm:text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                      value={editingProduct.category || allCategories[0] || "General"}
-                      onChange={(e) =>
-                        setEditingProduct((prev) =>
-                          prev ? { ...prev, category: e.target.value, brand: "" } : prev,
-                        )
-                      }
-                    >
-                      {allCategories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="space-y-1 md:col-span-3">
-                    <label className="text-xs font-medium text-muted-foreground">Price (₹)</label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={editingProduct.price}
-                      onChange={(event) =>
-                        setEditingProduct((prev) =>
-                          prev ? { ...prev, price: Number.parseFloat(event.target.value || "0") } : prev,
-                        )
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1 md:col-span-3">
-                    <label className="text-xs font-medium text-muted-foreground">Purchase price (₹)</label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={editingProduct.purchasePrice ?? ""}
-                      onChange={(event) =>
-                        setEditingProduct((prev) =>
-                          prev
-                            ? {
+                    <div className="space-y-1 md:col-span-6">
+                      <label className="text-xs font-medium text-muted-foreground">Name</label>
+                      <Input
+                        value={editingProduct.name}
+                        onChange={(event) =>
+                          setEditingProduct((prev) =>
+                            prev ? { ...prev, name: normalizeProductName(event.target.value) } : prev,
+                          )
+                        }
+                        required
+                        className="h-9 text-sm"
+                        placeholder="Product or service name"
+                      />
+                    </div>
+                    <div className="space-y-1 md:col-span-3">
+                      <label className="text-xs font-medium text-muted-foreground">Category</label>
+                      <select
+                        className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs sm:text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        value={editingProduct.category || allCategories[0] || "General"}
+                        onChange={(e) =>
+                          setEditingProduct((prev) =>
+                            prev ? { ...prev, category: e.target.value, brand: "" } : prev,
+                          )
+                        }
+                      >
+                        {allCategories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-1 md:col-span-3">
+                      <label className="text-xs font-medium text-muted-foreground">Price (₹)</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={editingProduct.price}
+                        onChange={(event) =>
+                          setEditingProduct((prev) =>
+                            prev ? { ...prev, price: Number.parseFloat(event.target.value || "0") } : prev,
+                          )
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1 md:col-span-3">
+                      <label className="text-xs font-medium text-muted-foreground">Purchase price (₹)</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={editingProduct.purchasePrice ?? ""}
+                        onChange={(event) =>
+                          setEditingProduct((prev) =>
+                            prev
+                              ? {
                                 ...prev,
                                 purchasePrice:
                                   event.target.value === "" ? undefined : Number.parseFloat(event.target.value || "0"),
                               }
-                            : prev,
-                        )
-                      }
-                      className="h-9 text-sm"
-                      placeholder="Optional"
-                    />
-                  </div>
-                  {isEditingExistingProduct && (
-                    <div className="space-y-1 md:col-span-3">
-                      <label className="text-xs font-medium text-muted-foreground">Status</label>
-                      <Select
-                        value={editingProduct.status}
-                        onValueChange={(value: AdminProductStatus) =>
-                          setEditingProduct((prev) => (prev ? { ...prev, status: value } : prev))
-                        }
-                      >
-                        <SelectTrigger className="h-9 text-xs sm:text-sm">
-                          <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="draft">Draft</SelectItem>
-                          <SelectItem value="hidden">Hidden</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  <div className="space-y-1 md:col-span-6">
-                    <label className="text-xs font-medium text-muted-foreground">Brand</label>
-                    <div className="flex items-center gap-2">
-                      <select
-                        className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs sm:text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        value={editingProduct.brand ?? ""}
-                        onChange={(e) =>
-                          setEditingProduct((prev) =>
-                            prev ? { ...prev, brand: e.target.value } : prev,
+                              : prev,
                           )
                         }
-                      >
-                        <option value="">Select brand</option>
-                        {filteredBrands.map((brand) => (
-                          <option key={brand.name} value={brand.name}>
-                            {brand.name}
-                          </option>
-                        ))}
-                      </select>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => setShowBrandForm((prev) => !prev)}
-                        disabled={!editingProduct.category}
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        <span className="sr-only">Add new brand</span>
-                      </Button>
+                        className="h-9 text-sm"
+                        placeholder="Optional"
+                      />
                     </div>
-                    {showBrandForm && (
-                      <div className="space-y-2 rounded-md border border-border/70 bg-muted/20 px-2.5 py-2.5 sm:px-3 sm:py-3">
-                        <div className="space-y-1">
-                          <Input
-                            value={newBrandName}
-                            onChange={(event) => setNewBrandName(event.target.value)}
-                            onKeyDown={(event) => {
-                              if (event.key === "Enter") {
-                                event.preventDefault();
-                                handleInlineBrandSave();
-                              }
-                            }}
-                            placeholder="New brand name"
-                            className="h-8 text-xs sm:text-sm"
-                          />
-                        </div>
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 text-xs"
-                            onClick={() => {
-                              setNewBrandName("");
-                              setShowBrandForm(false);
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            className="h-8 text-xs"
-                            onClick={handleInlineBrandSave}
-                          >
-                            Save brand
-                          </Button>
-                        </div>
+                    {isEditingExistingProduct && (
+                      <div className="space-y-1 md:col-span-3">
+                        <label className="text-xs font-medium text-muted-foreground">Status</label>
+                        <Select
+                          value={editingProduct.status}
+                          onValueChange={(value: AdminProductStatus) =>
+                            setEditingProduct((prev) => (prev ? { ...prev, status: value } : prev))
+                          }
+                        >
+                          <SelectTrigger className="h-9 text-xs sm:text-sm">
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="hidden">Hidden</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     )}
-                  </div>
-                  <div className="space-y-1 md:col-span-3">
-                    <label className="text-xs font-medium text-muted-foreground">Old price (₹)</label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={editingProduct.oldPrice ?? ""}
-                      onChange={(event) =>
-                        setEditingProduct((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                oldPrice:
-                                  event.target.value === "" ? undefined : Number.parseFloat(event.target.value || "0"),
-                              }
-                            : prev,
-                        )
-                      }
-                      className="h-9 text-sm"
-                      placeholder="Optional"
-                    />
-                  </div>
-                  <div className="space-y-1 md:col-span-3">
-                    <label className="text-xs font-medium text-muted-foreground">Tax (%)</label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={editingProduct.tax ?? ""}
-                      onChange={(event) =>
-                        setEditingProduct((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                tax: event.target.value === "" ? undefined : Number.parseFloat(event.target.value || "0"),
-                              }
-                            : prev,
-                        )
-                      }
-                      className="h-9 text-sm"
-                      placeholder="Optional"
-                    />
-                  </div>
-                  <div className="space-y-1 md:col-span-3">
-                    <label className="text-xs font-medium text-muted-foreground">Stock</label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={editingProduct.stock}
-                      onChange={(event) =>
-                        setEditingProduct((prev) =>
-                          prev ? { ...prev, stock: Number.parseInt(event.target.value || "0", 10) } : prev,
-                        )
-                      }
-                      className="h-9 text-sm"
-                    />
-                  </div>
-                  {/* Image & pricing meta layout (desktop: 2-column grid, mobile: stacked) */}
-                  <div className="md:col-span-12 grid gap-3 md:gap-4 md:grid-cols-2 items-start">
-                    {/* Left column: thumbnail + gallery (stacked vertically) */}
-                    <div className="space-y-3">
-                      <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
-                      <label className="text-xs font-medium text-muted-foreground">
-                        Primary Thumbnail Image
-                        <span className="ml-1 text-[11px] font-normal text-muted-foreground">
-                          (Used for Product Grid)
-                        </span>
-                      </label>
-                      <div
-                        className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
-                        onClick={() => thumbnailInputRef.current?.click()}
-                        onDragOver={(event) => {
-                          event.preventDefault();
-                        }}
-                        onDrop={(event) => {
-                          event.preventDefault();
-                          handleThumbnailSelect(event.dataTransfer.files);
-                        }}
-                      >
-                        <div className="flex flex-col gap-0.5 text-left">
-                          <span className="font-medium text-foreground text-xs sm:text-[13px]">
-                            Click to select thumbnail
-                          </span>
-                          <span className="text-[11px] text-muted-foreground leading-snug">
-                            Single main image used in the product grid and as the first slide on the product page.
-                          </span>
-                        </div>
-                      </div>
-                      <input
-                        ref={thumbnailInputRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(event) => handleThumbnailSelect(event.target.files)}
-                      />
-                      {thumbnailUrl && (
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          <div className="relative group w-24 h-24 sm:w-28 sm:h-28">
-                            <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
-                              <img
-                                src={thumbnailUrl}
-                                alt={`${editingProduct.name || "Product"} primary thumbnail`}
-                                className="w-full h-full object-contain"
-                              />
-                            </div>
-                            <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-medium">
-                              Main Thumbnail
-                            </div>
+
+                    <div className="space-y-1 md:col-span-6">
+                      <label className="text-xs font-medium text-muted-foreground">Brand</label>
+                      <div className="flex items-center gap-2">
+                        <select
+                          className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs sm:text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          value={editingProduct.brand ?? ""}
+                          onChange={(e) =>
+                            setEditingProduct((prev) =>
+                              prev ? { ...prev, brand: e.target.value } : prev,
+                            )
+                          }
+                        >
+                          <option value="">Select brand</option>
+                          {filteredBrands.map((brand) => (
+                            <option key={brand.name} value={brand.name}>
+                              {brand.name}
+                            </option>
+                          ))}
+                        </select>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
                             <Button
                               type="button"
-                              variant="destructive"
                               size="icon"
-                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={handleClearThumbnail}
+                              className="h-9 w-9 bg-[#111827] hover:bg-black text-white rounded-lg shadow-sm border-0 transition-colors duration-200"
+                              onClick={() => setShowBrandForm((prev) => !prev)}
+                              disabled={!editingProduct.category}
                             >
-                              <X className="h-3 w-3" />
+                              <Plus className="h-5 w-5" />
+                              <span className="sr-only">Add new brand</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent className="z-[2000]">
+                            <p>Add new brand</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      {showBrandForm && (
+                        <div className="space-y-2 rounded-md border border-border/70 bg-muted/20 px-2.5 py-2.5 sm:px-3 sm:py-3">
+                          <div className="space-y-1">
+                            <Input
+                              value={newBrandName}
+                              onChange={(event) => setNewBrandName(event.target.value)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Enter") {
+                                  event.preventDefault();
+                                  handleInlineBrandSave();
+                                }
+                              }}
+                              placeholder="New brand name"
+                              className="h-8 text-xs sm:text-sm"
+                            />
+                          </div>
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 text-xs"
+                              onClick={() => {
+                                setNewBrandName("");
+                                setShowBrandForm(false);
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="h-8 text-xs"
+                              onClick={handleInlineBrandSave}
+                            >
+                              Save brand
                             </Button>
                           </div>
                         </div>
                       )}
-                      </div>
-
-                      <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
-                        <label className="text-xs font-medium text-muted-foreground">
-                          Additional Gallery Images
-                          <span className="ml-1 text-[11px] font-normal text-muted-foreground">
-                            (Used for PDP Slider)
-                          </span>
-                        </label>
-                        <div
-                          className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
-                          onClick={() => galleryInputRef.current?.click()}
-                          onDragOver={(event) => {
-                            event.preventDefault();
-                          }}
-                          onDrop={(event) => {
-                            event.preventDefault();
-                            handleGallerySelect(event.dataTransfer.files);
-                          }}
-                        >
-                          <div className="flex flex-col gap-0.5 text-left">
-                            <span className="font-medium text-foreground text-xs sm:text-[13px]">
-                              Click to add gallery images
+                    </div>
+                    <div className="space-y-1 md:col-span-3">
+                      <label className="text-xs font-medium text-muted-foreground">Old price (₹)</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={editingProduct.oldPrice ?? ""}
+                        onChange={(event) =>
+                          setEditingProduct((prev) =>
+                            prev
+                              ? {
+                                ...prev,
+                                oldPrice:
+                                  event.target.value === "" ? undefined : Number.parseFloat(event.target.value || "0"),
+                              }
+                              : prev,
+                          )
+                        }
+                        className="h-9 text-sm"
+                        placeholder="Optional"
+                      />
+                    </div>
+                    <div className="space-y-1 md:col-span-3">
+                      <label className="text-xs font-medium text-muted-foreground">Tax (%)</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={editingProduct.tax ?? ""}
+                        onChange={(event) =>
+                          setEditingProduct((prev) =>
+                            prev
+                              ? {
+                                ...prev,
+                                tax: event.target.value === "" ? undefined : Number.parseFloat(event.target.value || "0"),
+                              }
+                              : prev,
+                          )
+                        }
+                        className="h-9 text-sm"
+                        placeholder="Optional"
+                      />
+                    </div>
+                    <div className="space-y-1 md:col-span-3">
+                      <label className="text-xs font-medium text-muted-foreground">Stock</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={editingProduct.stock}
+                        onChange={(event) =>
+                          setEditingProduct((prev) =>
+                            prev ? { ...prev, stock: Number.parseInt(event.target.value || "0", 10) } : prev,
+                          )
+                        }
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                    {/* Image & pricing meta layout (desktop: 2-column grid, mobile: stacked) */}
+                    <div className="md:col-span-12 grid gap-3 md:gap-4 md:grid-cols-2 items-start">
+                      {/* Left column: thumbnail + gallery (stacked vertically) */}
+                      <div className="space-y-3">
+                        <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
+                          <label className="text-xs font-medium text-muted-foreground">
+                            Primary Thumbnail Image
+                            <span className="ml-1 text-[11px] font-normal text-muted-foreground">
+                              (Used for Product Grid)
                             </span>
-                            <span className="text-[11px] text-muted-foreground leading-snug">
-                              Upload 1–4 extra images shown after the thumbnail on the product detail page slider.
-                            </span>
-                          </div>
-                          {galleryImages.length > 0 && (
-                            <div className="text-xs text-muted-foreground">
-                              {galleryImages.length} / 4
+                          </label>
+                          <div
+                            className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
+                            onClick={() => thumbnailInputRef.current?.click()}
+                            onDragOver={(event) => {
+                              event.preventDefault();
+                            }}
+                            onDrop={(event) => {
+                              event.preventDefault();
+                              handleThumbnailSelect(event.dataTransfer.files);
+                            }}
+                          >
+                            <div className="flex flex-col gap-0.5 text-left">
+                              <span className="font-medium text-foreground text-xs sm:text-[13px]">
+                                Click to select thumbnail
+                              </span>
+                              <span className="text-[11px] text-muted-foreground leading-snug">
+                                Single main image used in the product grid and as the first slide on the product page.
+                              </span>
                             </div>
-                          )}
-                        </div>
-                        <input
-                          ref={galleryInputRef}
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          className="hidden"
-                          onChange={(event) => handleGallerySelect(event.target.files)}
-                        />
-                      {galleryImages.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {galleryImages.map((imageUrl, index) => (
-                            <div key={index} className="relative group w-16 h-16 sm:w-20 sm:h-20">
-                              <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
-                                <img
-                                  src={imageUrl}
-                                  alt={`${editingProduct.name || "Product"} gallery image ${index + 1}`}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
+                          </div>
+                          <input
+                            ref={thumbnailInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(event) => handleThumbnailSelect(event.target.files)}
+                          />
+                          {thumbnailUrl && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <div className="relative group w-24 h-24 sm:w-28 sm:h-28">
+                                <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
+                                  <img
+                                    src={thumbnailUrl}
+                                    alt={`${editingProduct.name || "Product"} primary thumbnail`}
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                                <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-medium">
+                                  Main Thumbnail
+                                </div>
                                 <Button
                                   type="button"
                                   variant="destructive"
                                   size="icon"
                                   className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={() => handleRemoveGalleryImage(index)}
+                                  onClick={handleClearThumbnail}
                                 >
                                   <X className="h-3 w-3" />
                                 </Button>
                               </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                            </div>
+                          )}
+                        </div>
 
-                    {/* Right column: Discount + Description stacked vertically */}
-                    <div className="space-y-3">
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-muted-foreground">Discount (%)</label>
-                        <Input
-                          type="number"
-                          min={0}
-                          max={100}
-                          value={editingProduct.discount ?? ""}
-                          onChange={(event) =>
-                            setEditingProduct((prev) =>
-                              prev
-                                ? {
+                        <div className="space-y-1 rounded-md border border-border/70 bg-muted/20 px-3 py-2.5 sm:px-4 sm:py-3">
+                          <label className="text-xs font-medium text-muted-foreground">
+                            Additional Gallery Images
+                            <span className="ml-1 text-[11px] font-normal text-muted-foreground">
+                              (Used for PDP Slider)
+                            </span>
+                          </label>
+                          <div
+                            className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-background px-3 py-2 text-[11px] sm:text-xs transition hover:bg-muted/60"
+                            onClick={() => galleryInputRef.current?.click()}
+                            onDragOver={(event) => {
+                              event.preventDefault();
+                            }}
+                            onDrop={(event) => {
+                              event.preventDefault();
+                              handleGallerySelect(event.dataTransfer.files);
+                            }}
+                          >
+                            <div className="flex flex-col gap-0.5 text-left">
+                              <span className="font-medium text-foreground text-xs sm:text-[13px]">
+                                Click to add gallery images
+                              </span>
+                              <span className="text-[11px] text-muted-foreground leading-snug">
+                                Upload 1–4 extra images shown after the thumbnail on the product detail page slider.
+                              </span>
+                            </div>
+                            {galleryImages.length > 0 && (
+                              <div className="text-xs text-muted-foreground">
+                                {galleryImages.length} / 4
+                              </div>
+                            )}
+                          </div>
+                          <input
+                            ref={galleryInputRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            className="hidden"
+                            onChange={(event) => handleGallerySelect(event.target.files)}
+                          />
+                          {galleryImages.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {galleryImages.map((imageUrl, index) => (
+                                <div key={index} className="relative group w-16 h-16 sm:w-20 sm:h-20">
+                                  <div className="w-full h-full overflow-hidden rounded-md border border-border/60 bg-background">
+                                    <img
+                                      src={imageUrl}
+                                      alt={`${editingProduct.name || "Product"} gallery image ${index + 1}`}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => handleRemoveGalleryImage(index)}
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right column: Discount + Description stacked vertically */}
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-muted-foreground">Discount (%)</label>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={editingProduct.discount ?? ""}
+                            onChange={(event) =>
+                              setEditingProduct((prev) =>
+                                prev
+                                  ? {
                                     ...prev,
                                     discount:
                                       event.target.value === ""
                                         ? undefined
                                         : Number.parseFloat(event.target.value || "0"),
                                   }
-                                : prev,
-                            )
-                          }
-                          className="h-9 text-sm"
-                          placeholder="Optional"
-                        />
-                      </div>
+                                  : prev,
+                              )
+                            }
+                            className="h-9 text-sm"
+                            placeholder="Optional"
+                          />
+                        </div>
 
-                      <div className="space-y-1">
-                        <label className="text-xs font-medium text-muted-foreground">
-                          Description (shown on product page)
-                        </label>
-                        <Input
-                          value={editingProduct.description ?? ""}
-                          onChange={(event) =>
-                            setEditingProduct((prev) =>
-                              prev ? { ...prev, description: event.target.value } : prev,
-                            )
-                          }
-                          className="h-10 text-sm"
-                          placeholder="Short description visible on the product details page"
-                        />
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-muted-foreground">
+                            Description (shown on product page)
+                          </label>
+                          <Input
+                            value={editingProduct.description ?? ""}
+                            onChange={(event) =>
+                              setEditingProduct((prev) =>
+                                prev ? { ...prev, description: event.target.value } : prev,
+                              )
+                            }
+                            className="h-10 text-sm"
+                            placeholder="Short description visible on the product details page"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
                     <div className="mt-2 flex flex-col gap-2 md:col-span-12 md:flex-row md:justify-end">
                       <Button
@@ -1554,28 +1566,28 @@ const AdminProducts = () => {
             </Dialog>
 
             <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-4">
-              <TabsList className="bg-muted rounded-full p-1">
+              <TabsList className="grid grid-cols-2 w-full h-auto gap-1 bg-muted p-1 rounded-lg sm:flex sm:w-fit sm:rounded-full">
                 <TabsTrigger
                   value="catalog"
-                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
                 >
                   Catalogue
                 </TabsTrigger>
                 <TabsTrigger
                   value="stock"
-                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
                 >
                   Stock view
                 </TabsTrigger>
                 <TabsTrigger
                   value="categories"
-                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
                 >
                   Categories
                 </TabsTrigger>
                 <TabsTrigger
                   value="brands"
-                  className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e]"
+                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
                 >
                   Brands
                 </TabsTrigger>
@@ -1745,9 +1757,9 @@ const AdminProducts = () => {
                       <SelectValue placeholder="Warehouse / Location" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All locations</SelectItem>
-                      <SelectItem value="main">Main store</SelectItem>
-                      <SelectItem value="online">Online only</SelectItem>
+                      <SelectItem value="all" className="focus:bg-[#111827] focus:text-white">All locations</SelectItem>
+                      <SelectItem value="main" className="focus:bg-[#111827] focus:text-white">Main store</SelectItem>
+                      <SelectItem value="online" className="focus:bg-[#111827] focus:text-white">Online only</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1837,148 +1849,148 @@ const AdminProducts = () => {
                       </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleCategoryCreate} className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="categoryName">Category name</Label>
-                          <Input
-                            id="categoryName"
-                            name="categoryName"
-                            placeholder="e.g. Office Stationery"
-                            className="h-9 text-sm"
-                            required
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            The name of the category as it will appear in the system.
-                          </p>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="categoryName">Category name</Label>
+                        <Input
+                          id="categoryName"
+                          name="categoryName"
+                          placeholder="e.g. Office Stationery"
+                          className="h-9 text-sm"
+                          required
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          The name of the category as it will appear in the system.
+                        </p>
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="position">Position (Optional)</Label>
-                          <Input
-                            id="position"
-                            name="position"
-                            type="number"
-                            min="1"
-                            value={positionInputValue}
-                            onChange={(e) => setPositionInputValue(e.target.value)}
-                            placeholder="e.g. 1, 2, 3"
-                            className="text-sm"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Set the display order on the front-end. Lower numbers appear first. Each position can only be used once. Next available: {nextAvailablePosition}
-                          </p>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="position">Position (Optional)</Label>
+                        <Input
+                          id="position"
+                          name="position"
+                          type="number"
+                          min="1"
+                          value={positionInputValue}
+                          onChange={(e) => setPositionInputValue(e.target.value)}
+                          placeholder="e.g. 1, 2, 3"
+                          className="text-sm"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Set the display order on the front-end. Lower numbers appear first. Each position can only be used once. Next available: {nextAvailablePosition}
+                        </p>
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="topLabel">Top Label (Small Text)</Label>
-                          <Input
-                            id="topLabel"
-                            name="topLabel"
-                            placeholder="e.g., AWARDS, TECHNOLOGY"
-                            className="text-sm"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Small text displayed at the top of the card (e.g., "AWARDS", "TECHNOLOGY").
-                          </p>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="topLabel">Top Label (Small Text)</Label>
+                        <Input
+                          id="topLabel"
+                          name="topLabel"
+                          placeholder="e.g., AWARDS, TECHNOLOGY"
+                          className="text-sm"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Small text displayed at the top of the card (e.g., "AWARDS", "TECHNOLOGY").
+                        </p>
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="cardTitle">Card Title (Large Text)</Label>
-                          <Input
-                            id="cardTitle"
-                            name="cardTitle"
-                            placeholder="e.g., Trophies & Awards"
-                            className="text-sm"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Main large title displayed on the card. Leave empty to use the category name.
-                          </p>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="cardTitle">Card Title (Large Text)</Label>
+                        <Input
+                          id="cardTitle"
+                          name="cardTitle"
+                          placeholder="e.g., Trophies & Awards"
+                          className="text-sm"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Main large title displayed on the card. Leave empty to use the category name.
+                        </p>
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="cardDescription">Card Description</Label>
-                          <Textarea
-                            id="cardDescription"
-                            name="cardDescription"
-                            placeholder="e.g., Hand-polished accolades and signature centerpieces."
-                            className="text-sm min-h-[80px]"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Short descriptive text or tagline displayed on the card.
-                          </p>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="cardDescription">Card Description</Label>
+                        <Textarea
+                          id="cardDescription"
+                          name="cardDescription"
+                          placeholder="e.g., Hand-polished accolades and signature centerpieces."
+                          className="text-sm min-h-[80px]"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Short descriptive text or tagline displayed on the card.
+                        </p>
+                      </div>
 
-                        <div className="space-y-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="space-y-1">
-                              <Label htmlFor="categoryImageURL">Category Card Image</Label>
-                              <p className="text-xs text-muted-foreground">
-                                This image will be used as the background for the category card on the homepage.
-                                Recommended aspect ratio: 1:1 or 4:3.
-                              </p>
-                            </div>
-                            {newCategoryImagePreview && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 text-xs"
-                                onClick={() => {
-                                  setNewCategoryImagePreview("");
-                                  if (addCategoryImageInputRef.current) {
-                                    addCategoryImageInputRef.current.value = "";
-                                  }
-                                }}
-                              >
-                                Clear image
-                              </Button>
-                            )}
-                          </div>
-
-                          <div className="rounded-lg border border-dashed border-border/70 bg-muted/40 p-3">
-                            {newCategoryImagePreview ? (
-                              <div className="flex items-center gap-3">
-                                <div className="h-16 w-28 overflow-hidden rounded-md bg-background">
-                                  <img
-                                    src={newCategoryImagePreview}
-                                    alt="New category preview"
-                                    className="h-full w-full object-cover"
-                                  />
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                  <div className="font-medium text-foreground/80">Preview</div>
-                                  <div>Using uploaded image</div>
-                                </div>
-                              </div>
-                            ) : (
-                              <p className="text-xs text-muted-foreground">
-                                No image selected. A dark gradient will be used by default.
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="flex flex-wrap items-center gap-3">
-                            <input
-                              ref={addCategoryImageInputRef}
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => handleNewCategoryImageFile(e.target.files?.[0])}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="h-9 text-xs"
-                              onClick={() => addCategoryImageInputRef.current?.click()}
-                            >
-                              Upload image
-                            </Button>
-                            <input type="hidden" name="categoryImageUpload" value={newCategoryImagePreview} />
-                            <p className="text-[11px] text-muted-foreground">
-                              Upload a file. Uploaded images are stored locally for preview.
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="categoryImageURL">Category Card Image</Label>
+                            <p className="text-xs text-muted-foreground">
+                              This image will be used as the background for the category card on the homepage.
+                              Recommended aspect ratio: 1:1 or 4:3.
                             </p>
                           </div>
+                          {newCategoryImagePreview && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 text-xs"
+                              onClick={() => {
+                                setNewCategoryImagePreview("");
+                                if (addCategoryImageInputRef.current) {
+                                  addCategoryImageInputRef.current.value = "";
+                                }
+                              }}
+                            >
+                              Clear image
+                            </Button>
+                          )}
                         </div>
+
+                        <div className="rounded-lg border border-dashed border-border/70 bg-muted/40 p-3">
+                          {newCategoryImagePreview ? (
+                            <div className="flex items-center gap-3">
+                              <div className="h-16 w-28 overflow-hidden rounded-md bg-background">
+                                <img
+                                  src={newCategoryImagePreview}
+                                  alt="New category preview"
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                <div className="font-medium text-foreground/80">Preview</div>
+                                <div>Using uploaded image</div>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-muted-foreground">
+                              No image selected. A dark gradient will be used by default.
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3">
+                          <input
+                            ref={addCategoryImageInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleNewCategoryImageFile(e.target.files?.[0])}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-9 text-xs"
+                            onClick={() => addCategoryImageInputRef.current?.click()}
+                          >
+                            Upload image
+                          </Button>
+                          <input type="hidden" name="categoryImageUpload" value={newCategoryImagePreview} />
+                          <p className="text-[11px] text-muted-foreground">
+                            Upload a file. Uploaded images are stored locally for preview.
+                          </p>
+                        </div>
+                      </div>
 
                       <div className="flex justify-end gap-2 pt-4">
                         <Button
@@ -2013,7 +2025,7 @@ const AdminProducts = () => {
                         const isHidden = override?.hidden === true;
                         // Fetch custom card content for this category
                         const customContent = getCategoryCardContent(category.name);
-                          
+
                         // Helper function to truncate description
                         const truncateDescription = (text: string | undefined, maxWords: number = 15): string => {
                           if (!text || text.trim() === "") return "";
@@ -2023,180 +2035,180 @@ const AdminProducts = () => {
                         };
 
                         return (
-                            <div
-                              key={category.id}
-                              className="flex items-center justify-between rounded-md border border-border/70 px-3 py-2"
-                            >
-                              <div className="flex-1 min-w-0">
-                                <div className="font-medium flex items-center gap-2">
-                                  <span>{displayName}</span>
-                                  {isHidden && (
-                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                      Hidden
-                                    </Badge>
-                                  )}
-                                  {category.position !== undefined && (
-                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                      Position: {category.position}
-                                    </Badge>
-                                  )}
-                                </div>
-                                
-                                {/* Custom Content Summary */}
-                                {customContent && (
-                                  <div className="mt-2 space-y-1 pl-1 border-l-2 border-muted/30">
-                                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                                      {/* Top Label */}
-                                      {customContent.topLabel ? (
-                                        <span className="inline-flex items-center gap-1">
-                                          <span className="font-medium text-foreground/70">Label:</span>
-                                          <span className="px-1.5 py-0.5 bg-muted/50 rounded text-[10px] font-medium">
-                                            {customContent.topLabel}
-                                          </span>
+                          <div
+                            key={category.id}
+                            className="flex items-center justify-between rounded-md border border-border/70 px-3 py-2"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium flex items-center gap-2">
+                                <span>{displayName}</span>
+                                {isHidden && (
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                    Hidden
+                                  </Badge>
+                                )}
+                                {category.position !== undefined && (
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                    Position: {category.position}
+                                  </Badge>
+                                )}
+                              </div>
+
+                              {/* Custom Content Summary */}
+                              {customContent && (
+                                <div className="mt-2 space-y-1 pl-1 border-l-2 border-muted/30">
+                                  <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                                    {/* Top Label */}
+                                    {customContent.topLabel ? (
+                                      <span className="inline-flex items-center gap-1">
+                                        <span className="font-medium text-foreground/70">Label:</span>
+                                        <span className="px-1.5 py-0.5 bg-muted/50 rounded text-[10px] font-medium">
+                                          {customContent.topLabel}
                                         </span>
-                                      ) : (
-                                        <span className="text-muted-foreground/60 italic">[No Top Label Set]</span>
-                                      )}
-                                      
-                                      {/* Badge Value */}
-                                      {customContent.badgeValue && (
-                                        <span className="inline-flex items-center gap-1">
-                                          <span className="font-medium text-foreground/70">Badge:</span>
-                                          <span className="px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-semibold">
-                                            {customContent.badgeValue}
-                                          </span>
-                                        </span>
-                                      )}
-                                    </div>
-                                    
-                                    {/* Card Title */}
-                                    {customContent.cardTitle && (
-                                      <div className="text-[11px] text-muted-foreground">
-                                        <span className="font-medium text-foreground/70">Title:</span>{" "}
-                                        <span className={customContent.cardTitle === displayName ? "italic text-muted-foreground/60" : ""}>
-                                          {customContent.cardTitle}
-                                          {customContent.cardTitle === displayName && " (uses default name)"}
-                                        </span>
-                                      </div>
+                                      </span>
+                                    ) : (
+                                      <span className="text-muted-foreground/60 italic">[No Top Label Set]</span>
                                     )}
-                                    
-                                    {/* Description Snippet */}
-                                    {customContent.cardDescription && (
-                                      <div className="text-[11px] text-muted-foreground line-clamp-2">
-                                        <span className="font-medium text-foreground/70">Description:</span>{" "}
-                                        <span>{truncateDescription(customContent.cardDescription, 15)}</span>
-                                      </div>
+
+                                    {/* Badge Value */}
+                                    {customContent.badgeValue && (
+                                      <span className="inline-flex items-center gap-1">
+                                        <span className="font-medium text-foreground/70">Badge:</span>
+                                        <span className="px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-semibold">
+                                          {customContent.badgeValue}
+                                        </span>
+                                      </span>
                                     )}
                                   </div>
-                                )}
-                                
-                                {/* Default message if no custom content */}
-                                {!customContent && (
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    Products assigned to this category will be grouped in the storefront.
-                                  </p>
-                                )}
-                              </div>
-                              <div className="flex flex-wrap items-center gap-2">
-                                <Badge variant="outline" className="text-xs">
-                                  {category.productCount > 0 ? `${category.productCount} products` : "No products yet"}
-                                </Badge>
-                                <div className="flex items-center gap-1 flex-shrink-0">
-                                  <Tooltip delayDuration={300}>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        type="button"
-                                        size="icon"
-                                        variant="outline"
-                                        className="h-7 w-7 hover:bg-[#111827] hover:text-white transition-all duration-200 ease-in-out"
-                                        onClick={() => {
-                                          // Fetch existing content for this category
-                                          // Use the original category.name as the key (not displayName)
-                                          const existingContent = getCategoryCardContent(category.name);
-                                          
-                                          // Debug: Log what we're retrieving
-                                          console.log("=== Loading Category Card Content ===");
-                                          console.log("Category name (key):", category.name);
-                                          console.log("Display name:", displayName);
-                                          console.log("Retrieved content:", existingContent);
-                                          console.log("Card Description from storage:", existingContent?.cardDescription);
-                                          
-                                          // Create initial content object with all fields properly initialized
-                                          // IMPORTANT: Check if property exists in the object (it may have been deleted if undefined)
-                                          const existingImage =
-                                            (existingContent && existingContent.categoryImageURL != null)
-                                              ? String(existingContent.categoryImageURL)
-                                              : (existingContent && existingContent.backgroundImage != null)
-                                                ? String(existingContent.backgroundImage)
-                                                : "";
 
-                                          const initialContent: CategoryCardContent = {
-                                            categoryName: category.name,
-                                            // Check if property exists in object and has a value
-                                            topLabel: (existingContent && existingContent.topLabel != null)
-                                              ? String(existingContent.topLabel)
-                                              : "",
-                                            cardTitle: (existingContent && existingContent.cardTitle != null)
-                                              ? String(existingContent.cardTitle)
-                                              : displayName,
-                                            // CRITICAL: Load cardDescription if it exists in the saved object
-                                            // Check both if property exists and if it has a value
-                                            cardDescription: (existingContent && 'cardDescription' in existingContent)
-                                              ? (existingContent.cardDescription != null ? String(existingContent.cardDescription) : "")
-                                              : "",
-                                            // CRITICAL: Load badgeValue if it exists in the saved object
-                                            badgeValue: (existingContent && 'badgeValue' in existingContent)
-                                              ? (existingContent.badgeValue != null ? String(existingContent.badgeValue) : "")
-                                              : "",
-                                            categoryImageURL: existingImage,
-                                            backgroundImage: existingImage,
-                                          };
-                                          
-                                          // Debug: Log what we're setting
-                                          console.log("Initial content being set:", initialContent);
-                                          console.log("Card Description value (final):", initialContent.cardDescription);
-                                          console.log("Badge Value (final):", initialContent.badgeValue);
-                                          console.log("Type of cardDescription:", typeof initialContent.cardDescription);
-                                          
-                                          // Set the editing state - use a fresh object to ensure React detects the change
-                                          setEditingCardContent({
-                                            categoryName: category.name,
-                                            content: { ...initialContent },
-                                          });
-                                          
-                                          // Initialize position input value
-                                          const override = categoryOverrides[category.name];
-                                          const position = override?.position;
-                                          setPositionInputValue(position !== undefined ? String(position) : "");
-                                          setIsEditingPosition(false);
-                                        }}
-                                      >
-                                        <Pencil className="h-3.5 w-3.5" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="left">
-                                      <p>Edit content</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                  <Tooltip delayDuration={300}>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        type="button"
-                                        size="icon"
-                                        variant="ghost"
-                                        className="h-7 w-7 text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors"
-                                        onClick={() => setDeleteCategoryCardName(category.name)}
-                                      >
-                                        <Trash2 className="h-3.5 w-3.5" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="left">
-                                      <p>Delete category</p>
-                                    </TooltipContent>
-                                  </Tooltip>
+                                  {/* Card Title */}
+                                  {customContent.cardTitle && (
+                                    <div className="text-[11px] text-muted-foreground">
+                                      <span className="font-medium text-foreground/70">Title:</span>{" "}
+                                      <span className={customContent.cardTitle === displayName ? "italic text-muted-foreground/60" : ""}>
+                                        {customContent.cardTitle}
+                                        {customContent.cardTitle === displayName && " (uses default name)"}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {/* Description Snippet */}
+                                  {customContent.cardDescription && (
+                                    <div className="text-[11px] text-muted-foreground line-clamp-2">
+                                      <span className="font-medium text-foreground/70">Description:</span>{" "}
+                                      <span>{truncateDescription(customContent.cardDescription, 15)}</span>
+                                    </div>
+                                  )}
                                 </div>
+                              )}
+
+                              {/* Default message if no custom content */}
+                              {!customContent && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Products assigned to this category will be grouped in the storefront.
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <Badge variant="outline" className="text-xs">
+                                {category.productCount > 0 ? `${category.productCount} products` : "No products yet"}
+                              </Badge>
+                              <div className="flex items-center gap-1 flex-shrink-0">
+                                <Tooltip delayDuration={300}>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      type="button"
+                                      size="icon"
+                                      variant="outline"
+                                      className="h-7 w-7 hover:bg-[#111827] hover:text-white transition-all duration-200 ease-in-out"
+                                      onClick={() => {
+                                        // Fetch existing content for this category
+                                        // Use the original category.name as the key (not displayName)
+                                        const existingContent = getCategoryCardContent(category.name);
+
+                                        // Debug: Log what we're retrieving
+                                        console.log("=== Loading Category Card Content ===");
+                                        console.log("Category name (key):", category.name);
+                                        console.log("Display name:", displayName);
+                                        console.log("Retrieved content:", existingContent);
+                                        console.log("Card Description from storage:", existingContent?.cardDescription);
+
+                                        // Create initial content object with all fields properly initialized
+                                        // IMPORTANT: Check if property exists in the object (it may have been deleted if undefined)
+                                        const existingImage =
+                                          (existingContent && existingContent.categoryImageURL != null)
+                                            ? String(existingContent.categoryImageURL)
+                                            : (existingContent && existingContent.backgroundImage != null)
+                                              ? String(existingContent.backgroundImage)
+                                              : "";
+
+                                        const initialContent: CategoryCardContent = {
+                                          categoryName: category.name,
+                                          // Check if property exists in object and has a value
+                                          topLabel: (existingContent && existingContent.topLabel != null)
+                                            ? String(existingContent.topLabel)
+                                            : "",
+                                          cardTitle: (existingContent && existingContent.cardTitle != null)
+                                            ? String(existingContent.cardTitle)
+                                            : displayName,
+                                          // CRITICAL: Load cardDescription if it exists in the saved object
+                                          // Check both if property exists and if it has a value
+                                          cardDescription: (existingContent && 'cardDescription' in existingContent)
+                                            ? (existingContent.cardDescription != null ? String(existingContent.cardDescription) : "")
+                                            : "",
+                                          // CRITICAL: Load badgeValue if it exists in the saved object
+                                          badgeValue: (existingContent && 'badgeValue' in existingContent)
+                                            ? (existingContent.badgeValue != null ? String(existingContent.badgeValue) : "")
+                                            : "",
+                                          categoryImageURL: existingImage,
+                                          backgroundImage: existingImage,
+                                        };
+
+                                        // Debug: Log what we're setting
+                                        console.log("Initial content being set:", initialContent);
+                                        console.log("Card Description value (final):", initialContent.cardDescription);
+                                        console.log("Badge Value (final):", initialContent.badgeValue);
+                                        console.log("Type of cardDescription:", typeof initialContent.cardDescription);
+
+                                        // Set the editing state - use a fresh object to ensure React detects the change
+                                        setEditingCardContent({
+                                          categoryName: category.name,
+                                          content: { ...initialContent },
+                                        });
+
+                                        // Initialize position input value
+                                        const override = categoryOverrides[category.name];
+                                        const position = override?.position;
+                                        setPositionInputValue(position !== undefined ? String(position) : "");
+                                        setIsEditingPosition(false);
+                                      }}
+                                    >
+                                      <Pencil className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="left">
+                                    <p>Edit content</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                                <Tooltip delayDuration={300}>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      type="button"
+                                      size="icon"
+                                      variant="ghost"
+                                      className="h-7 w-7 text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors"
+                                      onClick={() => setDeleteCategoryCardName(category.name)}
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="left">
+                                    <p>Delete category</p>
+                                  </TooltipContent>
+                                </Tooltip>
                               </div>
                             </div>
+                          </div>
                         );
                       })}
                     </div>
@@ -2211,15 +2223,15 @@ const AdminProducts = () => {
                           const category = categoryObj.name;
                           // Use the trigger to force re-render when content updates
                           const _ = categoryContentUpdateTrigger;
-                          
+
                           // Calculate product count for this category
                           const productCount = categoryProductCountMap.get(category) ?? 0;
-                          
+
                           // Fetch custom card content for this category
                           const customContent = getCategoryCardContent(category);
                           const displayName = category;
                           const position = categoryObj.position;
-                          
+
                           // Helper function to truncate description
                           const truncateDescription = (text: string | undefined, maxWords: number = 15): string => {
                             if (!text || text.trim() === "") return "";
@@ -2242,7 +2254,7 @@ const AdminProducts = () => {
                                     </Badge>
                                   )}
                                 </div>
-                                
+
                                 {/* Custom Content Summary */}
                                 {customContent && (
                                   <div className="mt-2 space-y-1 pl-1 border-l-2 border-muted/30">
@@ -2258,7 +2270,7 @@ const AdminProducts = () => {
                                       ) : (
                                         <span className="text-muted-foreground/60 italic">[No Top Label Set]</span>
                                       )}
-                                      
+
                                       {/* Badge Value */}
                                       {customContent.badgeValue && (
                                         <span className="inline-flex items-center gap-1">
@@ -2269,7 +2281,7 @@ const AdminProducts = () => {
                                         </span>
                                       )}
                                     </div>
-                                    
+
                                     {/* Card Title */}
                                     {customContent.cardTitle && (
                                       <div className="text-[11px] text-muted-foreground">
@@ -2280,7 +2292,7 @@ const AdminProducts = () => {
                                         </span>
                                       </div>
                                     )}
-                                    
+
                                     {/* Description Snippet */}
                                     {customContent.cardDescription && (
                                       <div className="text-[11px] text-muted-foreground line-clamp-2">
@@ -2290,7 +2302,7 @@ const AdminProducts = () => {
                                     )}
                                   </div>
                                 )}
-                                
+
                                 {/* Default message if no custom content */}
                                 {!customContent && (
                                   <p className="text-xs text-muted-foreground mt-1">
@@ -2313,7 +2325,7 @@ const AdminProducts = () => {
                                         onClick={() => {
                                           // Fetch existing content for this custom category
                                           const existingContent = getCategoryCardContent(category);
-                                          
+
                                           // Create initial content object with all fields properly initialized
                                           const existingImage =
                                             (existingContent && existingContent.categoryImageURL != null)
@@ -2339,13 +2351,13 @@ const AdminProducts = () => {
                                             categoryImageURL: existingImage,
                                             backgroundImage: existingImage,
                                           };
-                                          
+
                                           // Set the editing state - use a fresh object to ensure React detects the change
                                           setEditingCardContent({
                                             categoryName: category,
                                             content: { ...initialContent },
                                           });
-                                          
+
                                           // Initialize position input value for custom category
                                           const customCat = customCategories.find(cat => cat.name === category);
                                           const position = customCat?.position;
@@ -2423,7 +2435,7 @@ const AdminProducts = () => {
                     console.log("=== Saving Category Card Content ===");
                     console.log("Form content before save:", editingCardContent.content);
                     console.log("Card Description from form:", editingCardContent.content.cardDescription);
-                    
+
                     // Save exactly what's in the form - preserve all values including empty strings
                     const contentToSave: CategoryCardContent = {
                       categoryName: editingCardContent.content.categoryName,
@@ -2444,21 +2456,21 @@ const AdminProducts = () => {
                         editingCardContent.content.backgroundImage?.trim() ||
                         undefined,
                     };
-                    
+
                     // Debug: Log before cleanup
                     console.log("Content to save (before cleanup):", contentToSave);
-                    
+
                     // Remove undefined values to keep storage clean
                     Object.keys(contentToSave).forEach(key => {
                       if (key !== 'categoryName' && contentToSave[key as keyof CategoryCardContent] === undefined) {
                         delete contentToSave[key as keyof CategoryCardContent];
                       }
                     });
-                    
+
                     // Debug: Log final content
                     console.log("Final content being saved:", contentToSave);
                     console.log("Card Description in final save:", contentToSave.cardDescription);
-                    
+
                     saveCategoryCardContent(contentToSave);
                     setEditingCardContent(null);
                   }
@@ -2561,11 +2573,11 @@ const AdminProducts = () => {
                               setEditingCardContent((prev) =>
                                 prev
                                   ? {
-                                      ...prev,
-                                      content: prev.content
-                                        ? { ...prev.content, categoryImageURL: undefined, backgroundImage: undefined }
-                                        : null,
-                                    }
+                                    ...prev,
+                                    content: prev.content
+                                      ? { ...prev.content, categoryImageURL: undefined, backgroundImage: undefined }
+                                      : null,
+                                  }
                                   : prev
                               );
                               if (editCategoryImageInputRef.current) {
@@ -2634,7 +2646,7 @@ const AdminProducts = () => {
                     const override = categoryOverrides[editingCardContent!.categoryName];
                     // Prioritize custom category position, fallback to override
                     const currentPosition = customCat?.position ?? override?.position;
-                    
+
                     if (!isEditingPosition) {
                       // Display mode: show current position and "Change Position" button
                       return (
@@ -2732,83 +2744,83 @@ const AdminProducts = () => {
         </Dialog>
 
 
-      {/* Blocked Category Deletion Notice */}
-      <AlertDialog open={blockedCategoryDelete !== null} onOpenChange={(open) => !open && setBlockedCategoryDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Cannot delete category</AlertDialogTitle>
-            <AlertDialogDescription>
-              The category "{blockedCategoryDelete?.name}" is linked to {blockedCategoryDelete?.productCount ?? 0} product(s). Reassign those products to another category before deleting.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setBlockedCategoryDelete(null)}>Got it</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* Blocked Category Deletion Notice */}
+        <AlertDialog open={blockedCategoryDelete !== null} onOpenChange={(open) => !open && setBlockedCategoryDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Cannot delete category</AlertDialogTitle>
+              <AlertDialogDescription>
+                The category "{blockedCategoryDelete?.name}" is linked to {blockedCategoryDelete?.productCount ?? 0} product(s). Reassign those products to another category before deleting.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={() => setBlockedCategoryDelete(null)}>Got it</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-      {/* Delete Product Confirmation Dialog */}
-      <AlertDialog open={deleteProductId !== null} onOpenChange={(open) => !open && setDeleteProductId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Product</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this product? This action cannot be undone. The product will be removed from the catalogue.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => deleteProductId && handleDeleteProduct(deleteProductId)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors duration-200"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* Delete Product Confirmation Dialog */}
+        <AlertDialog open={deleteProductId !== null} onOpenChange={(open) => !open && setDeleteProductId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Product</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this product? This action cannot be undone. The product will be removed from the catalogue.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteProductId && handleDeleteProduct(deleteProductId)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors duration-200"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-      {/* Delete Category Card Content Confirmation Dialog */}
-      <AlertDialog open={deleteCategoryCardName !== null} onOpenChange={(open) => !open && setDeleteCategoryCardName(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Category Card Content</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete the custom content for "{deleteCategoryCardName}"? This will remove all custom labels, titles, descriptions, and images for this category card. The category itself will remain, but will use default display settings. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => deleteCategoryCardName && handleDeleteCategoryCardContent(deleteCategoryCardName)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors duration-200"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* Delete Category Card Content Confirmation Dialog */}
+        <AlertDialog open={deleteCategoryCardName !== null} onOpenChange={(open) => !open && setDeleteCategoryCardName(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Category Card Content</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete the custom content for "{deleteCategoryCardName}"? This will remove all custom labels, titles, descriptions, and images for this category card. The category itself will remain, but will use default display settings. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteCategoryCardName && handleDeleteCategoryCardContent(deleteCategoryCardName)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors duration-200"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-      {/* Delete Custom Category Confirmation Dialog */}
-      <AlertDialog open={deleteCustomCategoryName !== null} onOpenChange={(open) => !open && setDeleteCustomCategoryName(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Category</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete the category "{deleteCustomCategoryName}"? This will remove the category from the system. Products assigned to this category will need to be reassigned. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => deleteCustomCategoryName && handleCategoryDelete(deleteCustomCategoryName)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors duration-200"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* Delete Custom Category Confirmation Dialog */}
+        <AlertDialog open={deleteCustomCategoryName !== null} onOpenChange={(open) => !open && setDeleteCustomCategoryName(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Category</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete the category "{deleteCustomCategoryName}"? This will remove the category from the system. Products assigned to this category will need to be reassigned. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteCustomCategoryName && handleCategoryDelete(deleteCustomCategoryName)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors duration-200"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </section>
     </AdminLayout>
   );
@@ -2992,13 +3004,13 @@ const BrandManagementPanel = ({ products }: BrandManagementPanelProps) => {
           resetEditing();
         }
       }}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-full max-w-lg sm:max-w-2xl p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>
               {originalName ? `Edit brand: ${originalName}` : "Add new brand"}
             </DialogTitle>
             <DialogDescription>
-              {originalName 
+              {originalName
                 ? "Update brand details and associated categories."
                 : "Create a new brand and assign it to categories where it should appear in filters."}
             </DialogDescription>
@@ -3188,7 +3200,7 @@ const BrandManagementPanel = ({ products }: BrandManagementPanelProps) => {
       </Card>
 
       {/* Delete Confirmation Dialogs */}
-      
+
       {/* Blocked Brand Deletion Notice */}
       <AlertDialog open={blockedDeleteBrand !== null} onOpenChange={(open) => !open && setBlockedDeleteBrand(null)}>
         <AlertDialogContent>

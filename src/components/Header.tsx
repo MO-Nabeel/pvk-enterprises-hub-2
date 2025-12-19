@@ -105,13 +105,13 @@ const Header = () => {
       <div className="w-full px-3 sm:px-4 md:px-4 lg:px-8 max-w-full">
         <div className="flex items-center justify-between gap-2 sm:gap-2 md:gap-3 lg:gap-6 py-2.5 sm:py-3 md:py-3 lg:py-4 min-w-0">
           {/* Left Section: Logo */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center hover:opacity-90 transition-opacity flex-shrink-0 pr-2 sm:pr-2 md:pr-3 lg:pr-6"
           >
-            <img 
-              src={pvkLogo} 
-              alt="PVK Enterprises Logo" 
+            <img
+              src={pvkLogo}
+              alt="PVK Enterprises Logo"
               className="h-8 sm:h-9 md:h-10 lg:h-14 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[160px] lg:max-w-[260px] object-contain"
             />
           </Link>
@@ -123,9 +123,8 @@ const Header = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`px-2 md:px-2.5 lg:px-5 py-1.5 md:py-2 lg:py-2.5 rounded-full text-[10px] md:text-xs lg:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                    isActive(link.to) ? navActiveClasses : navInactiveClasses
-                  }`}
+                  className={`px-2 md:px-2.5 lg:px-5 py-1.5 md:py-2 lg:py-2.5 rounded-full text-[10px] md:text-xs lg:text-sm font-medium transition-all duration-200 whitespace-nowrap ${isActive(link.to) ? navActiveClasses : navInactiveClasses
+                    }`}
                 >
                   {link.label}
                 </Link>
@@ -170,11 +169,14 @@ const Header = () => {
 
             {/* User Profile Icon - Hidden on mobile, visible on tablet and up */}
             <Button
+              asChild
               size="icon"
               className="hidden sm:flex nav-icon-button h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10"
               aria-label="Profile"
             >
-              <User className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+              <Link to="/profile">
+                <User className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+              </Link>
             </Button>
 
             {/* Mobile Menu Toggle */}
@@ -205,9 +207,8 @@ const Header = () => {
                       key={link.to}
                       to={link.to}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`px-4 py-3 rounded-xl text-sm font-medium text-center transition-all duration-200 ${
-                        isActive(link.to) ? navActiveClasses : navInactiveClasses
-                      }`}
+                      className={`px-4 py-3 rounded-xl text-sm font-medium text-center transition-all duration-200 ${isActive(link.to) ? navActiveClasses : navInactiveClasses
+                        }`}
                     >
                       {link.label}
                     </Link>
@@ -217,12 +218,15 @@ const Header = () => {
               {/* Mobile User Profile */}
               <div className="flex items-center justify-center pt-2">
                 <Button
+                  asChild
                   size="icon"
                   className="bg-foreground text-background hover:bg-foreground/90 rounded-full shadow-md h-10 w-10"
                   aria-label="Profile"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <User className="h-5 w-5" />
+                  <Link to="/profile">
+                    <User className="h-5 w-5" />
+                  </Link>
                 </Button>
               </div>
               <div className="flex items-center justify-center pt-2">

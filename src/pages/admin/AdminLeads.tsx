@@ -159,10 +159,10 @@ const AdminLeads = () => {
                         <SelectValue placeholder="All stages" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All stages</SelectItem>
-                        <SelectItem value="new">New</SelectItem>
-                        <SelectItem value="warm">Warm</SelectItem>
-                        <SelectItem value="hot">Hot</SelectItem>
+                        <SelectItem value="all" className="focus:bg-[#111827] focus:text-white">All stages</SelectItem>
+                        <SelectItem value="new" className="focus:bg-[#111827] focus:text-white">New</SelectItem>
+                        <SelectItem value="warm" className="focus:bg-[#111827] focus:text-white">Warm</SelectItem>
+                        <SelectItem value="hot" className="focus:bg-[#111827] focus:text-white">Hot</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -229,10 +229,10 @@ const AdminLeads = () => {
                         <SelectValue placeholder="All stages" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All stages</SelectItem>
-                        <SelectItem value="new">New</SelectItem>
-                        <SelectItem value="warm">Warm</SelectItem>
-                        <SelectItem value="hot">Hot</SelectItem>
+                        <SelectItem value="all" className="focus:bg-[#111827] focus:text-white">All stages</SelectItem>
+                        <SelectItem value="new" className="focus:bg-[#111827] focus:text-white">New</SelectItem>
+                        <SelectItem value="warm" className="focus:bg-[#111827] focus:text-white">Warm</SelectItem>
+                        <SelectItem value="hot" className="focus:bg-[#111827] focus:text-white">Hot</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

@@ -125,7 +125,7 @@ const AdminSpecialServices = () => {
         reject(new Error("File must be an image"));
         return;
       }
-      
+
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = reject;
@@ -288,7 +288,7 @@ const AdminSpecialServices = () => {
                     />
                   </div>
                 )}
-                
+
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2">
@@ -308,7 +308,7 @@ const AdminSpecialServices = () => {
                     <p className="text-xs text-muted-foreground line-clamp-2">{service.description}</p>
                   </div>
                 </div>
-                
+
                 {/* Lead Tracking (Admin only) */}
                 {service.monthlyLeads !== undefined && service.monthlyLeads > 0 && (
                   <div className="mt-2">
@@ -318,7 +318,7 @@ const AdminSpecialServices = () => {
                   </div>
                 )}
               </CardContent>
-              
+
               {/* Action Buttons */}
               <div className="flex items-center justify-between gap-2 border-t border-border/70 bg-slate-950/5 px-4 py-3 sm:px-5">
                 <Select
@@ -337,7 +337,7 @@ const AdminSpecialServices = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-9 rounded-full px-3 text-xs font-medium text-muted-foreground hover:bg-muted"
+                  className="h-9 rounded-full px-3 text-xs font-medium text-muted-foreground hover:bg-[#111827] hover:text-white transition-colors duration-200"
                   type="button"
                   onClick={() => handleOpenEdit(service)}
                 >
@@ -439,7 +439,7 @@ const AdminSpecialServices = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 rounded-full px-3 text-[11px] font-medium text-muted-foreground hover:bg-muted"
+                            className="h-7 rounded-full px-3 text-[11px] font-medium text-muted-foreground hover:bg-[#111827] hover:text-white transition-colors duration-200"
                             type="button"
                             onClick={() => handleOpenEdit(service)}
                           >

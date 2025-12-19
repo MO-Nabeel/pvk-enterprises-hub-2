@@ -57,7 +57,7 @@ const AdminOrders = () => {
   return (
     <AdminLayout title="Orders & Customers">
       {/* KPI row */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="border-border bg-card text-card-foreground shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -165,7 +165,7 @@ const AdminOrders = () => {
                       </SelectTrigger>
                       <SelectContent>
                         {statusOptions.map((status) => (
-                          <SelectItem key={status} value={status}>
+                          <SelectItem key={status} value={status} className="focus:bg-[#111827] focus:text-white">
                             {status === "All" ? "All statuses" : status}
                           </SelectItem>
                         ))}
@@ -174,49 +174,47 @@ const AdminOrders = () => {
                   </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-md border border-border bg-card -mx-4 sm:mx-0">
-                  <div className="min-w-full inline-block align-middle">
-                    <div className="overflow-hidden">
-                      <Table className="min-w-[640px] sm:min-w-full">
-                        <TableHeader className="bg-muted/60">
-                          <TableRow>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">Order ID</TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">Customer</TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">Date</TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground text-right px-2 sm:px-4">
-                              Grand Total
-                            </TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">Status</TableHead>
+                <div className="rounded-md border border-border bg-card overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <Table className="min-w-[700px] w-full">
+                      <TableHeader className="bg-muted/60">
+                        <TableRow>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">Order ID</TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">Customer</TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">Date</TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground text-right px-4">
+                            Grand Total
+                          </TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredOrders.map((order) => (
+                          <TableRow key={order.id}>
+                            <TableCell className="text-xs font-mono text-muted-foreground px-4">{order.id}</TableCell>
+                            <TableCell className="text-sm px-4">{order.customerName}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground px-4">
+                              {new Date(order.createdAt).toLocaleDateString("en-IN")}
+                            </TableCell>
+                            <TableCell className="text-sm text-right px-4">
+                              ₹{order.total.toLocaleString("en-IN")}
+                            </TableCell>
+                            <TableCell className="text-xs px-4">
+                              <Badge variant="outline" className="text-[11px]">
+                                {order.status}
+                              </Badge>
+                            </TableCell>
                           </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredOrders.map((order) => (
-                            <TableRow key={order.id}>
-                              <TableCell className="text-[10px] xs:text-xs font-mono text-muted-foreground px-2 sm:px-4">{order.id}</TableCell>
-                              <TableCell className="text-xs sm:text-sm px-2 sm:px-4">{order.customerName}</TableCell>
-                              <TableCell className="text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">
-                                {new Date(order.createdAt).toLocaleDateString("en-IN")}
-                              </TableCell>
-                              <TableCell className="text-xs sm:text-sm text-right px-2 sm:px-4">
-                                ₹{order.total.toLocaleString("en-IN")}
-                              </TableCell>
-                              <TableCell className="text-[10px] xs:text-xs px-2 sm:px-4">
-                                <Badge variant="outline" className="text-[10px] xs:text-[11px]">
-                                  {order.status}
-                                </Badge>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                          {filteredOrders.length === 0 && (
-                            <TableRow>
-                              <TableCell colSpan={5} className="py-6 text-center text-xs text-muted-foreground px-4">
-                                No orders match your filters yet.
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
+                        ))}
+                        {filteredOrders.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={5} className="py-6 text-center text-xs text-muted-foreground px-4">
+                              No orders match your filters yet.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
                   </div>
                 </div>
               </TabsContent>
@@ -234,47 +232,45 @@ const AdminOrders = () => {
                   </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-md border border-border bg-card -mx-4 sm:mx-0">
-                  <div className="min-w-full inline-block align-middle">
-                    <div className="overflow-hidden">
-                      <Table className="min-w-[800px] sm:min-w-full">
-                        <TableHeader className="bg-muted/60">
-                          <TableRow>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">Customer</TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">Email</TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">Phone</TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">City</TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">
-                              Total Orders
-                            </TableHead>
-                            <TableHead className="whitespace-nowrap text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">
-                              Last Order Date
-                            </TableHead>
+                <div className="rounded-md border border-border bg-card overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <Table className="min-w-[800px] w-full">
+                      <TableHeader className="bg-muted/60">
+                        <TableRow>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">Customer</TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">Email</TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">Phone</TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">City</TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">
+                            Total Orders
+                          </TableHead>
+                          <TableHead className="whitespace-nowrap text-xs text-muted-foreground px-4">
+                            Last Order Date
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredCustomers.map((customer) => (
+                          <TableRow key={customer.id}>
+                            <TableCell className="text-sm font-medium px-4">{customer.name}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground px-4 break-all">{customer.email}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground px-4">{customer.phone}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground px-4">{customer.city}</TableCell>
+                            <TableCell className="text-sm px-4">{customer.totalOrders}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground px-4">
+                              {new Date(customer.lastOrderDate).toLocaleDateString("en-IN")}
+                            </TableCell>
                           </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredCustomers.map((customer) => (
-                            <TableRow key={customer.id}>
-                              <TableCell className="text-xs sm:text-sm font-medium px-2 sm:px-4">{customer.name}</TableCell>
-                              <TableCell className="text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4 break-all">{customer.email}</TableCell>
-                              <TableCell className="text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">{customer.phone}</TableCell>
-                              <TableCell className="text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">{customer.city}</TableCell>
-                              <TableCell className="text-xs sm:text-sm px-2 sm:px-4">{customer.totalOrders}</TableCell>
-                              <TableCell className="text-[10px] xs:text-xs text-muted-foreground px-2 sm:px-4">
-                                {new Date(customer.lastOrderDate).toLocaleDateString("en-IN")}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                          {filteredCustomers.length === 0 && (
-                            <TableRow>
-                              <TableCell colSpan={6} className="py-6 text-center text-xs text-muted-foreground px-4">
-                                No customers match your search yet.
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
+                        ))}
+                        {filteredCustomers.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={6} className="py-6 text-center text-xs text-muted-foreground px-4">
+                              No customers match your search yet.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
                   </div>
                 </div>
               </TabsContent>

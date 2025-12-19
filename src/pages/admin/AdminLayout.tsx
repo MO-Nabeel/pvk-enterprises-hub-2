@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -45,6 +45,7 @@ const adminMenuButtonClasses =
 
 const AdminLayout = ({ title = "Dashboard", children }: AdminLayoutProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActivePath = (path: string) => {
     if (path === "/admin") {
@@ -241,6 +242,7 @@ const AdminLayout = ({ title = "Dashboard", children }: AdminLayoutProps) => {
               size="icon"
               className="h-8 w-8 rounded-full text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               type="button"
+              onClick={() => navigate("/")}
             >
               <LogOut className="h-4 w-4" />
               <span className="sr-only">Log out</span>
@@ -250,12 +252,12 @@ const AdminLayout = ({ title = "Dashboard", children }: AdminLayoutProps) => {
         <SidebarRail />
       </Sidebar>
 
-      <SidebarInset className="bg-background text-foreground">
-        <header className="sticky top-0 z-20 flex h-16 items-center border-b border-border bg-card/95 px-4 shadow-sm backdrop-blur-sm sm:px-6 lg:px-8">
+      <SidebarInset className="bg-background text-foreground overflow-x-hidden w-full">
+        <header className="sticky top-0 z-20 flex min-h-16 h-auto items-center border-b border-border bg-card/95 px-4 py-3 shadow-sm backdrop-blur-sm sm:px-6 lg:px-8">
           <div className="flex flex-1 items-center gap-3 md:gap-4">
-            <SidebarTrigger className="lg:hidden text-muted-foreground hover:bg-muted" />
-            <Separator orientation="vertical" className="h-6 bg-border" />
-            <div className="flex min-w-0 flex-col">
+            <SidebarTrigger className="lg:hidden shrink-0 text-muted-foreground hover:bg-muted" />
+            <Separator orientation="vertical" className="hidden sm:block h-6 bg-border" />
+            <div className="flex min-w-0 flex-col gap-1">
               <h1
                 className={cn(
                   "truncate text-lg font-semibold tracking-tight text-foreground",
@@ -264,18 +266,18 @@ const AdminLayout = ({ title = "Dashboard", children }: AdminLayoutProps) => {
               >
                 {title}
               </h1>
-              <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">
+              <p className="text-xs text-muted-foreground sm:text-sm leading-tight break-words whitespace-normal">
                 Monitor products, orders, sales, and leads for PVK Enterprises.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <ThemeToggle className="hidden sm:inline-flex" />
           </div>
         </header>
         <main className="flex-1 px-3 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:gap-7 lg:gap-8">
-          {children}
+            {children}
           </div>
         </main>
       </SidebarInset>
