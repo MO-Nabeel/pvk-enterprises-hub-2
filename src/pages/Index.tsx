@@ -7,6 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import HeroSlider, { type HeroSlide } from "@/components/HeroSlider";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import BlogPostCard from "@/components/BlogPostCard";
+import PortfolioCard from "@/components/PortfolioCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,11 +25,11 @@ import { Truck, ShieldCheck, Headphones, CreditCard, Star, ArrowRight, ChevronDo
 import type { CSSProperties } from "react";
 import trophyImage from "@/assets/trophy-product.jpg";
 import heroSliderImage from "@/assets/slider.jpg";
-import headsetImage from "@/assets/headset.png";
+import mobileAccessories from "@/assets/slider-mobileaccessories.jpeg";
 import visitingCardImage from "@/assets/visisting card.png";
-import tshirtImage from "@/assets/tshirt.png";
+import customPrint from "@/assets/slider-custemprinting.jpeg";
 import trophyBackgroundImage from "@/assets/ct-trophy.png";
-import officeImage from "@/assets/office-supplies.jpg";
+import officeImage from "@/assets/slider-office.jpeg";
 import stampImage from "@/assets/rubber-stamps.jpg";
 import printerImage from "@/assets/printer-equipment.jpg";
 import mobileImage from "@/assets/mobile-accessories.jpg";
@@ -97,7 +98,7 @@ const Index = () => {
       buttonLink: "/category?category=Office%20Stationery"
     },
     {
-      image: headsetImage,
+      image: mobileAccessories,
       alt: "Premium accessories and headsets showcase",
       objectPosition: "center",
       title: "Mobile Accessories",
@@ -117,7 +118,7 @@ const Index = () => {
       buttonLink: "/category?category=visiting-card"
     },
     {
-      image: tshirtImage,
+      image: customPrint,
       alt: "Custom Printing Solutions",
       objectPosition: "center",
       title: "Custom Printing",
@@ -1258,49 +1259,14 @@ const Index = () => {
           </div>
           <div className="grid max-w-6xl mx-auto gap-6 sm:gap-7 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 home-portfolio-grid">
             {galleryItems.map((item, index) => (
-              <Link
+              <PortfolioCard
                 key={item.title}
-                to={item.href}
-                className="group relative isolate overflow-hidden rounded-[28px] bg-white dark:bg-slate-800 shadow-[0_25px_65px_rgba(15,23,42,0.12)] dark:shadow-[0_25px_65px_rgba(0,0,0,0.4)] ring-1 ring-black/5 dark:ring-slate-700/50 transition-all duration-500 hover:-translate-y-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-dark/40 dark:focus-visible:ring-slate-400/40 portfolio-card"
-                aria-label={`View ${item.title} in products`}
-              >
-                <div className="absolute inset-0">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div
-                  className="absolute inset-0 transition-opacity duration-500"
-                  style={{
-                    background: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.65) 45%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.2) 75%, rgba(0, 0, 0, 0.05) 90%, transparent 100%)'
-                  }}
-                />
-                <div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-7 md:p-8 text-white portfolio-card-content">
-                  <div className="flex flex-col gap-2 sm:gap-3 portfolio-card-top-section">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80 w-fit max-w-[70%] portfolio-card-badge">
-                      {item.category}
-                    </span>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between portfolio-card-link-row">
-                    {/* Title and CTA kept close together on all breakpoints */}
-                    <div className="flex flex-col gap-1 sm:gap-1.5">
-                      <h3 className="text-lg sm:text-2xl font-semibold leading-tight portfolio-card-title">
-                        {item.title}
-                      </h3>
-                      <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-[0.15em] portfolio-card-link">
-                        Explore Product
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </div>
-                    <div className="h-9 min-w-[2.5rem] px-3 rounded-2xl bg-white/15 text-white/90 flex items-center justify-center text-sm font-semibold shadow-inner portfolio-card-number">
-                      {String(index + 1).padStart(2, "0")}
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                index={index}
+                title={item.title}
+                category={item.category}
+                image={item.image}
+                href={item.href}
+              />
             ))}
           </div>
         </div>

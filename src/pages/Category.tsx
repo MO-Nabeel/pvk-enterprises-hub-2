@@ -537,52 +537,80 @@ const Category = () => {
       <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         <section className="py-6 sm:py-8 bg-background">
           <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-10 max-w-full overflow-x-hidden">
-            <div className="grid gap-5 sm:gap-6 lg:gap-8 lg:grid-cols-[1.25fr,0.75fr] bg-card rounded-3xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.3)] border border-border w-full max-w-full">
-              <div className="space-y-4 sm:space-y-5">
-                <SectionBadge label="Discover" />
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground leading-tight">
-                  Curated Products for Every Business Journey
-                </h1>
-                <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                  From award-winning trophies to high-performance printing supplies and custom branding essentials,
-                  explore a selection tailored for event planners, offices, institutions, and creative studios.
-                </p>
-                <div className="flex flex-wrap gap-2 sm:gap-3">
+            <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1.2fr,0.8fr] items-center bg-card/50 rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-10 shadow-sm border border-slate-100 dark:border-slate-800 w-full max-w-full relative overflow-hidden">
+
+              {/* Left Content */}
+              <div className="relative z-10 space-y-6 sm:space-y-8 pr-0 lg:pr-12">
+                <div className="space-y-3 sm:space-y-4">
+                  <SectionBadge label="Discover Collection" />
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1]">
+                    Curated Products for <br className="hidden lg:block" />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Every Business</span>.
+                  </h1>
+                  <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl font-medium">
+                    From award-winning trophies to high-performance printing supplies, explore a selection tailored for event planners and creative studios.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3">
                   {["Trophies", "Printing", "Stationery", "Accessories"].map((item) => (
-                    <span
+                    <button
                       key={item}
-                      className="inline-flex items-center gap-2 rounded-full border border-border px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-muted-foreground"
+                      className="group inline-flex items-center justify-center sm:justify-start gap-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm hover:shadow-md whitespace-nowrap"
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                      <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-slate-300 group-hover:bg-blue-500 transition-colors" />
                       {item}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
-              <div className="relative rounded-2xl bg-gradient-to-br from-[#111827] via-[#0f172a] to-[#1f2937] p-4 sm:p-6 md:p-7 text-white overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.15),_transparent_55%)]" />
-                <div className="relative z-10 space-y-3 sm:space-y-4">
-                  <p className="text-[11px] sm:text-xs uppercase tracking-[0.4em] text-white/70">Featured Drop</p>
-                  <h3 className="text-xl sm:text-2xl font-semibold leading-snug">Award Ceremony Kit</h3>
-                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                    Premium trophies, name plates, certificates, and stage branding delivered in 48 hours.
-                  </p>
-                  <div className="flex flex-wrap gap-3 sm:gap-4 pt-3 sm:pt-4">
-                    <div className="min-w-[110px]">
-                      <p className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-white/60">Starting</p>
-                      <p className="text-lg sm:text-xl font-bold">₹2,500</p>
-                    </div>
-                    <div className="flex-1 min-w-[150px]">
-                      <p className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-white/60">Includes</p>
-                      <p className="text-xs sm:text-sm text-white/85">Trophies, Certificates, Stage Props</p>
-                    </div>
+
+              {/* Right Card - Matching Reference Image */}
+              <div className="relative w-full rounded-[2rem] bg-[#0E1325] p-6 sm:p-10 shadow-2xl text-white overflow-hidden border border-white/5 mx-auto max-w-md lg:max-w-full hover:transform hover:scale-[1.02] transition-transform duration-500 ease-out">
+                {/* Top Row: Badge & Status */}
+                <div className="flex flex-wrap items-center justify-between gap-y-3 mb-6 sm:mb-8">
+                  <span className="inline-block px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#1C2337] border border-[#2A3450] text-[#7DD3FC] text-[10px] sm:text-xs font-bold uppercase tracking-[0.15em] shadow-inner whitespace-nowrap">
+                    Featured Drop
+                  </span>
+                  <div className="flex items-center gap-2 sm:gap-2.5 whitespace-nowrap">
+                    <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-amber-500"></span>
+                    </span>
+                    <span className="text-[10px] sm:text-xs font-bold text-amber-500 uppercase tracking-widest">Limited Slots</span>
                   </div>
                 </div>
-                <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs uppercase tracking-[0.35em] text-white/70">
-                  Limited Slots
-                  <div className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+
+                {/* Main Content */}
+                <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
+                    Award Ceremony Kit
+                  </h3>
+                  <div className="pl-4 border-l-2 border-slate-700/50">
+                    <p className="text-sm sm:text-base text-slate-400 leading-relaxed font-medium">
+                      Premium trophies, name plates, certificates, and stage branding <span className="text-white font-semibold">delivered in 48 hours</span>.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="h-px w-full bg-slate-800/80 mb-5 sm:mb-6" />
+
+                {/* Bottom Row: Pricing & details */}
+                <div className="grid grid-cols-2 gap-4 sm:gap-8">
+                  <div className="space-y-0.5 sm:space-y-1">
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Starting From</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight">₹2,500</p>
+                  </div>
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Includes</p>
+                    <p className="text-xs sm:text-sm font-semibold text-slate-300 leading-snug">
+                      Trophies, Certificates, Stage Props
+                    </p>
+                  </div>
                 </div>
               </div>
+
             </div>
           </div>
         </section>
@@ -776,7 +804,7 @@ const Category = () => {
                 )}
                 {filteredProducts.length > 0 ? (
                   <>
-                    <div className="products-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6 w-full max-w-full">
+                    <div className="products-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full max-w-full">
                       {paginatedProducts.map((product) => (
                         <ProductCard
                           key={product.id}

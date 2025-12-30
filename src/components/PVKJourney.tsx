@@ -77,122 +77,146 @@ const PVKJourney = () => {
   }, []);
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 lg:py-28 bg-white dark:bg-slate-900 relative overflow-hidden">
+    <section className="py-20 sm:py-24 bg-gradient-to-b from-white to-purple-50/50 dark:from-slate-900 dark:to-slate-900/50 relative overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-100 dark:bg-purple-900/20 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-100 dark:bg-pink-900/20 rounded-full blur-3xl opacity-20" />
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] left-[5%] w-[500px] h-[500px] bg-purple-200/20 dark:bg-purple-900/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[10%] right-[5%] w-[600px] h-[600px] bg-pink-200/20 dark:bg-pink-900/10 rounded-full blur-[100px]" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="mx-auto max-w-5xl">
           {/* Section Header */}
-          <div className="text-center mb-12 sm:mb-16 md:mb-20">
-            <div className="inline-flex items-center justify-center gap-2 mb-4">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent via-purple-500 to-purple-500" />
-              <div className="w-2 h-2 rounded-full bg-purple-500" />
-              <div className="h-px w-12 bg-gradient-to-l from-transparent via-purple-500 to-purple-500" />
-            </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground dark:text-slate-100">
+          <div className="text-center mb-16 sm:mb-20">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">
               PVK Journey
             </h2>
-            <p className="mt-4 text-base sm:text-lg text-muted-foreground dark:text-slate-300 max-w-2xl mx-auto">
-              PVK Enterprises was founded in 2010 by Mr. Pramod, whose entrepreneurial journey began long before the company was established. Coming from a background filled with financial difficulties and personal challenges, he built his success step by step—through hard work, consistency, and strong determination.
+            <div className="h-1.5 w-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto mt-6 mb-6" />
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              PVK Enterprises was founded in 2010 by Mr. Pramod, whose entrepreneurial journey began slightly before the company was established. Coming from a background filled with financial difficulties, he built his success step by step through hard work and determination.
             </p>
           </div>
 
           {/* Timeline Container */}
           <div ref={sectionRef} className="relative">
             {/* Central Vertical Timeline Line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 md:w-1">
-              <div className="h-full bg-gradient-to-b from-purple-400 via-purple-500 to-purple-600 dark:from-purple-500 dark:via-purple-600 dark:to-purple-700" />
-            </div>
+            <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 md:w-1 bg-gradient-to-b from-purple-200 via-purple-400 to-pink-200 dark:from-purple-800 dark:via-purple-600 dark:to-pink-800 rounded-full" />
 
             {/* Milestones */}
-            <div className="space-y-12 sm:space-y-16 md:space-y-20">
+            <div className="space-y-16 sm:space-y-24">
               {milestones.map((milestone, index) => {
                 const Icon = milestone.icon;
                 const isVisible = visibleItems.has(index);
-                const isLeft = milestone.position === "left";
+                const isRight = milestone.position === "right"; // Card is on the right, Date on left
+
+                // Card Component Inline
+                const Card = ({ align }: { align: "left" | "right" }) => (
+                  <div
+                    className={`group relative w-full bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_-15px_rgba(168,85,247,0.15)] dark:hover:shadow-[0_20px_60px_-15px_rgba(168,85,247,0.2)] border border-slate-100 dark:border-slate-700/50 transition-all duration-500`}
+                  >
+                    {/* Gradient Border Top */}
+                    <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+
+                    {/* Large Watermark Icon */}
+                    <div className="absolute -bottom-4 -right-4 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 pointer-events-none">
+                      <Icon className="w-32 h-32 text-purple-50/80 dark:text-purple-900/10" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                      </div>
+
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">
+                        {milestone.title}
+                      </h3>
+                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                        {milestone.description}
+                      </p>
+                    </div>
+                  </div>
+                );
 
                 return (
                   <div
                     key={milestone.id}
                     data-index={index}
-                    className={`relative flex flex-col md:flex-row items-center ${
-                      isLeft ? "md:flex-row-reverse" : ""
-                    }`}
+                    className="relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-0"
                   >
-                    {/* Timeline Node */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2 z-20 md:static md:transform-none md:z-auto">
-                      <div
-                        className={`w-4 h-4 md:w-5 md:h-5 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg transition-all duration-500 ${
-                          isVisible ? "scale-100 opacity-100" : "scale-0 opacity-0"
-                        }`}
-                        style={{ transitionDelay: `${index * 200 + 100}ms` }}
-                      />
-                      <div
-                        className={`absolute inset-0 w-4 h-4 md:w-5 md:h-5 rounded-full bg-purple-400/30 animate-ping transition-all duration-500 ${
-                          isVisible ? "scale-150 opacity-75" : "scale-0 opacity-0"
-                        }`}
-                        style={{ transitionDelay: `${index * 200 + 200}ms` }}
-                      />
-                    </div>
-
-                    {/* Date Badge */}
-                    <div
-                      className={`w-full md:w-1/2 mt-4 md:mt-0 ${isLeft ? "md:pr-8 md:pr-12" : "md:pl-8 md:pl-12"} flex justify-center ${isLeft ? "md:justify-end" : "md:justify-start"}`}
-                    >
-                      <div
-                        className={`inline-flex items-center px-4 py-2 md:px-5 md:py-2.5 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-white text-sm md:text-base font-semibold shadow-lg transition-all duration-700 ${
-                          isVisible
-                            ? "opacity-100 translate-y-0 scale-100"
-                            : "opacity-0 translate-y-8 scale-95"
-                        }`}
-                        style={{ transitionDelay: `${index * 200}ms` }}
-                      >
-                        {milestone.date}
-                      </div>
-                    </div>
-
-                    {/* Content Card */}
-                    <div
-                      className={`w-full md:w-1/2 mt-4 md:mt-0 ${isLeft ? "md:pl-8 md:pl-12" : "md:pr-8 md:pr-12"} flex justify-center ${isLeft ? "md:justify-start" : "md:justify-end"}`}
-                    >
-                      <div
-                        className={`w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 relative overflow-hidden group ${
-                          isVisible
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-8"
-                        }`}
-                        style={{ transitionDelay: `${index * 200 + 150}ms` }}
-                      >
-                        {/* Decorative background icon */}
-                        <div className="absolute top-4 right-4 w-24 h-24 md:w-32 md:h-32 opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-500">
-                          <Icon className="w-full h-full text-purple-600 dark:text-purple-400" />
-                        </div>
-
-                        {/* Content */}
-                        <div className="relative z-10">
-                          {/* Icon */}
-                          <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 mb-4 group-hover:scale-110 transition-transform duration-300">
-                            <Icon className="w-6 h-6 md:w-7 md:h-7 text-purple-600 dark:text-purple-400" />
+                    {/* Left Column */}
+                    <div className={`order-2 md:order-1 flex w-full ${isRight ? "justify-end md:pr-12" : "justify-start md:pl-12"}`}>
+                      {isRight ? (
+                        /* Date Pill - Right Aligned (visually left of center) */
+                        <div
+                          className={`group flex items-center gap-4 transition-all duration-700 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+                            }`}
+                          style={{ transitionDelay: `${index * 200 + 100}ms` }}
+                        >
+                          <div className="hidden md:block h-px w-12 bg-purple-200 dark:bg-purple-800" />
+                          <div className="inline-flex flex-col items-end">
+                            <span className="text-3xl font-bold text-slate-200 dark:text-slate-700 leading-none">
+                              {milestone.date.split(" ")[0]}
+                            </span>
+                            <span className="text-sm font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-widest bg-purple-50 dark:bg-purple-900/20 px-3 py-1 rounded-full mt-1 border border-purple-100 dark:border-purple-800">
+                              {milestone.date}
+                            </span>
                           </div>
-
-                          {/* Title */}
-                          <h3 className="text-xl md:text-2xl font-bold text-purple-900 dark:text-purple-100 mb-3 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors duration-300">
-                            {milestone.title}
-                          </h3>
-
-                          {/* Description */}
-                          <p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                            {milestone.description}
-                          </p>
                         </div>
+                      ) : (
+                        /* Content Card - Left Aligned (visually left of center) */
+                        <div
+                          className={`w-full transition-all duration-700 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+                            }`}
+                          style={{ transitionDelay: `${index * 200 + 200}ms` }}
+                        >
+                          <Card align="right" />
+                        </div>
+                      )}
+                    </div>
 
-                        {/* Hover effect border */}
-                        <div className="absolute inset-0 rounded-2xl md:rounded-3xl border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-800 transition-all duration-500" />
+                    {/* Center Column (Timeline Node) */}
+                    <div className="order-1 md:order-2 flex justify-center relative">
+                      <div className="relative flex items-center justify-center h-16 w-16">
+                        {/* Circle */}
+                        <div
+                          className={`relative z-20 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-[3px] border-purple-500 shadow-[0_0_0_4px_rgba(246,243,249,1)] dark:shadow-[0_0_0_4px_rgba(15,23,42,1)] transition-all duration-500 ${isVisible ? "scale-100" : "scale-0"
+                            }`}
+                        />
+                        {/* Pulse behind */}
+                        <div className={`absolute z-10 w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 transition-all duration-700 ${isVisible ? "animate-ping opacity-20" : "opacity-0"}`} />
                       </div>
+                    </div>
+
+                    {/* Right Column */}
+                    <div className={`order-3 flex w-full ${isRight ? "justify-start md:pl-12" : "justify-end md:pr-12"}`}>
+                      {isRight ? (
+                        /* Content Card - Right Aligned (visually right of center) */
+                        <div
+                          className={`w-full transition-all duration-700 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+                            }`}
+                          style={{ transitionDelay: `${index * 200 + 200}ms` }}
+                        >
+                          <Card align="left" />
+                        </div>
+                      ) : (
+                        /* Date Pill - Left Aligned (visually right of center) */
+                        <div
+                          className={`group flex items-center gap-4 transition-all duration-700 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+                            }`}
+                          style={{ transitionDelay: `${index * 200 + 100}ms` }}
+                        >
+                          <div className="inline-flex flex-col items-start">
+                            <span className="text-3xl font-bold text-slate-200 dark:text-slate-700 leading-none">
+                              {milestone.date.split(" ")[0]}
+                            </span>
+                            <span className="text-sm font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-widest bg-purple-50 dark:bg-purple-900/20 px-3 py-1 rounded-full mt-1 border border-purple-100 dark:border-purple-800">
+                              {milestone.date}
+                            </span>
+                          </div>
+                          <div className="hidden md:block h-px w-12 bg-purple-200 dark:bg-purple-800" />
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -200,44 +224,24 @@ const PVKJourney = () => {
             </div>
 
             {/* Final Node - Today */}
-            <div className="relative flex flex-col md:flex-row items-center mt-12 sm:mt-16 md:mt-20">
-              {/* Timeline Node */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 z-20 md:static md:transform-none md:z-auto">
-                <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 shadow-xl ring-4 ring-purple-100 dark:ring-purple-900/50" />
-              </div>
+            <div className="relative flex flex-col items-center mt-20 sm:mt-24">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-12 bg-gradient-to-b from-pink-200 to-transparent dark:from-pink-800 -mt-12" />
 
-              {/* Date Badge */}
-              <div className="w-full md:w-1/2 mt-4 md:mt-0 md:pr-8 md:pr-12 flex justify-center md:justify-end">
-                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-purple-600 to-pink-500 text-white text-base md:text-lg font-semibold shadow-lg">
-                  <Target className="w-5 h-5 md:w-6 md:h-6" />
-                  <span>Today</span>
+              <div className="relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto px-4">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/25 mb-6 animate-pulse">
+                  <Target className="w-7 h-7 text-white" />
                 </div>
-              </div>
 
-              {/* Content Card */}
-              <div className="w-full md:w-1/2 mt-4 md:mt-0 md:pl-8 md:pl-12 flex justify-center md:justify-start">
-                <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 relative overflow-hidden group">
-                  {/* Decorative background icon */}
-                  <div className="absolute top-4 right-4 w-24 h-24 md:w-32 md:h-32 opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-500">
-                    <Target className="w-full h-full text-purple-600 dark:text-purple-400" />
-                  </div>
-
-                  {/* Content */}
-                  <div className="relative z-10">
-                    {/* Icon */}
-                    <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Target className="w-6 h-6 md:w-7 md:h-7 text-purple-600 dark:text-purple-400" />
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                      Today, PVK Enterprises stands as a trusted leader in printing, trophies, and stationery solutions, proving that with dedication and belief, success can be built from any starting point.
-                    </p>
-                  </div>
-
-                  {/* Hover effect border */}
-                  <div className="absolute inset-0 rounded-2xl md:rounded-3xl border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-800 transition-all duration-500" />
+                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 text-xs font-bold uppercase tracking-wider mb-4 border border-pink-200 dark:border-pink-800/50">
+                  Present Day
                 </div>
+
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                  Continuing the Legacy
+                </h3>
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
+                  Today, PVK Enterprises stands as a trusted leader in printing, trophies, and stationery solutions, proving that with dedication and belief, success can be built from any starting point.
+                </p>
               </div>
             </div>
           </div>
