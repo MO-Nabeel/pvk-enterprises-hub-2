@@ -1,4 +1,5 @@
 import { allProducts, type Product } from "@/data/productData";
+import { CartItem } from "@/lib/cart";
 
 export type OrderStatus = "New" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
 
@@ -7,7 +8,17 @@ export type MockOrder = {
   customerName: string;
   createdAt: string; // ISO date
   total: number;
+
   status: OrderStatus;
+  designUrl?: string;
+  details?: {
+    email: string;
+    phone: string;
+    address: string;
+    items: CartItem[];
+    paymentMethod: string;
+    additionalInfo?: Record<string, string>;
+  };
 };
 
 export type MockCustomer = {
@@ -44,6 +55,7 @@ export const mockOrders: MockOrder[] = [
     createdAt: "2025-12-01T10:15:00Z",
     total: 3250,
     status: "New",
+    designUrl: "https://placehold.co/600x400/png?text=Visiting+Card+Design",
   },
   {
     id: "PVK-2025-002",

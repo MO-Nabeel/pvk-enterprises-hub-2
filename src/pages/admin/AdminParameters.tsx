@@ -11,7 +11,7 @@ const AdminParameters = () => {
   return (
     <AdminLayout title="Parameters">
       <section className="grid gap-6">
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
+        <Card className="border-none shadow-premium bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm text-card-foreground">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-muted-foreground" />

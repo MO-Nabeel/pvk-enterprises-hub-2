@@ -3,6 +3,21 @@ import type { DesignUpload } from "@/lib/designUpload";
 
 export type FulfillmentMethod = "Cash on Delivery" | "Get a Quote" | "Online Payment";
 
+export interface CustomerDetails {
+  id?: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  pincode: string;
+  landmark?: string;
+  city?: string;
+  state?: string;
+  gst?: string;
+  companyName?: string;
+  [key: string]: string | undefined; // Allow other optional fields but enforce the core ones
+}
+
 export type OrderPayload = {
   id: string;
   submittedAt: string;
@@ -13,7 +28,7 @@ export type OrderPayload = {
     total: number;
   };
   cart: CartItem[];
-  customer: Record<string, string>;
+  customer: CustomerDetails;
   designUpload?: DesignUpload | null;
   meta: {
     type: "order" | "quote";
@@ -49,7 +64,7 @@ export const buildOrderPayload = ({
   fulfillmentMethod: FulfillmentMethod;
   cart: CartItem[];
   totals: { subtotal: number; taxes: number; total: number };
-  customer: Record<string, string>;
+  customer: CustomerDetails;
   designUpload?: DesignUpload | null;
 }): OrderPayload => {
   const metaType: OrderPayload["meta"]["type"] =
@@ -61,7 +76,7 @@ export const buildOrderPayload = ({
     fulfillmentMethod,
     totals,
     cart,
-    customer,
+    customer, // customer is now CustomerDetails
     designUpload: designUpload || undefined,
     meta: {
       type: metaType,

@@ -1051,69 +1051,116 @@ const AdminProducts = () => {
   return (
     <AdminLayout title="Products & Inventory">
       {/* KPI row */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Products</CardTitle>
-            <Package className="h-5 w-5 text-primary" />
+      {/* KPI row */}
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-blue-50/80 via-white to-blue-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-blue-900/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+            <Package className="h-32 w-32 -mr-10 -mt-10" />
+          </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-blue-600/80 dark:text-blue-400">
+              Total Products
+            </CardTitle>
+            <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-blue-100 dark:ring-blue-900/30 group-hover:scale-110 transition-transform duration-300">
+              <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight text-foreground">{totalProducts}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Products currently defined in the PVK catalogue.</p>
+          <CardContent className="relative z-10">
+            <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+              {totalProducts}
+            </div>
+            <p className="mt-3 text-xs font-semibold text-blue-600/80 dark:text-blue-400 flex items-center gap-1.5 bg-blue-50/50 dark:bg-blue-900/20 w-fit px-2 py-1 rounded-full">
+              Products currently defined in the PVK catalogue.
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Products</CardTitle>
-            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-emerald-50/80 via-white to-emerald-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-emerald-900/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+            <CheckCircle2 className="h-32 w-32 -mr-10 -mt-10" />
+          </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-emerald-600/80 dark:text-emerald-400">
+              Active Products
+            </CardTitle>
+            <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-emerald-100 dark:ring-emerald-900/30 group-hover:scale-110 transition-transform duration-300">
+              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight text-foreground">{activeProducts}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Visible products across your store and services.</p>
+          <CardContent className="relative z-10">
+            <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+              {activeProducts}
+            </div>
+            <p className="mt-3 text-xs font-semibold text-emerald-600/80 dark:text-emerald-400 flex items-center gap-1.5 bg-emerald-50/50 dark:bg-emerald-900/20 w-fit px-2 py-1 rounded-full">
+              Visible products across your store and services.
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Low Stock</CardTitle>
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-amber-50/80 via-white to-amber-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-amber-900/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+            <AlertTriangle className="h-32 w-32 -mr-10 -mt-10" />
+          </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-amber-600/80 dark:text-amber-400">
+              Low Stock
+            </CardTitle>
+            <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-amber-100 dark:ring-amber-900/30 group-hover:scale-110 transition-transform duration-300">
+              <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight text-foreground">{lowStockCount}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Items currently below your preferred threshold.</p>
+          <CardContent className="relative z-10">
+            <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+              {lowStockCount}
+            </div>
+            <p className="mt-3 text-xs font-semibold text-amber-600/80 dark:text-amber-400 flex items-center gap-1.5 bg-amber-50/50 dark:bg-amber-900/20 w-fit px-2 py-1 rounded-full">
+              Items currently below your preferred threshold.
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Categories</CardTitle>
-            <Layers className="h-5 w-5 text-sky-500" />
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-purple-50/80 via-white to-purple-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-purple-900/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+            <Layers className="h-32 w-32 -mr-10 -mt-10" />
+          </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-purple-600/80 dark:text-purple-400">
+              Categories
+            </CardTitle>
+            <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-purple-100 dark:ring-purple-900/30 group-hover:scale-110 transition-transform duration-300">
+              <Layers className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight text-foreground">{categoryCount}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Organise trophies, printing, accessories and more.</p>
+          <CardContent className="relative z-10">
+            <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+              {categoryCount}
+            </div>
+            <p className="mt-3 text-xs font-semibold text-purple-600/80 dark:text-purple-400 flex items-center gap-1.5 bg-purple-50/50 dark:bg-purple-900/20 w-fit px-2 py-1 rounded-full">
+              Organise trophies, printing, accessories and more.
+            </p>
           </CardContent>
         </Card>
       </section>
 
       {/* Main products surface */}
       <section className="space-y-4">
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-col gap-3 border-b border-border/70 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm">
+          <CardHeader className="flex flex-col gap-4 border-b border-slate-100/50 dark:border-slate-800/50 pb-4 md:pb-6 sm:flex-row sm:items-center sm:justify-between px-4 pt-4 md:px-6 md:pt-6">
             <div className="space-y-1">
-              <CardTitle className="text-base font-semibold text-foreground">Products &amp; Inventory</CardTitle>
-              <p className="text-xs text-muted-foreground">
-                Manage product details, visibility, pricing, and stock in a single, clean workspace.
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+                Products &amp; Inventory
+              </CardTitle>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                Manage product details, visibility, pricing, and stock
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3">
               <Button
                 size="sm"
-                className="gap-1.5 text-xs sm:text-sm bg-gradient-to-r from-[#00c6ff] to-[#00d97e] text-white hover:opacity-90 shadow-md hover:shadow-lg transition-colors"
+                className="gap-2 text-xs font-bold uppercase tracking-wide bg-slate-900 hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all rounded-full h-10 px-6"
                 onClick={handleNewProduct}
               >
-                <Plus className="h-3.5 w-3.5" />
+                <Plus className="h-4 w-4" />
                 New Product
               </Button>
             </div>
@@ -1590,47 +1637,49 @@ const AdminProducts = () => {
               </DialogContent>
             </Dialog>
 
-            <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-4">
-              <TabsList className="grid grid-cols-2 w-full h-auto gap-1 bg-muted p-1 rounded-lg sm:flex sm:w-fit sm:rounded-full">
-                <TabsTrigger
-                  value="catalog"
-                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
-                >
-                  Catalogue
-                </TabsTrigger>
-                <TabsTrigger
-                  value="stock"
-                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
-                >
-                  Stock view
-                </TabsTrigger>
-                <TabsTrigger
-                  value="categories"
-                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
-                >
-                  Categories
-                </TabsTrigger>
-                <TabsTrigger
-                  value="brands"
-                  className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#00c6ff] data-[state=active]:to-[#00d97e] w-full"
-                >
-                  Brands
-                </TabsTrigger>
-              </TabsList>
+            <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
+              <div className="px-4 pt-4 md:px-6">
+                <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex bg-slate-100/80 dark:bg-slate-900/80 p-1.5 rounded-3xl md:rounded-full border border-slate-200/50 dark:border-slate-800/50 h-auto">
+                  <TabsTrigger
+                    value="catalog"
+                    className="rounded-full py-2 md:px-5 text-xs font-bold uppercase tracking-wide data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-900/5 dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white transition-all"
+                  >
+                    Catalogue
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="stock"
+                    className="rounded-full py-2 md:px-5 text-xs font-bold uppercase tracking-wide data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-900/5 dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white transition-all"
+                  >
+                    Stock view
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="categories"
+                    className="rounded-full py-2 md:px-5 text-xs font-bold uppercase tracking-wide data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-900/5 dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white transition-all"
+                  >
+                    Categories
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="brands"
+                    className="rounded-full py-2 md:px-5 text-xs font-bold uppercase tracking-wide data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-900/5 dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white transition-all"
+                  >
+                    Brands
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               {/* Catalogue tab */}
-              <TabsContent value="catalog" className="space-y-4">
+              <TabsContent value="catalog" className="space-y-4 px-4 pb-4 md:px-6 md:pb-6">
                 <div className="grid gap-3 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)]">
                   <div className="flex items-center gap-2">
                     <Input
                       placeholder="Search by name, SKU, or category…"
-                      className="h-9 text-sm"
+                      className="h-10 text-sm rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus-visible:ring-slate-900 dark:focus-visible:ring-indigo-600"
                       value={searchTerm}
                       onChange={(event) => setSearchTerm(event.target.value)}
                     />
                   </div>
                   <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="h-9 text-xs sm:text-sm">
+                    <SelectTrigger className="h-10 text-xs sm:text-sm rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
                       <SelectValue placeholder="All categories" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1643,7 +1692,7 @@ const AdminProducts = () => {
                     </SelectContent>
                   </Select>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="h-9 text-xs sm:text-sm">
+                    <SelectTrigger className="h-10 text-xs sm:text-sm rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
                       <SelectValue placeholder="Status: All" />
                     </SelectTrigger>
                     <SelectContent>
@@ -1655,17 +1704,17 @@ const AdminProducts = () => {
                   </Select>
                 </div>
 
-                <div className="overflow-x-auto rounded-md border border-border bg-card">
-                  <Table>
-                    <TableHeader className="bg-muted/60">
-                      <TableRow>
-                        <TableHead className="whitespace-nowrap text-xs text-muted-foreground">SKU</TableHead>
-                        <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Product</TableHead>
-                        <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Category</TableHead>
-                        <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Price</TableHead>
-                        <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Stock</TableHead>
-                        <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Status</TableHead>
-                        <TableHead className="whitespace-nowrap text-xs text-muted-foreground text-right">
+                <div className="overflow-x-auto">
+                  <Table className="w-full">
+                    <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                      <TableRow className="hover:bg-transparent border-slate-100 dark:border-slate-800">
+                        <TableHead className="w-[100px] whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 pl-6 h-12">SKU</TableHead>
+                        <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Product</TableHead>
+                        <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Category</TableHead>
+                        <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Price</TableHead>
+                        <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Stock</TableHead>
+                        <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Status</TableHead>
+                        <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 text-right pr-6 h-12">
                           Actions
                         </TableHead>
                       </TableRow>
@@ -1674,49 +1723,49 @@ const AdminProducts = () => {
                       {filteredProducts.map((product) => {
                         const isLowStock = product.stock > 0 && product.stock <= LOW_STOCK_THRESHOLD;
                         return (
-                          <TableRow key={product.id}>
-                            <TableCell className="text-xs font-mono text-muted-foreground">
+                          <TableRow key={product.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors">
+                            <TableCell className="text-xs font-mono text-slate-500 pl-6 py-4">
                               {product.sku || product.id}
                             </TableCell>
-                            <TableCell className="text-sm font-medium">
+                            <TableCell className="text-sm font-bold text-slate-900 dark:text-slate-100 py-4">
                               {product.name}
-                              <div className="mt-0.5 text-xs text-muted-foreground">{product.brand}</div>
+                              <div className="mt-0.5 text-xs font-medium text-slate-500">{product.brand}</div>
                             </TableCell>
-                            <TableCell className="text-xs text-muted-foreground">{product.category}</TableCell>
-                            <TableCell className="text-sm">₹{product.price.toFixed(2)}</TableCell>
-                            <TableCell className="text-sm">
+                            <TableCell className="text-xs font-medium text-slate-500 py-4">{product.category}</TableCell>
+                            <TableCell className="text-sm font-semibold text-slate-900 dark:text-slate-100 py-4">₹{product.price.toFixed(2)}</TableCell>
+                            <TableCell className="text-sm py-4">
                               <div className="flex items-center gap-1.5">
                                 <Input
                                   type="number"
-                                  className="h-8 w-20 rounded-md px-2 text-xs"
+                                  className="h-8 w-20 rounded-lg px-2 text-xs border-slate-200 dark:border-slate-800 focus-visible:ring-slate-900 dark:focus-visible:ring-indigo-600"
                                   value={product.stock}
                                   onChange={(event) =>
                                     handleStockChange(product.id, Number.parseInt(event.target.value, 10))
                                   }
                                 />
-                                <span className="text-[11px] text-muted-foreground">units</span>
+                                <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wide">units</span>
                               </div>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="py-4">
                               {product.status === "active" && (
-                                <Badge variant="outline" className="border-emerald-500/40 text-emerald-600 dark:text-emerald-300">
+                                <Badge variant="outline" className="px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider border-0 rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-emerald-700/10 dark:bg-emerald-900/20 dark:text-emerald-400 dark:ring-emerald-400/20 shadow-sm">
                                   Active
                                 </Badge>
                               )}
                               {product.status === "draft" && (
-                                <Badge variant="outline" className="border-sky-500/40 text-sky-600 dark:text-sky-300">
+                                <Badge variant="outline" className="px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider border-0 rounded-full bg-sky-50 text-sky-700 ring-1 ring-sky-700/10 dark:bg-sky-900/20 dark:text-sky-400 dark:ring-sky-400/20 shadow-sm">
                                   Draft
                                 </Badge>
                               )}
                               {product.status === "hidden" && (
-                                <Badge variant="outline" className="border-muted-foreground/40 text-muted-foreground">
+                                <Badge variant="outline" className="px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider border-0 rounded-full bg-slate-100 text-slate-600 ring-1 ring-slate-400/20 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700 shadow-sm">
                                   Hidden
                                 </Badge>
                               )}
                               {isLowStock && (
                                 <Badge
                                   variant="outline"
-                                  className="ml-1 border-amber-500/40 text-amber-600 dark:text-amber-300"
+                                  className="ml-2 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider border-0 rounded-full bg-amber-50 text-amber-700 ring-1 ring-amber-700/10 dark:bg-amber-900/20 dark:text-amber-400 dark:ring-amber-400/20 shadow-sm"
                                 >
                                   Low
                                 </Badge>
@@ -1765,7 +1814,7 @@ const AdminProducts = () => {
               </TabsContent>
 
               {/* Stock view tab */}
-              <TabsContent value="stock" className="space-y-4">
+              <TabsContent value="stock" className="space-y-4 px-6 pb-6">
                 <div className="grid gap-3 md:grid-cols-3">
                   <Select>
                     <SelectTrigger className="h-9 text-xs sm:text-sm">
@@ -1790,8 +1839,8 @@ const AdminProducts = () => {
                 </div>
                 <div className="overflow-x-auto rounded-md border border-border bg-card">
                   <Table>
-                    <TableHeader className="bg-muted/60">
-                      <TableRow>
+                    <TableHeader className="bg-slate-50 dark:bg-slate-900/50">
+                      <TableRow className="border-b border-slate-100 dark:border-slate-800">
                         <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Product</TableHead>
                         <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Category</TableHead>
                         <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Current stock</TableHead>
@@ -1803,7 +1852,7 @@ const AdminProducts = () => {
                         const isLowStock = product.stock > 0 && product.stock <= LOW_STOCK_THRESHOLD;
                         const isOut = product.stock === 0;
                         return (
-                          <TableRow key={product.id}>
+                          <TableRow key={product.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors">
                             <TableCell className="text-sm font-medium">{product.name}</TableCell>
                             <TableCell className="text-xs text-muted-foreground">{product.category}</TableCell>
                             <TableCell className="text-sm">
@@ -1836,7 +1885,7 @@ const AdminProducts = () => {
               </TabsContent>
 
               {/* Categories tab */}
-              <TabsContent value="categories" className="space-y-4">
+              <TabsContent value="categories" className="space-y-4 px-6 pb-6">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="space-y-0.5">
                     <CardTitle className="text-base font-semibold">Categories</CardTitle>
@@ -1847,10 +1896,10 @@ const AdminProducts = () => {
                   <Button
                     type="button"
                     size="sm"
-                    className="gap-1.5 text-xs sm:text-sm bg-gradient-to-r from-[#00c6ff] to-[#00d97e] text-white hover:opacity-90 shadow-md hover:shadow-lg transition-colors"
+                    className="gap-2 text-xs sm:text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all rounded-lg h-9 px-4"
                     onClick={() => setShowCategoryForm(true)}
                   >
-                    <Plus className="h-3.5 w-3.5" />
+                    <Plus className="h-4 w-4" />
                     Add category
                   </Button>
                 </div>
@@ -2038,11 +2087,11 @@ const AdminProducts = () => {
                   </DialogContent>
                 </Dialog>
 
-                <Card className="border-border bg-card text-card-foreground shadow-sm">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle className="text-base font-semibold">All categories</CardTitle>
+                <Card className="border-none shadow-premium bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 px-6 pt-6 pb-4">
+                    <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100">All categories</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 pt-4 text-sm">
+                  <CardContent className="space-y-3 px-6 pb-6 text-sm">
                     <div className="space-y-2">
                       {sortedCategoriesForDisplay.map((category) => {
                         const override = categoryOverrides[category.name];
@@ -2062,7 +2111,7 @@ const AdminProducts = () => {
                         return (
                           <div
                             key={category.id}
-                            className="flex items-center justify-between rounded-md border border-border/70 px-3 py-2"
+                            className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm hover:shadow-md transition-all duration-200 px-4 py-3"
                           >
                             <div className="flex-1 min-w-0">
                               <div className="font-medium flex items-center gap-2">
@@ -3014,10 +3063,10 @@ const BrandManagementPanel = ({ products }: BrandManagementPanelProps) => {
           <Button
             type="button"
             size="sm"
-            className="gap-1.5 text-xs sm:text-sm bg-gradient-to-r from-[#00c6ff] to-[#00d97e] text-white hover:opacity-90 shadow-md hover:shadow-lg transition-colors"
+            className="gap-2 text-xs sm:text-sm font-medium bg-slate-900 hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all rounded-lg h-9 px-4"
             onClick={handleNewClick}
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-4 w-4" />
             Add Brand
           </Button>
         </div>
@@ -3129,29 +3178,29 @@ const BrandManagementPanel = ({ products }: BrandManagementPanelProps) => {
         </DialogContent>
       </Dialog>
 
-      <Card className="border-border bg-card text-card-foreground shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">All brands</CardTitle>
+      <Card className="border-none shadow-md bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm">
+        <CardHeader className="px-6 pt-6 pb-4">
+          <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100">All brands</CardTitle>
         </CardHeader>
-        <CardContent className="pt-0">
-          <div className="overflow-x-auto rounded-md border border-border bg-card">
+        <CardContent className="px-6 pb-6">
+          <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
             <Table>
-              <TableHeader className="bg-muted/60">
-                <TableRow>
-                  <TableHead className="text-xs text-muted-foreground">Brand</TableHead>
-                  <TableHead className="text-xs text-muted-foreground">
+              <TableHeader className="bg-slate-50 dark:bg-slate-900/50">
+                <TableRow className="border-b border-slate-100 dark:border-slate-800">
+                  <TableHead className="text-xs font-semibold text-slate-500 pl-6 h-10">Brand</TableHead>
+                  <TableHead className="text-xs font-semibold text-slate-500 h-10">
                     Associated categories
                   </TableHead>
-                  <TableHead className="text-xs text-muted-foreground">Status</TableHead>
-                  <TableHead className="text-xs text-muted-foreground text-right">
+                  <TableHead className="text-xs font-semibold text-slate-500 h-10">Status</TableHead>
+                  <TableHead className="text-xs font-semibold text-slate-500 text-right pr-6 h-10">
                     Actions
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredBrands.map((brand) => (
-                  <TableRow key={brand.name}>
-                    <TableCell className="text-sm font-medium">{brand.name}</TableCell>
+                  <TableRow key={brand.name} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors">
+                    <TableCell className="text-sm font-medium pl-6">{brand.name}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">
                       {brand.associatedCategories.length > 0
                         ? brand.associatedCategories.join(", ")

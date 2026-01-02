@@ -231,39 +231,109 @@ const AdminBlogs = () => {
   };
 
   return (
-    <AdminLayout title="Blog Management">
+    <AdminLayout title="Blog Management" subtitle="Create, edit, and manage your blog posts and categories.">
       <div className="space-y-6">
-        {/* Header Actions */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-2xl font-bold">Blog Posts</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Manage your blog articles and content
+        {/* Stats Section - Moved to Top for Consistency */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-violet-50/80 via-white to-violet-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-violet-900/10 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+              <FileText className="h-32 w-32 -mr-10 -mt-10" />
+            </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-xs font-bold uppercase tracking-widest text-violet-600/80 dark:text-violet-400">
+                Total Posts
+              </CardTitle>
+              <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-violet-100 dark:ring-violet-900/30 group-hover:scale-110 transition-transform duration-300">
+                <FileText className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+                {posts.length}
+              </div>
+              <p className="mt-3 text-xs font-semibold text-violet-600/80 dark:text-violet-400 flex items-center gap-1.5 bg-violet-50/50 dark:bg-violet-900/20 w-fit px-2 py-1 rounded-full">
+                Published articles across all categories.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-emerald-50/80 via-white to-emerald-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-emerald-900/10 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+              <List className="h-32 w-32 -mr-10 -mt-10" />
+            </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-xs font-bold uppercase tracking-widest text-emerald-600/80 dark:text-emerald-400">
+                Categories
+              </CardTitle>
+              <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-emerald-100 dark:ring-emerald-900/30 group-hover:scale-110 transition-transform duration-300">
+                <List className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+                {categories.length}
+              </div>
+              <p className="mt-3 text-xs font-semibold text-emerald-600/80 dark:text-emerald-400 flex items-center gap-1.5 bg-emerald-50/50 dark:bg-emerald-900/20 w-fit px-2 py-1 rounded-full">
+                Active content topics.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-amber-50/80 via-white to-amber-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-amber-900/10 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+              <Check className="h-32 w-32 -mr-10 -mt-10" />
+            </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+              <CardTitle className="text-xs font-bold uppercase tracking-widest text-amber-600/80 dark:text-amber-400">
+                Filtered Results
+              </CardTitle>
+              <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-amber-100 dark:ring-amber-900/30 group-hover:scale-110 transition-transform duration-300">
+                <Check className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+                {filteredPosts.length}
+              </div>
+              <p className="mt-3 text-xs font-semibold text-amber-600/80 dark:text-amber-400 flex items-center gap-1.5 bg-amber-50/50 dark:bg-amber-900/20 w-fit px-2 py-1 rounded-full">
+                Posts matching current search criteria.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content Card */}
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm">
+          <CardHeader className="px-6 pt-6 pb-4 border-b border-slate-100/50 dark:border-slate-800/50">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-1">
+                <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">Blog Posts</CardTitle>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  Manage articles, edit content, and organize
                 </p>
               </div>
               <Button
                 onClick={handleNew}
-                className="gap-2 bg-gradient-to-r from-[#00c6ff] to-[#00d97e] text-white hover:opacity-90 shadow-md hover:shadow-lg transition-colors"
+                className="gap-2 text-xs font-bold uppercase tracking-wide rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all h-10 px-6"
+                size="sm"
               >
                 <Plus className="h-4 w-4" />
                 New Post
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-4">
+          <CardContent className="space-y-6 px-6 py-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center">
               <div className="flex-1">
                 <Input
-                  placeholder="Search posts..."
+                  placeholder="Search posts by title, author, or content..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full"
+                  className="h-10 text-sm rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus-visible:ring-slate-900 dark:focus-visible:ring-indigo-600"
                 />
               </div>
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectTrigger className="h-10 w-full md:w-[200px] text-xs sm:text-sm rounded-xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -276,84 +346,83 @@ const AdminBlogs = () => {
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Posts Table */}
-        <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm bg-white dark:bg-slate-950">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[300px]">Title</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Author</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                <TableHeader className="bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                  <TableRow className="hover:bg-transparent border-slate-100 dark:border-slate-800">
+                    <TableHead className="w-[300px] whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 pl-6 h-12">Title</TableHead>
+                    <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Category</TableHead>
+                    <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Author</TableHead>
+                    <TableHead className="whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 h-12">Date</TableHead>
+                    <TableHead className="text-right whitespace-nowrap text-[11px] font-bold uppercase tracking-wider text-slate-500 pr-6 h-12">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredPosts.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={5} className="text-center py-12 text-sm text-muted-foreground">
                         {searchTerm || categoryFilter !== "all"
-                          ? "No posts found matching your filters"
-                          : "No blog posts yet. Create your first post!"}
+                          ? "No posts found matching your filters."
+                          : "No blog posts yet. Click 'New Post' to create one!"}
                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredPosts.map((post) => (
-                      <TableRow key={post.id}>
-                        <TableCell>
+                      <TableRow key={post.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors">
+                        <TableCell className="pl-6 py-4">
                           <div className="flex items-center gap-3">
-                            {post.imageURL && (
-                              <img
-                                src={post.imageURL}
-                                alt={post.title}
-                                className="h-12 w-12 rounded object-cover"
-                              />
+                            {post.imageURL ? (
+                              <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                                <img
+                                  src={post.imageURL}
+                                  alt={post.title}
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <div className="h-12 w-12 flex-shrink-0 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-sm">
+                                <FileText className="h-5 w-5 text-slate-400" />
+                              </div>
                             )}
-                            <div>
-                              <div className="font-medium">{post.title}</div>
-                              <div className="text-sm text-muted-foreground line-clamp-1">
+                            <div className="min-w-0 max-w-[200px] sm:max-w-xs">
+                              <div className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{post.title}</div>
+                              <div className="text-xs font-medium text-slate-500 dark:text-slate-400 line-clamp-1 truncate">
                                 {post.excerpt}
                               </div>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{post.category}</Badge>
+                        <TableCell className="py-4">
+                          <Badge variant="outline" className="px-2.5 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider bg-slate-50 text-slate-700 border-0 ring-1 ring-slate-200/50 dark:bg-slate-900/30 dark:text-slate-300 dark:ring-slate-700/50 shadow-sm">
+                            {post.category}
+                          </Badge>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-4">
                           <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{post.author}</span>
+                            <span className="text-xs font-medium text-slate-600 dark:text-slate-400">{post.author}</span>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{formatDate(post.date)}</span>
-                          </div>
+                        <TableCell className="py-4">
+                          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{formatDate(post.date)}</span>
                         </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
+                        <TableCell className="text-right pr-6 py-4">
+                          <div className="flex items-center justify-end gap-1">
                             <Button
-                              variant="ghost"
+                              variant="outline"
                               size="icon"
                               onClick={() => handleEdit(post)}
-                              className="h-8 w-8 hover:bg-[#111827] hover:text-white"
+                              className="h-7 w-7 hover:bg-[#111827] hover:text-white transition-all duration-200 ease-in-out"
                             >
-                              <Pencil className="h-4 w-4" />
+                              <Pencil className="h-3.5 w-3.5" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => setDeleteConfirmId(post.id)}
-                              className="h-8 w-8 text-destructive hover:bg-[#111827] hover:text-white"
+                              className="h-7 w-7 text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                         </TableCell>
@@ -365,45 +434,6 @@ const AdminBlogs = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Posts</p>
-                  <p className="text-2xl font-bold">{posts.length}</p>
-                </div>
-                <FileText className="h-8 w-8 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Categories</p>
-                  <p className="text-2xl font-bold">{categories.length}</p>
-                </div>
-                <Badge variant="outline" className="h-8 w-8 flex items-center justify-center">
-                  {categories.length}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Filtered Results</p>
-                  <p className="text-2xl font-bold">{filteredPosts.length}</p>
-                </div>
-                <FileText className="h-8 w-8 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
 
       {/* Edit/Create Dialog */}

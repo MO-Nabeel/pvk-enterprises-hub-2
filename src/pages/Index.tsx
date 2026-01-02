@@ -8,6 +8,7 @@ import HeroSlider, { type HeroSlide } from "@/components/HeroSlider";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import BlogPostCard from "@/components/BlogPostCard";
 import PortfolioCard from "@/components/PortfolioCard";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -899,6 +900,8 @@ const Index = () => {
           <HeroMessagingBlock key={currentSlideIndex} variant="card" />
         </div>
       </section>
+
+
 
       {/* Categories Grid */}
       <section id="shop-by-category" className="pt-0 pb-8 sm:pb-12 md:pb-16 lg:pb-20 bg-white dark:bg-slate-900 scroll-mt-20">

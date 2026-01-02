@@ -212,38 +212,69 @@ const AdminSpecialServices = () => {
   return (
     <AdminLayout title="Special Services Management">
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Services</CardTitle>
-            <Sparkles className="h-5 w-5 text-primary" />
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-pink-50/80 via-white to-pink-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-pink-900/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+            <Sparkles className="h-32 w-32 -mr-10 -mt-10" />
+          </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-pink-600/80 dark:text-pink-400">
+              Active Services
+            </CardTitle>
+            <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-pink-100 dark:ring-pink-900/30 group-hover:scale-110 transition-transform duration-300">
+              <Sparkles className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight text-foreground">{activeCount}</div>
-            <p className="mt-1 text-xs text-muted-foreground">
+          <CardContent className="relative z-10">
+            <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+              {activeCount}
+            </div>
+            <p className="mt-3 text-xs font-semibold text-pink-600/80 dark:text-pink-400 flex items-center gap-1.5 bg-pink-50/50 dark:bg-pink-900/20 w-fit px-2 py-1 rounded-full">
               Services currently visible on the frontend Special Services section.
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Monthly lead volume (mock)</CardTitle>
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-sky-50/80 via-white to-sky-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-sky-900/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+            <Sparkles className="h-32 w-32 -mr-10 -mt-10" />
+          </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-sky-600/80 dark:text-sky-400">
+              Monthly lead volume (mock)
+            </CardTitle>
+            <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-sky-100 dark:ring-sky-900/30 group-hover:scale-110 transition-transform duration-300">
+              <Sparkles className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold tracking-tight text-foreground">{totalLeads}</div>
-            <p className="mt-1 text-xs text-muted-foreground">
+          <CardContent className="relative z-10">
+            <div className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100 mt-2 group-hover:translate-x-1 transition-transform duration-300">
+              {totalLeads}
+            </div>
+            <p className="mt-3 text-xs font-semibold text-sky-600/80 dark:text-sky-400 flex items-center gap-1.5 bg-sky-50/50 dark:bg-sky-900/20 w-fit px-2 py-1 rounded-full">
               Combined enquiry volume from all special services. Data is sample-only and safe for local testing.
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Next actions</CardTitle>
+        <Card className="rounded-3xl border border-white/60 dark:border-white/5 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-slate-50/80 via-white to-slate-50/20 dark:from-slate-900 dark:via-slate-900/50 dark:to-slate-900/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-all duration-500 transform group-hover:scale-110 group-hover:rotate-12">
+            <Edit className="h-32 w-32 -mr-10 -mt-10" />
+          </div>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+            <CardTitle className="text-xs font-bold uppercase tracking-widest text-slate-600/80 dark:text-slate-400">
+              Next actions
+            </CardTitle>
+            <div className="h-10 w-10 rounded-2xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center ring-1 ring-slate-100 dark:ring-slate-800/30 group-hover:scale-110 transition-transform duration-300">
+              <Edit className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+            </div>
           </CardHeader>
-          <CardContent className="space-y-1 text-xs text-muted-foreground">
-            <p>Manage service visibility: Active services appear on the frontend, Paused/Draft do not.</p>
-            <p>Edit service content, images, and status from the cards below.</p>
+          <CardContent className="space-y-2 mt-2 relative z-10">
+            <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+              Manage service visibility
+            </p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed max-w-[90%]">
+              Active services appear on the frontend. Edit content, images, and status below.
+            </p>
           </CardContent>
         </Card>
       </section>
@@ -268,11 +299,11 @@ const AdminSpecialServices = () => {
         </div>
 
         {/* Card Grid View */}
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredServices.map((service) => (
             <Card
               key={service.id}
-              className="flex h-full flex-col justify-between rounded-3xl border border-border/70 bg-gradient-to-b from-background to-background/60 shadow-sm overflow-hidden"
+              className="flex h-full flex-col justify-between rounded-xl border-none shadow-premium hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-900 group overflow-hidden"
             >
               <CardContent className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
                 {/* Service Image Preview */}
@@ -320,7 +351,7 @@ const AdminSpecialServices = () => {
               </CardContent>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between gap-2 border-t border-border/70 bg-slate-950/5 px-4 py-3 sm:px-5">
+              <div className="flex items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-4 py-3 sm:px-5">
                 <Select
                   value={service.status}
                   onValueChange={(value) => handleStatusChange(service.id, value as ServiceStatus)}
@@ -366,23 +397,23 @@ const AdminSpecialServices = () => {
 
       {/* Table View */}
       <section className="mt-8 space-y-4">
-        <Card className="border-border bg-card text-card-foreground shadow-sm">
-          <CardHeader>
+        <Card className="border-none shadow-premium bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm">
+          <CardHeader className="px-6 pt-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
-                <CardTitle className="text-base font-semibold text-foreground">Services List View</CardTitle>
-                <p className="text-xs text-muted-foreground">
+                <CardTitle className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">Services List View</CardTitle>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   All services in a table format for quick management. Optimized for desktop, tablet, and mobile.
                 </p>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6 px-6 pb-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div className="flex flex-1 items-center gap-2">
                 <Input
                   placeholder="Search by title or description..."
-                  className="h-9 text-sm"
+                  className="h-9 text-sm bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-slate-900 dark:focus-visible:ring-indigo-600"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                 />
@@ -392,7 +423,7 @@ const AdminSpecialServices = () => {
                   value={statusFilter}
                   onValueChange={(value) => setStatusFilter(value as "all" | ServiceStatus)}
                 >
-                  <SelectTrigger className="h-9 text-xs sm:text-sm">
+                  <SelectTrigger className="h-9 text-xs sm:text-sm bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
                     <SelectValue placeholder="All statuses" />
                   </SelectTrigger>
                   <SelectContent>
@@ -405,33 +436,38 @@ const AdminSpecialServices = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto rounded-md border border-border bg-card">
+            <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
               <Table>
-                <TableHeader className="bg-muted/60">
-                  <TableRow>
-                    <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Service</TableHead>
-                    <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Description</TableHead>
-                    <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Status</TableHead>
-                    <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Monthly leads</TableHead>
-                    <TableHead className="whitespace-nowrap text-xs text-muted-foreground">Actions</TableHead>
+                <TableHeader className="bg-slate-50 dark:bg-slate-900/50">
+                  <TableRow className="border-b border-slate-100 dark:border-slate-800">
+                    <TableHead className="whitespace-nowrap text-xs font-semibold text-slate-500 pl-6 h-10">Service</TableHead>
+                    <TableHead className="whitespace-nowrap text-xs font-semibold text-slate-500 h-10">Description</TableHead>
+                    <TableHead className="whitespace-nowrap text-xs font-semibold text-slate-500 h-10">Status</TableHead>
+                    <TableHead className="whitespace-nowrap text-xs font-semibold text-slate-500 h-10">Monthly leads</TableHead>
+                    <TableHead className="whitespace-nowrap text-xs font-semibold text-slate-500 h-10">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredServices.map((service) => (
-                    <TableRow key={service.id}>
-                      <TableCell className="text-sm font-medium">{service.title}</TableCell>
+                    <TableRow key={service.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors">
+                      <TableCell className="text-sm font-medium pl-6 text-slate-900 dark:text-slate-100">{service.title}</TableCell>
                       <TableCell className="text-xs text-muted-foreground max-w-md truncate">
                         {service.description}
                       </TableCell>
                       <TableCell className="text-xs">
                         <Badge
                           variant="outline"
-                          className={`text-[11px] ${statusBadgeStyles[service.status]}`}
+                          className={`text-[10px] px-2 py-0.5 rounded-full border-0 ${service.status === 'Active'
+                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : service.status === 'Paused'
+                              ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                              : 'bg-slate-50 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400'
+                            }`}
                         >
                           {service.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
+                      <TableCell className="text-xs text-slate-500 dark:text-slate-400">
                         {service.monthlyLeads || 0}
                       </TableCell>
                       <TableCell className="whitespace-nowrap text-xs">
@@ -439,7 +475,7 @@ const AdminSpecialServices = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 rounded-full px-3 text-[11px] font-medium text-muted-foreground hover:bg-[#111827] hover:text-white transition-colors duration-200"
+                            className="h-7 rounded-full px-3 text-[11px] font-medium text-muted-foreground hover:bg-slate-900 hover:text-white dark:hover:bg-slate-800 transition-colors duration-200"
                             type="button"
                             onClick={() => handleOpenEdit(service)}
                           >
@@ -448,7 +484,7 @@ const AdminSpecialServices = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 rounded-full px-3 text-[11px] font-medium text-destructive hover:bg-[#111827] delete-button-hover"
+                            className="h-7 rounded-full px-3 text-[11px] font-medium text-rose-500 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-900/30 dark:hover:text-rose-400 transition-colors duration-200"
                             type="button"
                             onClick={() => setDeleteServiceId(service.id)}
                           >
@@ -460,7 +496,7 @@ const AdminSpecialServices = () => {
                   ))}
                   {filteredServices.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="py-6 text-center text-xs text-muted-foreground">
+                      <TableCell colSpan={5} className="py-8 text-center text-sm text-muted-foreground">
                         No services match your filters yet.
                       </TableCell>
                     </TableRow>
