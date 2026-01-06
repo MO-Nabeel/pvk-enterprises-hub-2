@@ -32,7 +32,7 @@ const Contact = () => {
     { label: "Sun", value: "Closed" }
   ];
   const mapUrl =
-    "https://maps.google.com/maps?q=PVK%20TOWER%2C%20Near%20Village%20Office%2C%20Marancheri%2C%20Malappuram%2C%20Kerala%20679581&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    "https://maps.google.com/maps?q=PVK%20TOWER%2C%20Marancheri%2C%20Kerala&t=&z=15&ie=UTF8&iwloc=&output=embed";
   const encodedAddress = encodeURIComponent(address);
 
 
@@ -61,35 +61,35 @@ const Contact = () => {
             <div className="max-w-4xl mx-auto mb-12 text-center">
               <p className="text-xs uppercase tracking-[0.3em] font-medium text-muted-foreground">Contact</p>
               <h2 className="text-2xl sm:text-4xl font-bold text-foreground mt-4 leading-tight">
-                Modern Support for <span className="text-primary">Modern Business</span>
+                Modern Support for <span className="text-primary dark:text-blue-400">Modern Business</span>
               </h2>
               <p className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 Reach out for product consultations, wholesale enquiries, or any help you need.
               </p>
             </div>
 
-            <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 max-w-5xl mx-auto items-start">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 max-w-5xl mx-auto items-start">
               {/* Contact Information (Left Card) */}
-              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
-                <div className="flex items-start justify-between mb-8">
+              <div className="rounded-3xl border border-border bg-card p-3.5 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
+                <div className="flex items-start justify-between mb-6 sm:mb-8">
                   <div className="space-y-1">
-                    <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold text-gray-400">Get In Touch</p>
-                    <h3 className="text-2xl font-bold text-gray-900">Reach Out to Us</h3>
+                    <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold text-muted-foreground">Get In Touch</p>
+                    <h3 className="text-xl sm:text-2xl font-bold text-card-foreground">Reach Out to Us</h3>
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0B1121] text-white">
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                     <Navigation className="h-4 w-4" />
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* Address */}
-                  <div className="flex gap-3 rounded-xl border border-gray-100 p-3 sm:p-4">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
-                      <MapPin className="h-5 w-5" />
+                  <div className="flex gap-2.5 sm:gap-3 rounded-xl border border-border p-3 sm:p-4">
+                    <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Address</p>
-                      <div className="text-sm font-medium text-gray-600 leading-relaxed">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Address</p>
+                      <div className="text-sm font-medium text-card-foreground leading-relaxed">
                         PVK TOWER, Near Village Office,<br />
                         Marancheri,<br />
                         Malappuram, Kerala 679581
@@ -98,23 +98,23 @@ const Contact = () => {
                   </div>
 
                   {/* Phone */}
-                  <div className="rounded-xl border border-gray-100 p-3 sm:p-4">
-                    <div className="flex gap-3 mb-4">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
-                        <Phone className="h-5 w-5" />
+                  <div className="rounded-xl border border-border p-3 sm:p-4">
+                    <div className="flex gap-2.5 sm:gap-3 mb-3 sm:mb-4">
+                      <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                        <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Phone</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Phone</p>
                       </div>
                     </div>
                     <TooltipProvider delayDuration={100}>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-[3.5rem]">
+                      <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2.5 sm:gap-3 pl-0 sm:pl-[3.5rem]">
                         {phoneNumbers.map((item) => (
                           <Tooltip key={item.number}>
                             <TooltipTrigger asChild>
                               <a
                                 href={`tel:${item.number.replace(/[^0-9]/g, "")}`}
-                                className="flex items-center justify-center sm:justify-start gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors w-full"
+                                className="flex items-center justify-center sm:justify-start gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold text-card-foreground hover:border-primary hover:text-primary transition-colors w-full"
                               >
                                 <Phone className="h-3 w-3 flex-shrink-0" /> <span className="truncate">{item.number}</span>
                               </a>
@@ -129,28 +129,28 @@ const Contact = () => {
                   </div>
 
                   {/* Email */}
-                  <div className="flex gap-3 rounded-xl border border-gray-100 p-3 sm:p-4">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
-                      <Mail className="h-5 w-5" />
+                  <div className="flex gap-2.5 sm:gap-3 rounded-xl border border-border p-3 sm:p-4">
+                    <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                      <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Email</p>
-                      <a href="mailto:pvkmaranchery707@gmail.com" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors break-words block">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Email</p>
+                      <a href="mailto:pvkmaranchery707@gmail.com" className="text-sm font-medium text-card-foreground hover:text-primary transition-colors break-words block">
                         pvkmaranchery707@gmail.com
                       </a>
                     </div>
                   </div>
 
                   {/* Working Hours */}
-                  <div className="flex gap-3 rounded-xl border border-gray-100 p-3 sm:p-4">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
-                      <Clock className="h-5 w-5" />
+                  <div className="flex gap-2.5 sm:gap-3 rounded-xl border border-border p-3 sm:p-4">
+                    <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Working Hours</p>
-                      <div className="space-y-1 text-xs sm:text-sm font-medium text-gray-600">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Working Hours</p>
+                      <div className="space-y-1 text-xs sm:text-sm font-medium text-card-foreground">
                         {workingHours.map((item) => (
-                          <div key={item.label} className="break-words"><span className="text-gray-900 font-bold">{item.label}:</span> {item.value}</div>
+                          <div key={item.label} className="break-words"><span className="text-foreground font-bold">{item.label}:</span> {item.value}</div>
                         ))}
                       </div>
                     </div>
@@ -159,19 +159,19 @@ const Contact = () => {
               </div>
 
               {/* Contact Form (Right Card) */}
-              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
-                <div className="mb-8">
-                  <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-gray-400">Send Message</p>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">We’d love to hear from you</h3>
-                  <p className="text-gray-500 mt-2 text-sm">
+              <div className="rounded-3xl border border-border bg-card p-4 sm:p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
+                <div className="mb-6 sm:mb-8">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-muted-foreground">Send Message</p>
+                  <h3 className="text-xl sm:text-3xl font-bold text-card-foreground mt-2">We’d love to hear from you</h3>
+                  <p className="text-muted-foreground mt-2 text-sm">
                     Fill in the form and our support team will respond shortly.
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid gap-5 sm:grid-cols-2">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+                  <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
                     <div className="space-y-1.5">
-                      <label htmlFor="fullName" className="text-xs font-bold text-gray-700 ml-1">
+                      <label htmlFor="fullName" className="text-xs font-bold text-foreground ml-1">
                         Full Name <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -181,12 +181,12 @@ const Contact = () => {
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                         placeholder="ex. John Doe"
-                        className="h-11 rounded-lg bg-gray-50 border-gray-200 text-sm focus:bg-white focus:border-gray-400 transition-all placeholder:text-gray-400"
+                        className="h-10 sm:h-11 rounded-lg bg-background border-input text-foreground text-sm focus:bg-background focus:border-primary transition-all placeholder:text-muted-foreground"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label htmlFor="mobile" className="text-xs font-bold text-gray-700 ml-1">
+                      <label htmlFor="mobile" className="text-xs font-bold text-foreground ml-1">
                         Mobile Number <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -196,13 +196,13 @@ const Contact = () => {
                         value={formData.mobile}
                         onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
                         placeholder="ex. +91 98765 43210"
-                        className="h-11 rounded-lg bg-gray-50 border-gray-200 text-sm focus:bg-white focus:border-gray-400 transition-all placeholder:text-gray-400"
+                        className="h-10 sm:h-11 rounded-lg bg-background border-input text-foreground text-sm focus:bg-background focus:border-primary transition-all placeholder:text-muted-foreground"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="email" className="text-xs font-bold text-gray-700 ml-1">
+                    <label htmlFor="email" className="text-xs font-bold text-foreground ml-1">
                       Email ID <span className="text-red-500">*</span>
                     </label>
                     <Input
@@ -212,12 +212,12 @@ const Contact = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="ex. john@example.com"
-                      className="h-11 rounded-lg bg-gray-50 border-gray-200 text-sm focus:bg-white focus:border-gray-400 transition-all placeholder:text-gray-400"
+                      className="h-10 sm:h-11 rounded-lg bg-background border-input text-foreground text-sm focus:bg-background focus:border-primary transition-all placeholder:text-muted-foreground"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="message" className="text-xs font-bold text-gray-700 ml-1">
+                    <label htmlFor="message" className="text-xs font-bold text-foreground ml-1">
                       Message
                     </label>
                     <Textarea
@@ -226,14 +226,14 @@ const Contact = () => {
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="How can we help you?"
                       rows={4}
-                      className="rounded-lg bg-gray-50 border-gray-200 text-sm focus:bg-white focus:border-gray-400 transition-all min-h-[120px] resize-none placeholder:text-gray-400"
+                      className="rounded-lg bg-background border-input text-foreground text-sm focus:bg-background focus:border-primary transition-all min-h-[120px] resize-none placeholder:text-muted-foreground"
                     />
                   </div>
 
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full h-12 rounded-lg bg-[#0B1121] text-white font-bold hover:bg-slate-800 transition-all text-sm uppercase tracking-wider shadow-lg shadow-gray-200 mt-2"
+                    className="w-full h-10 sm:h-12 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all text-sm uppercase tracking-wider shadow-lg shadow-black/5 mt-2"
                   >
                     Send Message
                   </Button>
