@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MissionVisionGoal from "@/components/MissionVisionGoal";
 import PVKJourney from "@/components/PVKJourney";
+import LeadershipTeam from "@/components/LeadershipTeam";
 import pvkShopImage from "@/assets/pvk shop.webp";
 import founderImage from "@/assets/founder.jpeg";
 import { Award, Users, Target, Heart, ArrowRight } from "lucide-react";
@@ -122,6 +123,9 @@ const About = () => {
 
         {/* Mission, Vision, Goal Section */}
         <MissionVisionGoal />
+
+        {/* Leadership Team Section */}
+        <LeadershipTeam />
 
         {/* Main Content - Our Story & Values */}
         <section className="py-16">

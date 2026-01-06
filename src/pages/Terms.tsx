@@ -106,7 +106,7 @@ const Terms = () => {
                 </p>
                 <div className="rounded-2xl border border-border bg-muted/20 p-6 text-sm sm:text-base">
                   <p className="font-semibold text-foreground">PVK ENTERPRISES</p>
-                  <p>PVK TOWER, Near Village Office, Maranchery Centre, Marancheri, Malappuram, Kerala 679581</p>
+                  <p>PVK TOWER, Near Village Office, Marancheri, Malappuram, Kerala 679581</p>
                   <p className="mt-2">
                     Email:{" "}
                     <a href="mailto:pvkmaranchery707@gmail.com" className="text-primary underline-offset-4 hover:underline">
@@ -115,8 +115,8 @@ const Terms = () => {
                   </p>
                   <p className="mt-1">
                     Phone:{" "}
-                    <a href="tel:+919142107707" className="text-primary underline-offset-4 hover:underline">
-                      +91-9142107707
+                    <a href="tel:+919072332707" className="text-primary underline-offset-4 hover:underline">
+                      +91-9072332707
                     </a>
                     {" / "}
                     <a href="tel:+919072331707" className="text-primary underline-offset-4 hover:underline">

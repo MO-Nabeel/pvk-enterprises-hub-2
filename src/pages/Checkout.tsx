@@ -248,7 +248,7 @@ const Checkout = () => {
     const message = generateWhatsAppMessage();
 
     // Default business number; adjust as needed
-    const phoneNumber = "919142107707";
+    const phoneNumber = "919072332707";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
     window.open(url, "_blank");

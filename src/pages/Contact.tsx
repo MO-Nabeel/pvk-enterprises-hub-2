@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail, Clock, Navigation } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -15,75 +21,21 @@ const Contact = () => {
     message: ""
   });
 
-  const address = "PVK TOWER, Near Village Office, Maranchery Centre, Marancheri, Malappuram, Kerala 679581";
-  const phoneNumbers = ["+91-9142107707", "+91-9072331707", "+91-8891515015", "+91-9072333707"];
+  const address = "PVK TOWER, Near Village Office, Marancheri, Malappuram, Kerala 679581";
+  const phoneNumbers = [
+    { number: "+91-9072332707", label: "Please contact this number for printing details" },
+    { number: "+91-9072331707", label: "Please contact this number for product details" },
+    { number: "+91-8891515015", label: "Please contact this number for pan card details" }
+  ];
   const workingHours = [
-    { label: "Mon – Sat", value: "09:00 AM – 07:30 PM / 12:00 AM – 12:00 AM" },
-    { label: "Sun", value: "Closed / 12:00 AM – 12:00 AM" }
+    { label: "Mon – Sat", value: "09:00 AM – 09:00 PM" },
+    { label: "Sun", value: "Closed" }
   ];
   const mapUrl =
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3913.0!2d76.0!3d11.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDAwJzAwLjAiTiA3NsKwMDAnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890";
+    "https://maps.google.com/maps?q=PVK%20TOWER%2C%20Near%20Village%20Office%2C%20Marancheri%2C%20Malappuram%2C%20Kerala%20679581&t=&z=15&ie=UTF8&iwloc=&output=embed";
   const encodedAddress = encodeURIComponent(address);
 
-  const contactDetails = [
-    {
-      icon: MapPin,
-      title: "Address",
-      content: (
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-muted-foreground hover:text-primary transition-colors leading-relaxed block"
-        >
-          PVK TOWER, Near Village Office, <br /> Maranchery Centre, Marancheri, <br /> Malappuram, Kerala 679581
-        </a>
-      )
-    },
-    {
-      icon: Phone,
-      title: "Phone",
-      content: (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 w-full">
-          {phoneNumbers.map((number) => (
-            <a
-              key={number}
-              href={`tel:${number.replace(/-/g, "")}`}
-              className="group flex items-center justify-center sm:justify-start text-sm font-medium text-foreground hover:text-primary hover:bg-background transition-all duration-200 rounded-xl border border-border hover:border-primary/30 hover:shadow-sm px-4 py-2.5 sm:py-3 text-center sm:text-left"
-            >
-              <Phone className="h-4 w-4 mr-2 text-muted-foreground group-hover:text-primary transition-colors hidden sm:inline-flex" />
-              <span>{number}</span>
-            </a>
-          ))}
-        </div>
-      )
-    },
-    {
-      icon: Mail,
-      title: "Email",
-      content: (
-        <a
-          href="mailto:pvkmaranchery707@gmail.com"
-          className="text-sm text-muted-foreground hover:text-primary transition-colors"
-        >
-          pvkmaranchery707@gmail.com
-        </a>
-      )
-    },
-    {
-      icon: Clock,
-      title: "Working Hours",
-      content: (
-        <div className="space-y-1 text-sm text-muted-foreground">
-          {workingHours.map((item) => (
-            <p key={item.label}>
-              <span className="font-medium text-foreground">{item.label}:</span> {item.value}
-            </p>
-          ))}
-        </div>
-      )
-    }
-  ];
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,14 +53,14 @@ const Contact = () => {
 
       <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28 bg-background transition-colors duration-300">
         {/* Contact Content */}
-        <section className="relative overflow-hidden pt-12 pb-8 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
+        <section className="relative overflow-hidden pt-8 pb-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute inset-0 bg-gradient-to-br from-muted/50 via-background to-muted/50 opacity-70 blur-3xl" />
           </div>
           <div className="relative container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto mb-12 text-center">
               <p className="text-xs uppercase tracking-[0.3em] font-medium text-muted-foreground">Contact</p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mt-4 leading-tight">
+              <h2 className="text-2xl sm:text-4xl font-bold text-foreground mt-4 leading-tight">
                 Modern Support for <span className="text-primary">Modern Business</span>
               </h2>
               <p className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -118,7 +70,7 @@ const Contact = () => {
 
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 max-w-5xl mx-auto items-start">
               {/* Contact Information (Left Card) */}
-              <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
+              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
                 <div className="flex items-start justify-between mb-8">
                   <div className="space-y-1">
                     <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold text-gray-400">Get In Touch</p>
@@ -131,23 +83,23 @@ const Contact = () => {
 
                 <div className="space-y-4">
                   {/* Address */}
-                  <div className="flex gap-4 rounded-xl border border-gray-100 p-4">
+                  <div className="flex gap-3 rounded-xl border border-gray-100 p-3 sm:p-4">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
                       <MapPin className="h-5 w-5" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Address</p>
                       <div className="text-sm font-medium text-gray-600 leading-relaxed">
                         PVK TOWER, Near Village Office,<br />
-                        Maranchery Centre, Marancheri,<br />
+                        Marancheri,<br />
                         Malappuram, Kerala 679581
                       </div>
                     </div>
                   </div>
 
                   {/* Phone */}
-                  <div className="rounded-xl border border-gray-100 p-4">
-                    <div className="flex gap-4 mb-4">
+                  <div className="rounded-xl border border-gray-100 p-3 sm:p-4">
+                    <div className="flex gap-3 mb-4">
                       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
                         <Phone className="h-5 w-5" />
                       </div>
@@ -155,38 +107,50 @@ const Contact = () => {
                         <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Phone</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-[3.5rem]">
-                      {phoneNumbers.map((number) => (
-                        <a key={number} href={`tel:${number}`} className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors">
-                          <Phone className="h-3 w-3" /> {number}
-                        </a>
-                      ))}
-                    </div>
+                    <TooltipProvider delayDuration={100}>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-[3.5rem]">
+                        {phoneNumbers.map((item) => (
+                          <Tooltip key={item.number}>
+                            <TooltipTrigger asChild>
+                              <a
+                                href={`tel:${item.number.replace(/[^0-9]/g, "")}`}
+                                className="flex items-center justify-center sm:justify-start gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors w-full"
+                              >
+                                <Phone className="h-3 w-3 flex-shrink-0" /> <span className="truncate">{item.number}</span>
+                              </a>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{item.label}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </TooltipProvider>
                   </div>
 
                   {/* Email */}
-                  <div className="flex gap-4 rounded-xl border border-gray-100 p-4">
+                  <div className="flex gap-3 rounded-xl border border-gray-100 p-3 sm:p-4">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
                       <Mail className="h-5 w-5" />
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Email</p>
-                      <a href="mailto:pvkmaranchery707@gmail.com" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                      <a href="mailto:pvkmaranchery707@gmail.com" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors break-words block">
                         pvkmaranchery707@gmail.com
                       </a>
                     </div>
                   </div>
 
                   {/* Working Hours */}
-                  <div className="flex gap-4 rounded-xl border border-gray-100 p-4">
+                  <div className="flex gap-3 rounded-xl border border-gray-100 p-3 sm:p-4">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
                       <Clock className="h-5 w-5" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Working Hours</p>
                       <div className="space-y-1 text-xs sm:text-sm font-medium text-gray-600">
                         {workingHours.map((item) => (
-                          <div key={item.label}><span className="text-gray-900 font-bold">{item.label}:</span> {item.value}</div>
+                          <div key={item.label} className="break-words"><span className="text-gray-900 font-bold">{item.label}:</span> {item.value}</div>
                         ))}
                       </div>
                     </div>
@@ -195,7 +159,7 @@ const Contact = () => {
               </div>
 
               {/* Contact Form (Right Card) */}
-              <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
+              <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
                 <div className="mb-8">
                   <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-gray-400">Send Message</p>
                   <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">We’d love to hear from you</h3>

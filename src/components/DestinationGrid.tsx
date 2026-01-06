@@ -96,35 +96,37 @@ const DestinationGrid = ({ destinations = defaultDestinations, className }: Dest
             <Link
               key={destination.id}
               to={`/destination/${destination.id}`}
-              className="destination-grid-card group relative aspect-[4/3] rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+              className="destination-grid-card group relative aspect-[4/3] rounded-[20px] transition-all duration-300"
             >
-              {/* Image */}
-              <div className="absolute inset-0">
+              {/* Inner container for overflow and rounded corners */}
+              <div className="absolute inset-0 overflow-hidden rounded-[20px]">
+                {/* Image */}
                 <img
                   src={destination.image}
                   alt={destination.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  style={{ objectPosition: 'center' }}
                   loading="lazy"
                 />
                 {/* Gradient Overlay - Darker at bottom for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              </div>
 
-              {/* Tours Badge - Top Left */}
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-yellow-400 text-slate-900 text-sm font-bold px-4 py-2 rounded-full inline-block">
-                  {destination.tours} TOUR{destination.tours !== 1 ? "S" : ""}
-                </span>
-              </div>
+                {/* Tours Badge - Top Left */}
+                <div className="absolute top-4 left-4 z-10">
+                  <span className="bg-yellow-400 text-slate-900 text-sm font-bold px-4 py-2 rounded-full inline-block">
+                    {destination.tours} TOUR{destination.tours !== 1 ? "S" : ""}
+                  </span>
+                </div>
 
-              {/* Content Overlay - Bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 text-white z-10">
-                <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-white leading-tight">
-                  {destination.name}
-                </h3>
-                <p className="text-sm text-white/90 font-medium uppercase tracking-wider">
-                  {destination.tagline}
-                </p>
+                {/* Content Overlay - Bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 text-white z-10">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-white leading-tight">
+                    {destination.name}
+                  </h3>
+                  <p className="text-sm text-white/90 font-medium uppercase tracking-wider">
+                    {destination.tagline}
+                  </p>
+                </div>
               </div>
             </Link>
           ))}

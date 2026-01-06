@@ -40,7 +40,7 @@ const policyLinks = [
   { label: "Shipping & Exchange", to: "/shipping" },
 ];
 
-const phoneNumbers = ["+91 91421 07707", "+91 90723 31707", "+91 88915 15015", "+91 90723 33707"];
+const phoneNumbers = ["+91 90723 32707", "+91 90723 31707", "+91 88915 15015"];
 
 const socialLinks = [
   {
@@ -56,7 +56,7 @@ const socialLinks = [
     isImage: false,
   },
   {
-    href: "https://wa.me/919142107707",
+    href: "https://wa.me/919072332707",
     label: "WhatsApp",
     Icon: WhatsAppIcon,
     isImage: false,
@@ -148,7 +148,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-sm leading-relaxed hover:text-white"
               >
-                PVK TOWER, Near Village Office, Maranchery Centre, Malappuram, Kerala 679581
+                PVK TOWER, Near Village Office, Marancheri, Malappuram, Kerala 679581
               </a>
             </div>
             <div className="flex items-start gap-3">
