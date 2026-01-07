@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MissionVisionGoal from "@/components/MissionVisionGoal";
 import PVKJourney from "@/components/PVKJourney";
-import LeadershipTeam from "@/components/LeadershipTeam";
+
 import pvkShopImage from "@/assets/pvk shop.webp";
 import founderImage from "@/assets/founder.jpeg";
 import { Award, Users, Target, Heart, ArrowRight } from "lucide-react";
@@ -46,7 +46,7 @@ const About = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         {/* Founder's Message Section (moved to top, before Mission/Vision/Goal) */}
         <section className="founder-message-section py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-950">
@@ -124,8 +124,7 @@ const About = () => {
         {/* Mission, Vision, Goal Section */}
         <MissionVisionGoal />
 
-        {/* Leadership Team Section */}
-        <LeadershipTeam />
+
 
         {/* Main Content - Our Story & Values */}
         <section className="py-16">
