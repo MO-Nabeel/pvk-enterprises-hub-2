@@ -179,20 +179,20 @@ const About = () => {
               {valueHighlights.map(({ title, description, tag, gradient, icon: Icon }) => (
                 <article
                   key={title}
-                  className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br ${gradient} p-[1px] shadow-xl transition duration-500 hover:-translate-y-1.5 hover:shadow-2xl`}
+                  className="group relative overflow-hidden rounded-3xl bg-white border border-slate-300 shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-5px_rgba(0,0,0,0.2)]"
                 >
-                  <div className="relative flex h-full flex-col items-center gap-6 rounded-[calc(1.5rem-1px)] bg-white/10 p-6 sm:p-8 text-center text-white backdrop-blur">
-                    <div className="inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em]">
+                  <div className="relative flex h-full flex-col items-center gap-6 p-6 sm:p-8 text-center">
+                    <div className="inline-flex w-fit items-center gap-2 rounded-full bg-slate-100 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-slate-600">
                       {tag}
                     </div>
 
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-white">
-                      <Icon className="h-7 w-7" strokeWidth={1.5} />
+                    <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-lg`}>
+                      <Icon className="h-8 w-8" strokeWidth={1.5} />
                     </div>
 
                     <div className="space-y-3">
-                      <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
-                      <p className="text-base/relaxed text-white/90">{description}</p>
+                      <h3 className="text-2xl font-bold text-slate-900 leading-tight group-hover:text-primary transition-colors">{title}</h3>
+                      <p className="text-base/relaxed text-slate-600">{description}</p>
                     </div>
 
                   </div>
