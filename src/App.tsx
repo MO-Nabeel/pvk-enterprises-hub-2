@@ -32,6 +32,8 @@ const AdminLeads = lazy(() => import("./pages/admin/AdminLeads"));
 const AdminBlogs = lazy(() => import("./pages/admin/AdminBlogs"));
 const AdminParameters = lazy(() => import("./pages/admin/AdminParameters"));
 const CustomerProfile = lazy(() => import("./pages/CustomerProfile"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
 
 const queryClient = new QueryClient();
 
@@ -69,6 +71,8 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/terms.html" element={<Terms />} />
             <Route path="/profile" element={<CustomerProfile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/special-services" element={<AdminSpecialServices />} />
             <Route path="/admin/customers" element={<AdminCustomers />} />

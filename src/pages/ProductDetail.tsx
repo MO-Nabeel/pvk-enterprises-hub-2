@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { addItemToCart, isProductInCart, CART_COUNT_EVENT, type CartEventDetail } from "@/lib/cart";
 import { cartHasVisitingCard } from "@/lib/cartRules";
 import { useToast } from "@/hooks/use-toast";
+import { Minus, Plus } from "lucide-react";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -155,11 +156,11 @@ const ProductDetail = () => {
       <Header />
 
       <main className="flex-1 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
-        <section className="py-4 sm:py-6 md:py-8 lg:py-10 bg-gray-50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12 items-start">
+        <section className="py-4 sm:py-6 md:py-8 lg:py-10 bg-gray-50 dark:bg-slate-950">
+          <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-12 items-start">
               {/* Left Column: Product Image Gallery */}
-              <div className="w-full lg:sticky lg:top-24">
+              <div className="w-full">
                 <ProductImageSlider
                   images={product.imageGallery || []}
                   productName={product.name}
@@ -167,66 +168,66 @@ const ProductDetail = () => {
               </div>
 
               {/* Right Column: Product Details */}
-              <div className="bg-white rounded-lg p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 shadow-sm border border-gray-200 w-full max-w-full overflow-hidden">
+              <div className="bg-white dark:bg-slate-900 rounded-lg p-4 sm:p-5 lg:p-6 space-y-3 sm:space-y-4 shadow-sm border border-gray-200 dark:border-slate-800 w-full max-w-full overflow-hidden">
                 <div className="flex items-center justify-between gap-3">
                   <Button
                     variant="outline"
-                    className="h-8 sm:h-9 px-3 sm:px-4 text-xs sm:text-sm rounded-md border-gray-300 hover:bg-gray-50 hover:border-gray-400 text-gray-700 hover:text-gray-900"
+                    className="h-8 sm:h-9 px-3 sm:px-4 text-xs sm:text-sm rounded-md border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                     onClick={() => navigate("/category")}
                   >
                     ← Back to Products
                   </Button>
                 </div>
 
-                <div className="space-y-2 sm:space-y-3">
+                <div className="space-y-1.5 sm:space-y-2">
                   <SectionBadge label={product.category} />
-                  <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 leading-tight">
+                  <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-white leading-tight">
                     {product.name}
                   </h1>
                   {product.brand && (
-                    <p className="text-xs sm:text-sm font-medium text-gray-600">
-                      Brand: <span className="text-gray-900 font-semibold">{product.brand}</span>
+                    <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Brand: <span className="text-gray-900 dark:text-white font-semibold">{product.brand}</span>
                     </p>
                   )}
                 </div>
 
-                <div className="space-y-3 sm:space-y-4 w-full max-w-full">
+                <div className="space-y-2 sm:space-y-3 w-full max-w-full">
                   <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 w-full max-w-full">
-                    <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 break-words">
+                    <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white break-words">
                       ₹{product.price.toLocaleString("en-IN")}
                     </p>
                     {originalPrice && (
                       <>
-                        <p className="text-base sm:text-lg md:text-xl text-gray-500 line-through break-words">
+                        <p className="text-base sm:text-lg md:text-xl text-gray-500 dark:text-gray-500 line-through break-words">
                           ₹{originalPrice.toLocaleString("en-IN")}
                         </p>
                         {product.discount && product.discount > 0 && (
-                          <span className="inline-flex items-center rounded px-2 py-0.5 text-xs sm:text-sm font-semibold bg-red-100 text-red-700 flex-shrink-0">
+                          <span className="inline-flex items-center rounded px-2 py-0.5 text-xs sm:text-sm font-semibold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 flex-shrink-0">
                             -{product.discount}%
                           </span>
                         )}
                       </>
                     )}
                   </div>
-                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed break-words max-w-full">
+                  <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed break-words max-w-full">
                     {description}
                   </p>
                 </div>
 
-                <div className="space-y-4 sm:space-y-5 border-t border-gray-200 pt-4 sm:pt-5">
+                <div className="space-y-3 sm:space-y-4 border-t border-gray-200 dark:border-slate-800 pt-3 sm:pt-4">
                   <div className="grid gap-3 sm:gap-4 grid-cols-12 items-end">
-                    {/* Quantity - 2 columns on desktop */}
-                    <div className="col-span-12 md:col-span-2">
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                    {/* Quantity - 4 columns on desktop */}
+                    <div className="col-span-12 md:col-span-4">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Quantity
                       </label>
-                      <div className="flex items-stretch max-w-[150px] rounded-md border border-gray-300 overflow-hidden bg-white">
+                      <div className="flex items-center rounded-full border border-slate-200 bg-white shadow-sm h-11 w-full max-w-[140px] px-1">
                         <button
                           type="button"
-                          className="w-10 h-10 flex items-center justify-center text-base font-semibold text-gray-700 hover:bg-gray-100 border-r border-gray-300 focus:outline-none"
+                          className="w-8 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors focus:outline-none"
                           onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                         >
-                          -
+                          <Minus className="w-4 h-4" />
                         </button>
                         <Input
                           type="text"
@@ -235,32 +236,32 @@ const ProductDetail = () => {
                           onChange={(event) =>
                             handleQuantityChange(event.target.value)
                           }
-                          className="w-12 h-10 text-center text-sm border-0 rounded-none focus-visible:ring-0 focus-visible:outline-none"
+                          className="flex-1 h-full text-center text-sm font-semibold text-slate-900 border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0 placeholder-transparent"
                         />
                         <button
                           type="button"
-                          className="w-10 h-10 flex items-center justify-center text-base font-semibold text-gray-700 hover:bg-gray-100 border-l border-gray-300 focus:outline-none"
+                          className="w-8 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors focus:outline-none"
                           onClick={() => setQuantity((prev) => Math.min(999, prev + 1))}
                         >
-                          +
+                          <Plus className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
 
-                    {/* Add to Cart / View in Cart - 5 columns on desktop */}
-                    <div className="col-span-12 md:col-span-5 mt-2 md:mt-0">
+                    {/* Add to Cart / View in Cart - 4 columns on desktop */}
+                    <div className="col-span-12 md:col-span-4 mt-2 md:mt-0">
                       <Button
-                        className="w-full h-11 sm:h-12 rounded-md bg-[#111827] hover:bg-[#1f2937] text-white font-medium text-sm sm:text-base shadow-sm"
+                        className="w-full h-11 sm:h-12 rounded-md bg-[#111827] dark:bg-white hover:bg-[#1f2937] dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-sm sm:text-base shadow-sm"
                         onClick={isInCart ? () => navigate("/cart") : handleAddToCart}
                       >
                         {isInCart ? "View in Cart →" : "Add to Cart"}
                       </Button>
                     </div>
 
-                    {/* Buy Now - 5 columns on desktop */}
-                    <div className="col-span-12 md:col-span-5 mt-2 md:mt-0">
+                    {/* Buy Now - 4 columns on desktop */}
+                    <div className="col-span-12 md:col-span-4 mt-2 md:mt-0">
                       <Button
-                        className="w-full h-11 sm:h-12 rounded-md bg-[#111827] hover:bg-[#1f2937] text-white font-medium text-sm sm:text-base shadow-sm"
+                        className="w-full h-11 sm:h-12 rounded-md bg-[#111827] dark:bg-white hover:bg-[#1f2937] dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-sm sm:text-base shadow-sm"
                         onClick={handleBuyNow}
                       >
                         Buy Now
@@ -276,17 +277,15 @@ const ProductDetail = () => {
         {/* Similar Products */}
         <section className="py-10 sm:py-12 pb-16 bg-muted/40">
           <div className="container mx-auto px-4 sm:px-6 lg:px-10 space-y-6">
-            <div className="flex items-center justify-between gap-3">
-              <div className="space-y-2">
-                <SectionBadge label="Similar Products" />
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">
-                  You Might Also Like
-                </h2>
-              </div>
+            <div className="text-center space-y-2">
+              <SectionBadge label="Similar Products" className="mx-auto" />
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">
+                You Might Also Like
+              </h2>
             </div>
 
             {similarProducts.length > 0 ? (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-5 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
                 {similarProducts.map((item) => (
                   <ProductCard
                     key={item.id}

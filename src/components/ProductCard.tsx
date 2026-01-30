@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ShoppingCart } from "lucide-react";
+import { ArrowRight, ShoppingCart, Star, MapPin } from "lucide-react";
 import { addItemToCart, isProductInCart, CART_COUNT_EVENT } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
@@ -59,20 +59,11 @@ const ProductCard = ({ id, name, price, image, discount, description, tax, onCar
 
   const originalPrice = discount ? Math.round(price / (1 - discount / 100)) : null;
 
-  const handleViewClick = (event: MouseEvent<HTMLButtonElement>) => {
-    // Prevent the card-level click handler from firing
-    event.stopPropagation();
-
-    // Navigate directly to the product detail page
-    navigate(`/product/${encodeURIComponent(id)}`);
-  };
-
   // Default card click handler - navigates to product detail page
   const handleCardClick = () => {
     if (onCardClick) {
       onCardClick();
     } else {
-      // Default behavior: navigate to product detail page
       navigate(`/product/${encodeURIComponent(id)}`);
     }
   };
@@ -80,7 +71,8 @@ const ProductCard = ({ id, name, price, image, discount, description, tax, onCar
   return (
     <div
       className={cn(
-        "group w-full h-full bg-white dark:bg-card rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out",
+        "group w-full h-full bg-white dark:bg-card rounded-[1.5rem] overflow-hidden transition-all duration-300 ease-in-out",
+        "hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-transparent hover:border-slate-100 dark:hover:border-slate-800",
         "product-card cursor-pointer relative flex flex-col"
       )}
       onClick={handleCardClick}
@@ -94,52 +86,69 @@ const ProductCard = ({ id, name, price, image, discount, description, tax, onCar
       }}
     >
       {/* Image Container */}
-      <div className="relative w-full aspect-[4/5] overflow-hidden bg-slate-50 dark:bg-slate-900/50">
-        {discount && (
-          <div className="absolute top-3 right-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-rose-600 dark:text-rose-400 text-[10px] font-bold px-2.5 py-1 rounded-full z-10 shadow-sm border border-slate-100 dark:border-slate-800">
-            {discount}% OFF
-          </div>
-        )}
+      <div className="relative w-full aspect-square bg-transparent flex items-center justify-center">
         <img
           src={image}
           alt={name}
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover rounded-2xl shadow-sm transition-transform duration-500 ease-out group-hover:scale-105"
         />
-        {/* Overlay gradient for better text contrast if we had text on image, but adds depth here */}
-        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
       {/* Details Section */}
-      <div className="flex flex-col flex-1 p-5">
-        <div className="flex flex-col gap-1.5 flex-1 items-start text-left">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2 min-h-[2.5em]">
+      <div className="flex flex-col flex-1 p-5 pt-2">
+        <div className="flex flex-col gap-2 flex-1 items-center text-center">
+          {/* Title */}
+          <h3 className="text-[15px] font-medium text-slate-900 dark:text-slate-100 leading-snug line-clamp-2 uppercase tracking-wide">
             {name}
           </h3>
 
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-lg font-bold text-slate-900 dark:text-white">
+          {/* Ratings */}
+          <div className="flex flex-col items-center gap-0.5 text-xs">
+            <div className="flex items-center text-orange-400 gap-0.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star key={star} className="w-3.5 h-3.5 fill-current" />
+              ))}
+            </div>
+            <span className="text-slate-400 font-medium text-[11px]">123 Reviews</span>
+          </div>
+
+          {/* Location */}
+          <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500 mt-1">
+            <MapPin className="w-3 h-3 text-slate-400" />
+            <span>PVK Store | Malappuram</span>
+          </div>
+
+          {/* Price */}
+          <div className="flex items-center justify-center flex-wrap gap-2 mt-2">
+            <span className="text-xl font-bold text-[#040D1F]">
               ₹{price.toLocaleString("en-IN")}
             </span>
-            {originalPrice && (
-              <span className="text-xs text-slate-400 line-through">
-                ₹{originalPrice.toLocaleString("en-IN")}
-              </span>
+            {discount && (
+              <>
+                <span className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded">
+                  {discount}%
+                </span>
+                {originalPrice && (
+                  <span className="text-xs text-slate-400 line-through decoration-slate-400/70">
+                    ₹{originalPrice.toLocaleString("en-IN")}
+                  </span>
+                )}
+              </>
             )}
           </div>
         </div>
 
-        {/* Actions Footer */}
-        <div className="mt-5 flex gap-2 w-full pt-4 border-t border-slate-50 dark:border-slate-800/50">
+        {/* Actions Footer - Button */}
+        <div className="mt-4 w-full px-2">
           <Button
             onClick={handleButtonClick}
             disabled={isAdding}
-            size="sm" // Keeping small size but full layout
             className={cn(
-              "flex-1 h-10 rounded-lg text-xs font-bold uppercase tracking-wide shadow-none transition-all duration-200",
+              "w-full h-10 rounded-lg text-sm font-bold shadow-md transition-all duration-300",
               isInCart
-                ? "bg-slate-100 hover:bg-slate-200 text-slate-900 border border-transparent dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
-                : "bg-slate-900 hover:bg-slate-800 text-white shadow-md hover:shadow-lg hover:translate-y-[-1px] dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+                ? "bg-slate-100 hover:bg-slate-200 text-slate-900 border border-transparent dark:bg-slate-800 dark:text-white"
+                : "bg-[#040D1F] hover:bg-[#040D1F]/90 text-white hover:shadow-lg hover:shadow-[#040D1F]/20"
             )}
           >
             {isAdding ? (
@@ -147,12 +156,12 @@ const ProductCard = ({ id, name, price, image, discount, description, tax, onCar
                 "w-4 h-4 border-2 rounded-full animate-spin",
                 isInCart
                   ? "border-slate-300 border-t-slate-600"
-                  : "border-white/30 border-t-white dark:border-slate-400 dark:border-t-slate-900"
+                  : "border-white/30 border-t-white"
               )} />
             ) : isInCart ? (
-              <span className="flex items-center justify-center gap-2">View Cart <ArrowRight className="w-3.5 h-3.5" /></span>
+              <span className="flex items-center justify-center gap-2">View Cart <ArrowRight className="w-4 h-4" /></span>
             ) : (
-              "Add to Cart"
+              <span className="flex items-center justify-center gap-2"><ShoppingCart className="w-4 h-4" /> Add to cart</span>
             )}
           </Button>
         </div>

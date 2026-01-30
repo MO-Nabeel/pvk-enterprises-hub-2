@@ -23,7 +23,7 @@ const CategoryCardModern = ({
   className
 }: CategoryCardModernProps) => {
   const cardStyle: CSSProperties = {
-    background: gradient || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: gradient || "linear-gradient(135deg, #0E1325 0%, #1B2236 100%)",
   };
 
   if (image) {

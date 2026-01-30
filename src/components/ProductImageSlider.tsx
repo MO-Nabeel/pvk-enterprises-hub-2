@@ -28,7 +28,7 @@ const ProductImageSlider = ({ images, productName, className }: ProductImageSlid
   return (
     <div className={cn("w-full", className)}>
       {/* Desktop Layout: Vertical Thumbnails + Main Image */}
-      <div className="hidden md:flex gap-3 lg:gap-4">
+      <div className="hidden md:flex gap-3 lg:gap-4 items-start">
         {/* Vertical Thumbnail Column (Left) */}
         {hasMultipleImages && (
           <div className="flex flex-col gap-2 lg:gap-3 flex-shrink-0">
@@ -71,7 +71,7 @@ const ProductImageSlider = ({ images, productName, className }: ProductImageSlid
 
         {/* Main Image Viewer (Right) */}
         <div className="flex-1 bg-white rounded-lg overflow-hidden shadow-sm">
-          <div className="relative w-full aspect-square bg-white flex items-center justify-center p-4 sm:p-6 lg:p-8">
+          <div className="relative w-full aspect-[4/3] bg-white flex items-center justify-center">
             <img
               key={selectedIndex}
               src={currentImage}
@@ -88,7 +88,7 @@ const ProductImageSlider = ({ images, productName, className }: ProductImageSlid
       <div className="flex flex-col gap-3 md:hidden">
         {/* Main Image */}
         <div className="w-full bg-white rounded-lg overflow-hidden shadow-sm">
-          <div className="relative w-full aspect-square bg-white flex items-center justify-center p-4">
+          <div className="relative w-full aspect-square bg-white flex items-center justify-center">
             <img
               key={selectedIndex}
               src={currentImage}

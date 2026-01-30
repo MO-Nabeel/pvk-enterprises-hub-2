@@ -68,9 +68,9 @@ const Contact = () => {
               </p>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 max-w-5xl mx-auto items-start">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 max-w-5xl mx-auto">
               {/* Contact Information (Left Card) */}
-              <div className="rounded-3xl border border-border bg-card p-3.5 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
+              <div className="rounded-3xl border border-border bg-card p-3.5 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.04)] h-full flex flex-col justify-between">
                 <div className="flex items-start justify-between mb-6 sm:mb-8">
                   <div className="space-y-1">
                     <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold text-muted-foreground">Get In Touch</p>
@@ -159,7 +159,7 @@ const Contact = () => {
               </div>
 
               {/* Contact Form (Right Card) */}
-              <div className="rounded-3xl border border-border bg-card p-4 sm:p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)]">
+              <div className="rounded-3xl border border-border bg-card p-4 sm:p-10 shadow-[0_2px_20px_rgba(0,0,0,0.04)] h-full">
                 <div className="mb-6 sm:mb-8">
                   <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-muted-foreground">Send Message</p>
                   <h3 className="text-xl sm:text-3xl font-bold text-card-foreground mt-2">We’d love to hear from you</h3>
